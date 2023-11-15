@@ -88,6 +88,7 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 file(GLOB test_SRCS tests/*.cpp
 src/HelloWorld.cpp
 src/Box.cpp
+src/Board.cpp
 )
 
 add_executable(RunTests ${test_SRCS})
