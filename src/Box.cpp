@@ -1,12 +1,18 @@
 #include "Box.h"
 
-Box::Box (int height, int width, int xPos, int yPos)
-:   _height{height},
+Box::Box (int id, int height, int width, int xPos, int yPos)
+:   _id{id},
+    _height{height},
     _width{width},
     _xPos{xPos},
     _yPos{yPos}
     
 {}
+
+int Box::getId() const
+{
+    return _id;
+}
 
 int Box::getX() const
 {

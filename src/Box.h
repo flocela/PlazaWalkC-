@@ -4,7 +4,7 @@
 class Box{
 
 public:
-    Box(int height, int width, int xPos, int yPos);
+    Box(int id, int height, int width, int xPos, int yPos);
     Box() = delete;
     Box(const Box& o) = default;
     Box(Box&& o) noexcept = default;
@@ -12,6 +12,7 @@ public:
     Box& operator= (Box&& o) noexcept = default;
     ~Box() noexcept = default;
 
+    int getId() const;    
     int getX() const;
     int getY() const;
     int getHeight() const;
@@ -22,6 +23,7 @@ public:
     void setWidth(int width);
 
 private:
+    int _id = 0;
     int _height = 0;
     int _width  = 0;
     int _xPos   = 0;

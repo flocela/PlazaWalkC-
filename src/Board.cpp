@@ -2,10 +2,9 @@
 
 using namespace std;
 
-Board::Board(int height, int width, vector<Box*> boxes)
+Board::Board(int height, int width)
 :   _height{height},
-    _width{width},
-    _boxes{boxes}
+    _width{width}
 {}
 
 int Board::getHeight() const
@@ -27,4 +26,15 @@ void Board::setWidth(int width)
 {
     _width = width;
 }
+
+pair<int, int> Board::getLocation(int boxId) const
+{
+    return {_boxesPerId.at(boxId)->getX(), _boxesPerId.at(boxId)->getY()}; 
+}
+
+void Board::insert(int boxId, int height, int width, int xPos, int yPos)
+{
+    _boxesPerId.insert({boxId, make_unique<Box>(boxId, height, width, xPos, yPos)});
+}  
+
 

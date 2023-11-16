@@ -3,9 +3,16 @@
 
 using namespace std;
 
+TEST_CASE("Box:: id is set in constructor")
+{
+    Box box{10, 1, 2, 3, 4};
+    REQUIRE(10 == box.getId());
+}
+
+
 TEST_CASE("Box:: change x and y positions")
 {
-    Box box{7, 8, 8, 9};
+    Box box{1, 7, 8, 8, 9};
 
     REQUIRE(8 == box.getX());
     REQUIRE(9 == box.getY());
@@ -19,7 +26,7 @@ TEST_CASE("Box:: change x and y positions")
 
 TEST_CASE("Box:: change width and height")
 {
-    Box box{7, 8, 8, 9};
+    Box box{0, 7, 8, 8, 9};
 
     REQUIRE(7 == box.getHeight());
     REQUIRE(8 == box.getWidth());
