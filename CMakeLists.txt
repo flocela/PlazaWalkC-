@@ -86,9 +86,10 @@ target_link_libraries(${PROJECT_NAME} SDL2::TTF)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 file(GLOB test_SRCS tests/*.cpp
-src/HelloWorld.cpp
 src/Box.cpp
 src/Board.cpp
+src/HelloWorld.cpp
+src/Position.cpp
 )
 
 add_executable(RunTests ${test_SRCS})
