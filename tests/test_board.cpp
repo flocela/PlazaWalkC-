@@ -30,4 +30,16 @@ TEST_CASE("get location of box. Easy - one box exists and doesn't move")
     REQUIRE(location.second == 20);
 }
 
-
+TEST_CASE("get location when box moves. Only one box on board.")
+{
+    Board board{100, 100};
+    board.insert(0, 10, 10, 5, 20);
+  
+    vector<Position> positionsToMoveTo{Position{6, 20}, Position{4, 20}, Position{6, 21}}; 
+     
+    board.move(0, positionsToMoveTo);
+   
+    pair<int, int> location = board.getLocation(0);
+    REQUIRE(location.first == 6);
+    REQUIRE(location.second == 20);
+}

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "Box.h"
+#include "Position.h"
 
 class Board
 {
@@ -26,6 +27,8 @@ public:
     void setWidth(int width);
 
     std::pair<int, int> getLocation(int boxId) const;
+
+    void move(int boxId, std::vector<Position> positions);
 
 private:
     int _height;

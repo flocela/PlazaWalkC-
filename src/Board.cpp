@@ -37,4 +37,8 @@ void Board::insert(int boxId, int height, int width, int xPos, int yPos)
     _boxesPerId.insert({boxId, make_unique<Box>(boxId, height, width, xPos, yPos)});
 }  
 
-
+void Board::move(int boxId, vector<Position> positions)
+{
+    _boxesPerId[boxId]->setX(positions[0].getX());
+    _boxesPerId[boxId]->setY(positions[0].getY());
+}
