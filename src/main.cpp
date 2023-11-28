@@ -34,12 +34,14 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
+#include "Board.h"
+
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 // Define screen dimensions
-#define SCREEN_WIDTH    800
+#define SCREEN_WIDTH    600
 #define SCREEN_HEIGHT   600
 
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
@@ -92,53 +94,26 @@ int main(int argc, char* argv[])
         }
         else
         {
-            // Declare rect of square
-            SDL_Rect squareRect;
 
-            // Square dimensions: Half of the min(SCREEN_WIDTH, SCREEN_HEIGHT)
-            squareRect.w = MIN(SCREEN_WIDTH, SCREEN_HEIGHT) / 2;
-            squareRect.h = MIN(SCREEN_WIDTH, SCREEN_HEIGHT) / 2;
+            // Initialize renderer color white for the background
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-            // Square position: In the middle of the screen
-            squareRect.x = SCREEN_WIDTH / 2 - squareRect.w / 2;
-            squareRect.y = SCREEN_HEIGHT / 2 - squareRect.h / 2;
+            // Clear screen
+            SDL_RenderClear(renderer);
+            
+            Board board{100, 100};
+            board.insert(0, 10, 10, 10, 0); // box zero is going down
+            board.insert(1, 10, 10, 10, 40); // box one is going up
 
-            TTF_Font *font = TTF_OpenFont(FONT_PATH, 40);
-            if(!font) {
-                printf("Unable to load font: '%s'!\n"
-                       "SDL2_ttf Error: %s\n", FONT_PATH, TTF_GetError());
-                return 0;
-            }
+            SDL_Rect rect0;
+            SDL_Rect rect1;
 
-            SDL_Color textColor           = { 0x00, 0x00, 0x00, 0xFF };
-            SDL_Color textBackgroundColor = { 0xFF, 0xFF, 0xFF, 0xFF };
-            SDL_Texture *text = NULL;
-            SDL_Rect textRect;
+            rect0.w = 10;
+            rect1.w = 10;
+            rect0.h = 10;
+            rect1.h = 10;
 
-            SDL_Surface *textSurface = TTF_RenderText_Shaded(font, "Red square", textColor, textBackgroundColor);
-            if(!textSurface) {
-                printf("Unable to render text surface!\n"
-                       "SDL2_ttf Error: %s\n", TTF_GetError());
-            } else {
-                // Create texture from surface pixels
-                text = SDL_CreateTextureFromSurface(renderer, textSurface);
-                if(!text) {
-                    printf("Unable to create texture from rendered text!\n"
-                           "SDL2 Error: %s\n", SDL_GetError());
-                    return 0;
-                }
-
-                // Get text dimensions
-                textRect.w = textSurface->w;
-                textRect.h = textSurface->h;
-
-                SDL_FreeSurface(textSurface);
-            }
-
-            textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
-            textRect.y = squareRect.y - textRect.h - 10;
-
-
+            
             // Event loop exit flag
             bool quit = false;
 
@@ -156,23 +131,43 @@ int main(int argc, char* argv[])
                     quit = true;
                 }
 
-                // Initialize renderer color white for the background
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+                
+                Position zeroPosition = board.getLocation(0);
+                Position onePosition = board.getLocation(1);
 
-                // Clear screen
-                SDL_RenderClear(renderer);
+                rect0.x = zeroPosition.getX();
+                rect0.y = zeroPosition.getY();
+                rect1.x = onePosition.getX();
+                rect1.y = onePosition.getY();
 
                 // Set renderer color red to draw the square
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-
+               
                 // Draw filled square
-                SDL_RenderFillRect(renderer, &squareRect);
-
-                // Draw text
-                SDL_RenderCopy(renderer, text, NULL, &textRect);
+                SDL_RenderFillRect(renderer, &rect0);
+                SDL_RenderFillRect(renderer, &rect1);
 
                 // Update screen
                 SDL_RenderPresent(renderer);
+
+                /* 
+                vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
+                vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
+                board.move(0, zeroPotentialPositions);
+                board.move(1, onePotentialPositions);
+
+                zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
+                onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
+                board.move(0, zeroPotentialPositions);
+                board.move(1, onePotentialPositions);
+                
+                zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
+                onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
+                board.move(0, zeroPotentialPositions);
+                board.move(1, onePotentialPositions);
+*/
+
+
             }
 
             // Destroy renderer

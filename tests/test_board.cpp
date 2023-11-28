@@ -91,3 +91,31 @@ TEST_CASE("get box location after box moves. Box must can not move to any of the
     REQUIRE(location == Position(5, 20)); // this is Box 0's original position
 }
 
+// two boxes going towards each other, one box moves to the left
+TEST_CASE("two boxes vertically aligned move towards each other, one moves out of the way.")
+{   
+    Board board{100, 100};
+    board.insert(0, 10, 10, 10, 0); // box zero is going down
+    board.insert(1, 10, 10, 10, 40); // box one is going up
+  
+    vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
+    vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
+    board.move(0, zeroPotentialPositions);
+    board.move(1, onePotentialPositions);
+    REQUIRE(board.getLocation(0) == Position{10, 10});
+    REQUIRE(board.getLocation(1) == Position{10, 30});
+
+    zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
+    onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
+    board.move(0, zeroPotentialPositions);
+    board.move(1, onePotentialPositions);
+    REQUIRE(board.getLocation(0) == Position{10, 20});
+    REQUIRE(board.getLocation(1) == Position{20, 20});
+    
+    zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
+    onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
+    board.move(0, zeroPotentialPositions);
+    board.move(1, onePotentialPositions);
+    REQUIRE(board.getLocation(0) == Position{10, 30});
+    REQUIRE(board.getLocation(1) == Position{20, 10});
+}
