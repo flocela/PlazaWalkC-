@@ -26,7 +26,7 @@ public:
     void setHeight(int height);
     void setWidth(int width);
 
-    std::pair<int, int> getLocation(int boxId) const;
+    Position getLocation(int boxId) const;
 
     void move(int boxId, std::vector<Position> positions);
 
@@ -34,7 +34,7 @@ private:
     int _height;
     int _width;
     std::unordered_map<int, std::unique_ptr<Box>> _boxesPerId;
-
+    std::vector<std::vector<int>> _boxIdsOnBoard;
 
     
 };

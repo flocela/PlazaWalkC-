@@ -1,6 +1,8 @@
 #ifndef POSITION__H
 #define POSITION__H
 
+#include <iostream>
+#include <string>
 class Position
 {
 public:
@@ -12,12 +14,19 @@ public:
     Position& operator=(Position&& o) noexcept = default;
     ~Position() noexcept = default;
 
-    int getX();
-    int getY();
+    int getX() const;
+    int getY() const;
 
+    bool operator== (const Position& o) const;
+    friend std::ostream& operator<< (std::ostream& o, const Position& p)
+    {
+        o << "[" + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) << "]";
+        return o;
+    }
 private:
     int _x = 0;
     int _y = 0;
 };
+
 
 #endif
