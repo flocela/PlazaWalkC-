@@ -33,6 +33,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <vector>
 
 #include "Board.h"
 
@@ -45,6 +46,8 @@
 #define SCREEN_HEIGHT   600
 
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
+
+using namespace std;
 
 int main(int argc, char* argv[])
 {
@@ -93,14 +96,19 @@ int main(int argc, char* argv[])
                    "SDL_Error: %s\n", SDL_GetError());
         }
         else
-        {
-
+        {   
             // Initialize renderer color white for the background
             SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
             // Clear screen
             SDL_RenderClear(renderer);
+            // Set renderer color red to draw the square
             
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+          
+
+
+ 
             Board board{100, 100};
             board.insert(0, 10, 10, 10, 0); // box zero is going down
             board.insert(1, 10, 10, 10, 40); // box one is going up
@@ -113,7 +121,93 @@ int main(int argc, char* argv[])
             rect0.h = 10;
             rect1.h = 10;
 
+            Position zeroPosition = board.getLocation(0);
+            Position onePosition = board.getLocation(1);
+
+            rect0.x = zeroPosition.getX();
+            rect0.y = zeroPosition.getY();
+            rect1.x = onePosition.getX();
+            rect1.y = onePosition.getY();
+
+            // Draw filled square
+            SDL_RenderFillRect(renderer, &rect0);
+            SDL_RenderFillRect(renderer, &rect1);
             
+            // Update screen
+            SDL_RenderPresent(renderer);
+            
+          
+            vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
+            vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
+            board.move(0, zeroPotentialPositions);
+            board.move(1, onePotentialPositions);
+ 
+            zeroPosition = board.getLocation(0);
+            onePosition = board.getLocation(1);
+
+            rect0.x = zeroPosition.getX();
+            rect0.y = zeroPosition.getY();
+            rect1.x = onePosition.getX();
+            rect1.y = onePosition.getY();
+
+            // Set renderer color red to draw the square
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+
+            // Draw filled square
+            SDL_RenderFillRect(renderer, &rect0);
+            SDL_RenderFillRect(renderer, &rect1);
+            
+            // Update screen
+            SDL_RenderPresent(renderer);
+
+            zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
+            onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
+            
+            board.move(0, zeroPotentialPositions);
+            board.move(1, onePotentialPositions);
+            
+            zeroPosition = board.getLocation(0);
+            onePosition = board.getLocation(1);
+                
+            rect0.x = zeroPosition.getX();
+            rect0.y = zeroPosition.getY();
+            rect1.x = onePosition.getX();
+            rect1.y = onePosition.getY();
+
+            // Set renderer color red to draw the square
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+
+            // Draw filled square
+            SDL_RenderFillRect(renderer, &rect0);
+            SDL_RenderFillRect(renderer, &rect1);
+            
+            // Update screen
+            SDL_RenderPresent(renderer);
+
+            zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
+            onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
+            board.move(0, zeroPotentialPositions);
+            board.move(1, onePotentialPositions);
+
+            rect0.x = zeroPosition.getX();
+            zeroPosition = board.getLocation(0);
+
+            onePosition = board.getLocation(1);
+            rect0.y = zeroPosition.getY();
+            rect1.x = onePosition.getX();
+            rect1.y = onePosition.getY();
+
+            // Set renderer color red to draw the square
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+
+            // Draw filled square
+            SDL_RenderFillRect(renderer, &rect0);
+            SDL_RenderFillRect(renderer, &rect1);
+            
+            // Update screen
+            SDL_RenderPresent(renderer);
+            
+
             // Event loop exit flag
             bool quit = false;
 
@@ -130,44 +224,6 @@ int main(int argc, char* argv[])
                 {
                     quit = true;
                 }
-
-                
-                Position zeroPosition = board.getLocation(0);
-                Position onePosition = board.getLocation(1);
-
-                rect0.x = zeroPosition.getX();
-                rect0.y = zeroPosition.getY();
-                rect1.x = onePosition.getX();
-                rect1.y = onePosition.getY();
-
-                // Set renderer color red to draw the square
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-               
-                // Draw filled square
-                SDL_RenderFillRect(renderer, &rect0);
-                SDL_RenderFillRect(renderer, &rect1);
-
-                // Update screen
-                SDL_RenderPresent(renderer);
-
-                /* 
-                vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
-                vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
-                board.move(0, zeroPotentialPositions);
-                board.move(1, onePotentialPositions);
-
-                zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-                onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-                board.move(0, zeroPotentialPositions);
-                board.move(1, onePotentialPositions);
-                
-                zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
-                onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
-                board.move(0, zeroPotentialPositions);
-                board.move(1, onePotentialPositions);
-*/
-
-
             }
 
             // Destroy renderer
