@@ -51,14 +51,9 @@ using namespace std;
 
 void printBoard(Board& board, SDL_Renderer* renderer, SDL_Rect* rect0, SDL_Rect* rect1)
 {
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_Rect fieldRect;
-    fieldRect.w = 600;
-    fieldRect.h = 600;
-    fieldRect.x = 0;
-    fieldRect.y = 0;
-    SDL_RenderFillRect(renderer, &fieldRect);
-
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(renderer);
+    
     Position zeroPosition = board.getLocation(0);
     Position onePosition = board.getLocation(1);
 
@@ -134,12 +129,6 @@ int main(int argc, char* argv[])
             rect0.h = 10;
             rect1.h = 10;
 
-            // Initialize renderer color white for the background
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-            // Clear screen
-            SDL_RenderClear(renderer);
-            // Set renderer color red to draw the square
             
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
           
