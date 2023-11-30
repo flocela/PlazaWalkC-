@@ -49,6 +49,35 @@
 
 using namespace std;
 
+void printBoard(Board& board, SDL_Renderer* renderer, SDL_Rect* rect0, SDL_Rect* rect1)
+{
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_Rect fieldRect;
+    fieldRect.w = 600;
+    fieldRect.h = 600;
+    fieldRect.x = 0;
+    fieldRect.y = 0;
+    SDL_RenderFillRect(renderer, &fieldRect);
+
+    Position zeroPosition = board.getLocation(0);
+    Position onePosition = board.getLocation(1);
+
+    rect0->x = zeroPosition.getX();
+    rect0->y = zeroPosition.getY();
+    rect1->x = onePosition.getX();
+    rect1->y = onePosition.getY();
+
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+
+    // Draw filled square
+    SDL_RenderFillRect(renderer, rect0);
+    SDL_RenderFillRect(renderer, rect1);
+    
+    // Update screen
+    SDL_RenderPresent(renderer);
+
+}
+
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -97,6 +126,14 @@ int main(int argc, char* argv[])
         }
         else
         {   
+            SDL_Rect rect0;
+            SDL_Rect rect1;
+
+            rect0.w = 10;
+            rect1.w = 10;
+            rect0.h = 10;
+            rect1.h = 10;
+
             // Initialize renderer color white for the background
             SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -106,107 +143,32 @@ int main(int argc, char* argv[])
             
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
           
-
-
- 
             Board board{100, 100};
             board.insert(0, 10, 10, 10, 0); // box zero is going down
             board.insert(1, 10, 10, 10, 40); // box one is going up
 
-            SDL_Rect rect0;
-            SDL_Rect rect1;
-
-            rect0.w = 10;
-            rect1.w = 10;
-            rect0.h = 10;
-            rect1.h = 10;
-
-            Position zeroPosition = board.getLocation(0);
-            Position onePosition = board.getLocation(1);
-
-            rect0.x = zeroPosition.getX();
-            rect0.y = zeroPosition.getY();
-            rect1.x = onePosition.getX();
-            rect1.y = onePosition.getY();
-
-            // Draw filled square
-            SDL_RenderFillRect(renderer, &rect0);
-            SDL_RenderFillRect(renderer, &rect1);
-            
-            // Update screen
-            SDL_RenderPresent(renderer);
-            
+            printBoard(board, renderer, &rect0, &rect1); 
           
             vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
             vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
             board.move(0, zeroPotentialPositions);
             board.move(1, onePotentialPositions);
- 
-            zeroPosition = board.getLocation(0);
-            onePosition = board.getLocation(1);
-
-            rect0.x = zeroPosition.getX();
-            rect0.y = zeroPosition.getY();
-            rect1.x = onePosition.getX();
-            rect1.y = onePosition.getY();
-
-            // Set renderer color red to draw the square
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-
-            // Draw filled square
-            SDL_RenderFillRect(renderer, &rect0);
-            SDL_RenderFillRect(renderer, &rect1);
-            
-            // Update screen
-            SDL_RenderPresent(renderer);
+             
+            printBoard(board, renderer, &rect0, &rect1); 
 
             zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
             onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-            
             board.move(0, zeroPotentialPositions);
             board.move(1, onePotentialPositions);
             
-            zeroPosition = board.getLocation(0);
-            onePosition = board.getLocation(1);
-                
-            rect0.x = zeroPosition.getX();
-            rect0.y = zeroPosition.getY();
-            rect1.x = onePosition.getX();
-            rect1.y = onePosition.getY();
-
-            // Set renderer color red to draw the square
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-
-            // Draw filled square
-            SDL_RenderFillRect(renderer, &rect0);
-            SDL_RenderFillRect(renderer, &rect1);
-            
-            // Update screen
-            SDL_RenderPresent(renderer);
+            printBoard(board, renderer, &rect0, &rect1); 
 
             zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
             onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
             board.move(0, zeroPotentialPositions);
             board.move(1, onePotentialPositions);
 
-            rect0.x = zeroPosition.getX();
-            zeroPosition = board.getLocation(0);
-
-            onePosition = board.getLocation(1);
-            rect0.y = zeroPosition.getY();
-            rect1.x = onePosition.getX();
-            rect1.y = onePosition.getY();
-
-            // Set renderer color red to draw the square
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-
-            // Draw filled square
-            SDL_RenderFillRect(renderer, &rect0);
-            SDL_RenderFillRect(renderer, &rect1);
-            
-            // Update screen
-            SDL_RenderPresent(renderer);
-            
+            printBoard(board, renderer, &rect0, &rect1);
 
             // Event loop exit flag
             bool quit = false;
