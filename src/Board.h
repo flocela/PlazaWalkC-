@@ -29,6 +29,8 @@ public:
     Position getLocation(int boxId) const;
 
     void move(int boxId, std::vector<Position> positions);
+    
+    std::vector<Box> getCopyOfBoxes () const;
 
 private:
     int _height;

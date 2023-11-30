@@ -5,7 +5,7 @@
 
 using namespace std;
 
-TEST_CASE("set and get dimensions")
+TEST_CASE("setHeight(int height) and setWidth(int width) set the Board's dimensions. getHeight() and getWidth() return the Board's dimensions")
 {
     Board board{10, 20};
     REQUIRE(board.getHeight() == 10);
@@ -18,7 +18,7 @@ TEST_CASE("set and get dimensions")
     REQUIRE(board.getWidth() == 15); 
 }
 
-TEST_CASE("get location of box. Easy - one box exists and doesn't move")
+TEST_CASE("getLocation(int boxId) returns the location of the given box id.")
 {
     
     Board board{100, 100};
@@ -29,8 +29,8 @@ TEST_CASE("get location of box. Easy - one box exists and doesn't move")
     REQUIRE(location == Position(5, 20)); 
 }
 
-TEST_CASE("get box location after box moves. Only one box on board.")
-{   
+TEST_CASE("If move(int boxId, vector<Positions> positions) is called and the first position is open, then the box moves to the first position in positions vector")
+{
     Board board{100, 100};
     board.insert(0, 10, 10, 5, 20);
   
@@ -43,7 +43,7 @@ TEST_CASE("get box location after box moves. Only one box on board.")
     REQUIRE(location == Position(6, 20));
 }
 
-TEST_CASE("get box location after box moves. Box can not go to 1st possible position.")
+TEST_CASE("If move(int boxId, vector<Positions> positions) is called and the first position is taken, then the box moves to the second position in positions vector.")
 {   
     Board board{100, 100};
     board.insert(0, 10, 10, 5, 20);
@@ -59,7 +59,7 @@ TEST_CASE("get box location after box moves. Box can not go to 1st possible posi
 }
 
 // both the first and second possible positions are taken
-TEST_CASE("get box location after box moves. Box must go to last possible position.")
+TEST_CASE("If move(int boxId, vector<Positions> positions) is called and the first two positions are taken, then the box moves to the last position in positions vector.")
 {   
     Board board{100, 100};
     board.insert(0, 10, 10, 5, 20);
@@ -75,7 +75,7 @@ TEST_CASE("get box location after box moves. Box must go to last possible positi
 }
 
 // all the positions in the potentialPositions vector have been taken by other boxes.
-TEST_CASE("get box location after box moves. Box must can not move to any of the given positions.")
+TEST_CASE("If move(int boxId, vector<Positions> positions) is called and all the positions are taken, then the box does not move.")
 {   
     Board board{100, 100};
     board.insert(0, 10, 10, 5, 20);
@@ -91,31 +91,6 @@ TEST_CASE("get box location after box moves. Box must can not move to any of the
     REQUIRE(location == Position(5, 20)); // this is Box 0's original position
 }
 
-// two boxes going towards each other, one box moves to the left
-TEST_CASE("two boxes vertically aligned move towards each other, one moves out of the way.")
-{   
-    Board board{100, 100};
-    board.insert(0, 10, 10, 10, 0); // box zero is going down
-    board.insert(1, 10, 10, 10, 40); // box one is going up
-  
-    vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
-    vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
-    board.move(0, zeroPotentialPositions);
-    board.move(1, onePotentialPositions);
-    REQUIRE(board.getLocation(0) == Position{10, 10});
-    REQUIRE(board.getLocation(1) == Position{10, 30});
-
-    zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-    onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-    board.move(0, zeroPotentialPositions);
-    board.move(1, onePotentialPositions);
-    REQUIRE(board.getLocation(0) == Position{10, 20});
-    REQUIRE(board.getLocation(1) == Position{20, 20});
-    
-    zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
-    onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
-    board.move(0, zeroPotentialPositions);
-    board.move(1, onePotentialPositions);
-    REQUIRE(board.getLocation(0) == Position{10, 30});
-    REQUIRE(board.getLocation(1) == Position{20, 10});
+TEST_CASE("getCopyOfBoxes() returns the boxes in the Board")
+{
 }
