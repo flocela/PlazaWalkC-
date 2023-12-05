@@ -2,6 +2,7 @@
 #include "../src/Board.h"
 
 #include <memory>
+#include <unordered_set>
 
 using namespace std;
 
@@ -91,6 +92,27 @@ TEST_CASE("If move(int boxId, vector<Positions> positions) is called and all the
     REQUIRE(location == Position(5, 20)); // this is Box 0's original position
 }
 
-TEST_CASE("getCopyOfBoxes() returns the boxes in the Board")
+TEST_CASE("getCopyOfBoxes() returns a copy of the boxes in the Board")
 {
+    // These are the same boxes as the boxes that are put in the board.
+    unordered_set<Box> sameBoxes{};
+    sameBoxes.insert(Box{0, 10, 10, 5, 5});
+    sameBoxes.insert(Box{1, 10, 10, 1, 10});
+    sameBoxes.insert(Box{2, 10, 10, 2, 20});
+    sameBoxes.insert(Box{3, 10, 10, 3, 30});
+  
+    Board board{100, 100};
+    board.insert(0, 10, 10, 5, 5);
+    board.insert(1, 10, 10, 1, 10); 
+    board.insert(2, 10, 10, 2, 20); 
+    board.insert(3, 10, 10, 3, 30); 
+ 
+    unordered_set<Box> returnedSetOfBoxes{};
+    for (const Box& box : board.getCopyOfBoxes())
+    { 
+       returnedSetOfBoxes.insert(box); 
+    }
+
+    REQUIRE(sameBoxes == returnedSetOfBoxes);
+     
 }

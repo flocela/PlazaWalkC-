@@ -1,6 +1,9 @@
 #ifndef BOX__H
 #define BOX__H
 
+#include <bitset>
+#include <utility>
+
 class Box{
 
 public:
@@ -22,13 +25,43 @@ public:
     void setHeight(int height);
     void setWidth(int width);
 
+    bool operator== (const Box& o) const;
+
 private:
     int _id = 0;
-    int _height = 0;
-    int _width  = 0;
-    int _xPos   = 0;
+    int _height = 0; // make this const
+    int _width  = 0;// make this const
+    int _xPos   = 0; 
     int _yPos   = 0;    
 
 };
+
+namespace std
+{
+    template<>
+    struct hash<Box>
+    {
+        size_t operator()(const Box& b) const
+        {
+            return (
+                     ( 
+                       ( 
+                         (
+                           ( 
+                             ( 
+                               ( 
+                                 ( 
+                                 hash<int>()(b.getId()) ^ ( hash<int>()(b.getHeight()) << 1)
+                                 ) >> 1 
+                               ) ^ (hash<int>()(b.getWidth()) << 1)
+                             ) >> 1
+                           ) ^ (hash<int>()(b.getHeight()) << 1)
+                         ) >> 1
+                       ) ^ (hash<int>()(b.getX()) << 1)
+                     ) >> 1
+                   ) ^ (hash<int>()(b.getY()) << 1);
+        }
+    };
+}
 
 #endif

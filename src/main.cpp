@@ -28,11 +28,13 @@
  *
  */
 
+#include <chrono>
 #include <stdio.h>
 #include <stdbool.h>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
+#include <thread>
 #include <vector>
 
 #include "Board.h"
@@ -50,7 +52,7 @@
 using namespace std;
 
 void printBoard(Board& board, SDL_Renderer* renderer, SDL_Rect* rect0, SDL_Rect* rect1)
-{
+{   
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
     
@@ -70,6 +72,7 @@ void printBoard(Board& board, SDL_Renderer* renderer, SDL_Rect* rect0, SDL_Rect*
     
     // Update screen
     SDL_RenderPresent(renderer);
+    cout << "inside PrintBoard" << endl;
 
 }
 
@@ -129,7 +132,6 @@ int main(int argc, char* argv[])
             rect0.h = 10;
             rect1.h = 10;
 
-            
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
           
             Board board{100, 100};
@@ -137,13 +139,17 @@ int main(int argc, char* argv[])
             board.insert(1, 10, 10, 10, 40); // box one is going up
 
             printBoard(board, renderer, &rect0, &rect1); 
-          
+            cout << "print 1" << endl;
+            this_thread::sleep_for(5000ms); 
+                      
             vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
             vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
             board.move(0, zeroPotentialPositions);
             board.move(1, onePotentialPositions);
              
             printBoard(board, renderer, &rect0, &rect1); 
+            this_thread::sleep_for(2000ms); 
+            cout << "print 2" << endl;
 
             zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
             onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
@@ -151,6 +157,8 @@ int main(int argc, char* argv[])
             board.move(1, onePotentialPositions);
             
             printBoard(board, renderer, &rect0, &rect1); 
+            this_thread::sleep_for(2000ms); 
+            cout << "print 3" << endl;
 
             zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
             onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
@@ -158,13 +166,15 @@ int main(int argc, char* argv[])
             board.move(1, onePotentialPositions);
 
             printBoard(board, renderer, &rect0, &rect1);
+            this_thread::sleep_for(2000ms); 
+            cout << "print 4" << endl;
 
             // Event loop exit flag
             bool quit = false;
 
             // Event loop
             while(!quit)
-            {
+            {   cout << "inside while loop " << endl; 
                 SDL_Event e;
 
                 // Wait indefinitely for the next available event
@@ -176,7 +186,7 @@ int main(int argc, char* argv[])
                     quit = true;
                 }
             }
-
+            cout << "about to destroy renderer" << endl;
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
         }

@@ -38,4 +38,53 @@ TEST_CASE("Box:: change width and height")
     REQUIRE(3 == box.getWidth());
 }
 
+TEST_CASE("Boxes with different ids are not equal '=='")
+{
+    Box boxA{0, 1, 2, 3, 4};
+    Box boxB{5, 1, 2, 3, 4};    
+    
+    REQUIRE_FALSE(boxA == boxB);
+}
+
+TEST_CASE("Boxes with different heights are not equal '=='")
+{
+    Box boxA{0, 1, 2, 3, 4};
+    Box boxB{0, 5, 2, 3, 4};    
+    
+    REQUIRE_FALSE(boxA == boxB);
+}
+
+TEST_CASE("Boxes with different widths are not equal '=='")
+{
+    Box boxA{0, 1, 2, 3, 4};
+    Box boxB{0, 1, 5, 3, 4};    
+    
+    REQUIRE_FALSE(boxA == boxB);
+}
+
+TEST_CASE("Boxes with different xPos are not equal '=='")
+{
+    Box boxA{0, 1, 2, 3, 4};
+    Box boxB{0, 1, 2, 5, 4};    
+    
+    REQUIRE_FALSE(boxA == boxB);
+}
+
+TEST_CASE("Boxes with different yPos are not equal '=='")
+{
+    Box boxA{0, 1, 2, 3, 4};
+    Box boxB{0, 1, 2, 3, 5};    
+    
+    REQUIRE_FALSE(boxA == boxB);
+}
+
+TEST_CASE("hash function should return the ")
+{
+    // TODO need a hash function test!!!
+}
+
+
+
+
+
 

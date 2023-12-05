@@ -34,6 +34,7 @@ Position Board::getLocation(int boxId) const
 }
 
 // TODO this may insert a box on top of another box.
+// TODO this may insert a box off of the board. xPos or yPos is less or greater than grid width
 void Board::insert(int boxId, int height, int width, int xPos, int yPos)
 {
     _boxesPerId.insert({boxId, make_unique<Box>(boxId, height, width, xPos, yPos)});
@@ -53,4 +54,15 @@ void Board::move(int boxId, vector<Position> positions)
             break;
         }
     }
+}
+
+vector<Box> Board::getCopyOfBoxes () const
+{
+    vector<Box> copy{};
+    for (const auto& b : _boxesPerId)
+    {
+        copy.push_back(*(b.second.get()));
+    }
+    
+    return copy;   
 }
