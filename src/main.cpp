@@ -1,43 +1,11 @@
-/*
- * Copyright (c) 2018, 2019 Amine Ben Hassouna <amine.benhassouna@gmail.com>
- * All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any
- * person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the
- * Software without restriction, including without
- * limitation the rights to use, copy, modify, merge,
- * publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software
- * is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice
- * shall be included in all copies or substantial portions
- * of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
- * ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
- * SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
- * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- *
- */
-
 #include <chrono>
+#include <iostream>
+#include <thread>
 #include <stdio.h>
 #include <stdbool.h>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include <thread>
-#include <vector>
-
-#include "Board.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -48,34 +16,7 @@
 #define SCREEN_HEIGHT   600
 
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
-
 using namespace std;
-
-void printBoard(Board& board, SDL_Renderer* renderer, SDL_Rect* rect0, SDL_Rect* rect1)
-{   
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderClear(renderer);
-    
-    Position zeroPosition = board.getLocation(0);
-    Position onePosition = board.getLocation(1);
-
-    rect0->x = zeroPosition.getX();
-    rect0->y = zeroPosition.getY();
-    rect1->x = onePosition.getX();
-    rect1->y = onePosition.getY();
-
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-
-    // Draw filled square
-    SDL_RenderFillRect(renderer, rect0);
-    SDL_RenderFillRect(renderer, rect1);
-    
-    // Update screen
-    SDL_RenderPresent(renderer);
-    cout << "inside PrintBoard" << endl;
-
-}
-
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -123,70 +64,93 @@ int main(int argc, char* argv[])
                    "SDL_Error: %s\n", SDL_GetError());
         }
         else
-        {   
-            SDL_Rect rect0;
-            SDL_Rect rect1;
+        {
+            // Declare rect of square
+            SDL_Rect squareRect;
 
-            rect0.w = 10;
-            rect1.w = 10;
-            rect0.h = 10;
-            rect1.h = 10;
+            // Square dimensions: Half of the min(SCREEN_WIDTH, SCREEN_HEIGHT)
+            squareRect.w = 10;
+            squareRect.h = 20;
 
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-          
-            Board board{100, 100};
-            board.insert(0, 10, 10, 10, 0); // box zero is going down
-            board.insert(1, 10, 10, 10, 40); // box one is going up
+            // Square position: In the middle of the screen
+            squareRect.x = 0;
+            squareRect.y = 0;
 
-            printBoard(board, renderer, &rect0, &rect1); 
-            cout << "print 1" << endl;
-            this_thread::sleep_for(5000ms); 
-                      
-            vector<Position> zeroPotentialPositions{Position{10, 10}, Position{20, 10}, Position{0, 10}}; 
-            vector<Position> onePotentialPositions{Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
-            board.move(0, zeroPotentialPositions);
-            board.move(1, onePotentialPositions);
-             
-            printBoard(board, renderer, &rect0, &rect1); 
-            this_thread::sleep_for(2000ms); 
-            cout << "print 2" << endl;
+            TTF_Font *font = TTF_OpenFont(FONT_PATH, 40);
+            if(!font) {
+                printf("Unable to load font: '%s'!\n"
+                       "SDL2_ttf Error: %s\n", FONT_PATH, TTF_GetError());
+                return 0;
+            }
 
-            zeroPotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-            onePotentialPositions = {Position{10, 20}, Position{20, 20}, Position{0, 20}}; 
-            board.move(0, zeroPotentialPositions);
-            board.move(1, onePotentialPositions);
-            
-            printBoard(board, renderer, &rect0, &rect1); 
-            this_thread::sleep_for(2000ms); 
-            cout << "print 3" << endl;
+            SDL_Color textColor           = { 0x00, 0x00, 0x00, 0xFF };
+            SDL_Color textBackgroundColor = { 0xFF, 0xFF, 0xFF, 0xFF };
+            SDL_Texture *text = NULL;
+            SDL_Rect textRect;
 
-            zeroPotentialPositions = {Position{10, 30}, Position{20, 30}, Position{0, 30}}; 
-            onePotentialPositions = {Position{20, 10}, Position{0, 10}, Position{30, 10}}; 
-            board.move(0, zeroPotentialPositions);
-            board.move(1, onePotentialPositions);
+            SDL_Surface *textSurface = TTF_RenderText_Shaded(font, "Red square", textColor, textBackgroundColor);
+            if(!textSurface) {
+                printf("Unable to render text surface!\n"
+                       "SDL2_ttf Error: %s\n", TTF_GetError());
+            } else {
+                // Create texture from surface pixels
+                text = SDL_CreateTextureFromSurface(renderer, textSurface);
+                if(!text) {
+                    printf("Unable to create texture from rendered text!\n"
+                           "SDL2 Error: %s\n", SDL_GetError());
+                    return 0;
+                }
 
-            printBoard(board, renderer, &rect0, &rect1);
-            this_thread::sleep_for(2000ms); 
-            cout << "print 4" << endl;
+                // Get text dimensions
+                textRect.w = textSurface->w;
+                textRect.h = textSurface->h;
+
+                SDL_FreeSurface(textSurface);
+            }
+
+            textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
+            textRect.y = squareRect.y - textRect.h - 10;
 
             // Event loop exit flag
-            bool quit = false;
+            bool running  = true;
 
             // Event loop
-            while(!quit)
-            {   cout << "inside while loop " << endl; 
+            while(running)
+            {
                 SDL_Event e;
 
-                // Wait indefinitely for the next available event
-                SDL_WaitEvent(&e);
+                // Initialize renderer color white for the background
+                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
-                // User requests quit
-                if(e.type == SDL_QUIT)
+                // Clear screen
+                SDL_RenderClear(renderer);
+
+                squareRect.x += 10;
+                squareRect.y += 10;
+                
+                // Set renderer color red to draw the square
+                SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+
+                // Draw filled square
+                SDL_RenderFillRect(renderer, &squareRect);
+
+                // Update screen
+                SDL_RenderPresent(renderer);
+
+                if (SDL_PollEvent(&e) != 0)
                 {
-                    quit = true;
+                    switch (e.type)
+                    {
+                        case SDL_QUIT:
+                            running = false;
+                            break; 
+                    }
                 }
+           
+                SDL_Delay(500); 
+                SDL_RenderPresent(renderer);
             }
-            cout << "about to destroy renderer" << endl;
+
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
         }
