@@ -72,44 +72,9 @@ int main(int argc, char* argv[])
             squareRect.w = 10;
             squareRect.h = 20;
 
-            // Square position: In the middle of the screen
+            // Square position: Top left corner
             squareRect.x = 0;
             squareRect.y = 0;
-
-            TTF_Font *font = TTF_OpenFont(FONT_PATH, 40);
-            if(!font) {
-                printf("Unable to load font: '%s'!\n"
-                       "SDL2_ttf Error: %s\n", FONT_PATH, TTF_GetError());
-                return 0;
-            }
-
-            SDL_Color textColor           = { 0x00, 0x00, 0x00, 0xFF };
-            SDL_Color textBackgroundColor = { 0xFF, 0xFF, 0xFF, 0xFF };
-            SDL_Texture *text = NULL;
-            SDL_Rect textRect;
-
-            SDL_Surface *textSurface = TTF_RenderText_Shaded(font, "Red square", textColor, textBackgroundColor);
-            if(!textSurface) {
-                printf("Unable to render text surface!\n"
-                       "SDL2_ttf Error: %s\n", TTF_GetError());
-            } else {
-                // Create texture from surface pixels
-                text = SDL_CreateTextureFromSurface(renderer, textSurface);
-                if(!text) {
-                    printf("Unable to create texture from rendered text!\n"
-                           "SDL2 Error: %s\n", SDL_GetError());
-                    return 0;
-                }
-
-                // Get text dimensions
-                textRect.w = textSurface->w;
-                textRect.h = textSurface->h;
-
-                SDL_FreeSurface(textSurface);
-            }
-
-            textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
-            textRect.y = squareRect.y - textRect.h - 10;
 
             // Event loop exit flag
             bool running  = true;
@@ -133,9 +98,6 @@ int main(int argc, char* argv[])
 
                 // Draw filled square
                 SDL_RenderFillRect(renderer, &squareRect);
-
-                // Update screen
-                SDL_RenderPresent(renderer);
 
                 if (SDL_PollEvent(&e) != 0)
                 {
