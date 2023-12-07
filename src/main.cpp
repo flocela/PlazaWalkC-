@@ -23,10 +23,22 @@
 
 using namespace std;
 
+void moveUp(Board* board, int boxId)
+{   
+    int count = 500;
+    while (count > 0)
+    {   this_thread::sleep_for(20ms);
+        Position pos = board->getLocation(boxId);
+        vector<Position> positions{{pos.getX(), (pos.getY() - 1)}};
+        board->move(boxId, positions);
+        --count;
+    }
+}
+
+
 void updateSquares(Board& board, SDL_Renderer* renderer)
-{   cout << "inside updateSquares." << endl;
+{   
     vector<Box> boxes = board.getCopyOfBoxes();
-   
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
     
     for (const Box& box : boxes)
@@ -95,8 +107,11 @@ int main(int argc, char* argv[])
         else
         {
             Board board{600, 600};
-            board.insert(0, 10, 10, 5, 5);
+            board.insert(0, 10, 10, 5, 599);
             board.insert(1, 10, 10, 50, 50);
+
+            thread t0(moveUp, &board, 0);
+
             // Event loop exit flag
             bool running  = true;
 
@@ -109,8 +124,8 @@ int main(int argc, char* argv[])
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
                 SDL_RenderClear(renderer);
 
-                vector<Position> positions0{{(1 + board.getLocation(0).getY()), board.getLocation(0).getX()}};
-                board.move(0, positions0);
+                vector<Position> positions1{{(1 + board.getLocation(1).getX()), board.getLocation(1).getY()}};
+                board.move(1, positions1);
 
                 // Set renderer color red to draw the square
                 SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
@@ -129,8 +144,10 @@ int main(int argc, char* argv[])
                     }
                 }
            
-                SDL_Delay(500); 
+                SDL_Delay(20); 
             }
+
+            t0.join();
 
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
