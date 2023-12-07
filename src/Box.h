@@ -7,7 +7,7 @@
 class Box{
 
 public:
-    Box(int id, int height, int width, int xPos, int yPos);
+    Box(int id, int width, int height, int xPos, int yPos);
     Box() = delete;
     Box(const Box& o) = default;
     Box(Box&& o) noexcept = default;
@@ -18,8 +18,8 @@ public:
     int getId() const;    
     int getX() const;
     int getY() const;
-    int getHeight() const;
     int getWidth() const;
+    int getHeight() const;
     void setX(int xPos);
     void setY(int yPos);
     void setHeight(int height);
@@ -29,8 +29,8 @@ public:
 
 private:
     int _id = 0;
-    int _height = 0; // make this const
     int _width  = 0;// make this const
+    int _height = 0; // make this const
     int _xPos   = 0; 
     int _yPos   = 0;    
 
@@ -42,19 +42,14 @@ namespace std
     struct hash<Box>
     {
         size_t operator()(const Box& b) const
-        {
-            return (
-                     ( 
+        {   return (
+                     (
                        ( 
-                         (
+                         ( 
                            ( 
                              ( 
-                               ( 
-                                 ( 
-                                 hash<int>()(b.getId()) ^ ( hash<int>()(b.getHeight()) << 1)
-                                 ) >> 1 
-                               ) ^ (hash<int>()(b.getWidth()) << 1)
-                             ) >> 1
+                             hash<int>()(b.getId()) ^ ( hash<int>()(b.getWidth()) << 1)
+                             ) >> 1 
                            ) ^ (hash<int>()(b.getHeight()) << 1)
                          ) >> 1
                        ) ^ (hash<int>()(b.getX()) << 1)

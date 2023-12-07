@@ -2,30 +2,30 @@
 
 using namespace std;
 
-Board::Board(int height, int width)
-:   _height{height},
-    _width{width},
+Board::Board(int width, int height)
+:   _width{width},
+    _height{height},
     _boxIdsOnBoard(height, vector<int>(width, -1))
 {}
-
-int Board::getHeight() const
-{
-    return _height;
-}
 
 int Board::getWidth() const
 {
     return _width;
 }
 
-void Board::setHeight(int height)
+int Board::getHeight() const
 {
-    _height = height;
+    return _height;
 }
 
 void Board::setWidth(int width)
 {
     _width = width;
+}
+
+void Board::setHeight(int height)
+{
+    _height = height;
 }
 
 Position Board::getLocation(int boxId) const

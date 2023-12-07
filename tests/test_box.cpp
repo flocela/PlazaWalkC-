@@ -26,7 +26,7 @@ TEST_CASE("Box:: change x and y positions")
 
 TEST_CASE("Box:: change width and height")
 {
-    Box box{0, 7, 8, 8, 9};
+    Box box{0, 8, 7, 8, 9};
 
     REQUIRE(7 == box.getHeight());
     REQUIRE(8 == box.getWidth());

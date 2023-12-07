@@ -2,10 +2,10 @@
 
 using namespace std;
 
-Box::Box (int id, int height, int width, int xPos, int yPos)
+Box::Box (int id, int width, int height, int xPos, int yPos)
 :   _id{id},
-    _height{height},
     _width{width},
+    _height{height},
     _xPos{xPos},
     _yPos{yPos}
     
@@ -14,8 +14,8 @@ Box::Box (int id, int height, int width, int xPos, int yPos)
 bool Box::operator== (const Box& o) const
 {
     return  _id == o._id &&
-            _height == o._height &&
             _width == o._width &&
+            _height == o._height &&
             _xPos  == o._xPos &&
             _yPos  == o._yPos;
 }

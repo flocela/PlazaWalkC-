@@ -12,7 +12,7 @@
 class Board
 {
 public:
-    Board(int height, int width);
+    Board(int width, int height);
     Board(const Board& board) = default;
     Board(Board&& o) noexcept = default;
     Board& operator=(const Board& board);
@@ -21,10 +21,10 @@ public:
 
     void insert(int boxId, int height, int width, int xPos, int yPos);
 
-    int getHeight() const;
     int getWidth() const;
-    void setHeight(int height);
+    int getHeight() const;
     void setWidth(int width);
+    void setHeight(int height);
 
     Position getLocation(int boxId) const;
 
@@ -33,8 +33,8 @@ public:
     std::vector<Box> getCopyOfBoxes () const;
 
 private:
-    int _height;
     int _width;
+    int _height;
     std::unordered_map<int, std::unique_ptr<Box>> _boxesPerId;
     std::vector<std::vector<int>> _boxIdsOnBoard;
 

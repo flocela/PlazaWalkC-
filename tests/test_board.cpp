@@ -8,7 +8,7 @@ using namespace std;
 
 TEST_CASE("setHeight(int height) and setWidth(int width) set the Board's dimensions. getHeight() and getWidth() return the Board's dimensions")
 {
-    Board board{10, 20};
+    Board board{20, 10};
     REQUIRE(board.getHeight() == 10);
     REQUIRE(board.getWidth() == 20); 
     
