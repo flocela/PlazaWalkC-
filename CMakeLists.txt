@@ -87,6 +87,7 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 file(GLOB test_SRCS tests/*.cpp
 src/Box.cpp
+src/BoxNote.cpp
 src/Board.cpp
 src/HelloWorld.cpp
 src/Position.cpp

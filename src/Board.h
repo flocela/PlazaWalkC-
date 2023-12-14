@@ -8,6 +8,7 @@
 
 #include "Box.h"
 #include "Position.h"
+#include <mutex>
 
 class Board
 {
@@ -35,9 +36,16 @@ public:
 private:
     int _width;
     int _height;
+
+    // _boxesPerId helps find the location of a box on the board quickly
+    // by getting the location from the box, which is easy to find using this 
+    // map and seeing if it matches the box's location in _boxIdsOnBoard.
     std::unordered_map<int, std::unique_ptr<Box>> _boxesPerId;
+    
+    // _boxIdsOnBoard is the official location of the boxes on the board.
     std::vector<std::vector<int>> _boxIdsOnBoard;
 
+    void move(int boxId, Position pos);
     
 };
 

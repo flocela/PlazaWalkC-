@@ -28,6 +28,7 @@ void Board::setHeight(int height)
     _height = height;
 }
 
+
 Position Board::getLocation(int boxId) const
 {
     return Position{_boxesPerId.at(boxId)->getX(), _boxesPerId.at(boxId)->getY()}; 
@@ -65,4 +66,10 @@ vector<Box> Board::getCopyOfBoxes () const
     }
     
     return copy;   
+}
+
+void Board::move(int boxId, Position pos)
+{
+    (void)boxId;
+    (void)pos;
 }

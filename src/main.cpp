@@ -10,6 +10,7 @@
 
 #include "Board.h"
 #include "Box.h"
+#include "Printer.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -112,28 +113,21 @@ int main(int argc, char* argv[])
 
             thread t0(moveUp, &board, 0);
 
+            Printer printer{};
+
             // Event loop exit flag
             bool running  = true;
 
             // Event loop
             while(running)
             {
-                SDL_Event e;
-
-                // Clear screen
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-                SDL_RenderClear(renderer);
-
+                // Print Screen
                 vector<Position> positions1{{(1 + board.getLocation(1).getX()), board.getLocation(1).getY()}};
                 board.move(1, positions1);
 
-                // Set renderer color red to draw the square
-                SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
+                printer.print(renderer, board.getCopyOfBoxes());
 
-                updateSquares(board, renderer);
-
-                SDL_RenderPresent(renderer);
-
+                SDL_Event e;
                 if (SDL_PollEvent(&e) != 0)
                 {
                     switch (e.type)
