@@ -1,6 +1,8 @@
 #ifndef BOARDNOTE__H
 #define BOARDNOTE__H
 
+#include "Position.h"
+
 class BoardNote
 {
 
@@ -16,10 +18,23 @@ public:
     int getType() const;
     int getBoxId() const;
 
+    bool operator== (const BoardNote& o) const;
+
 private:
     const int _type;
     const int _boxId;
 
 };
+
+namespace std
+{
+    template<>
+    struct hash<BoardNote>
+    {
+        size_t operator()(const BoardNote& b) const
+        {   return  (hash<int>()(b.getType()) ^ (hash<int>()(b.getBoxId()) << 1));
+        }
+    };
+}
 
 #endif

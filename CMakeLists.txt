@@ -92,6 +92,7 @@ src/BoxNote.cpp
 src/Board.cpp
 src/HelloWorld.cpp
 src/Position.cpp
+src/Spot.cpp
 )
 
 add_executable(RunTests ${test_SRCS})
