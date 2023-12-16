@@ -2,13 +2,12 @@
 #define BOARD__H
 
 #include <memory>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "Box.h"
 #include "Position.h"
-#include <mutex>
+#include "Spot.h"
 
 class Board
 {
@@ -20,33 +19,19 @@ public:
     Board& operator=(Board&& o) noexcept = default;
     ~Board() noexcept = default;
 
-    void insert(int boxId, int height, int width, int xPos, int yPos);
-
     int getWidth() const;
     int getHeight() const;
-    void setWidth(int width);
-    void setHeight(int height);
 
-    Position getLocation(int boxId) const;
+    void addNote(Position position, BoardNote boardNote);
 
-    void move(int boxId, std::vector<Position> positions);
-    
-    std::vector<Box> getCopyOfBoxes () const;
+    // returns unordered_map of BoardNotes per boxId.
+    std::unordered_map<int, BoardNote> getNotes(Position position) const;
 
 private:
     int _width;
     int _height;
-
-    // _boxesPerId helps find the location of a box on the board quickly
-    // by getting the location from the box, which is easy to find using this 
-    // map and seeing if it matches the box's location in _boxIdsOnBoard.
-    std::unordered_map<int, std::unique_ptr<Box>> _boxesPerId;
-    
-    // _boxIdsOnBoard is the official location of the boxes on the board.
-    std::vector<std::vector<int>> _boxIdsOnBoard;
-
-    void move(int boxId, Position pos);
-    
+    std::vector<std::vector<Spot>> _spots;   
+     
 };
 
 #endif

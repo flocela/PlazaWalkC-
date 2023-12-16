@@ -2,22 +2,17 @@
 
 using namespace std;
 
-Box::Box (int id, int width, int height, int xPos, int yPos)
+Box::Box (int id, int width, int height)
 :   _id{id},
     _width{width},
-    _height{height},
-    _xPos{xPos},
-    _yPos{yPos}
-    
+    _height{height}
 {}
 // TODO need a test for == operator that makes sure that each attribute is in the return statement list.
 bool Box::operator== (const Box& o) const
 {
     return  _id == o._id &&
             _width == o._width &&
-            _height == o._height &&
-            _xPos  == o._xPos &&
-            _yPos  == o._yPos;
+            _height == o._height;
 }
 
 int Box::getId() const
@@ -27,22 +22,12 @@ int Box::getId() const
 
 int Box::getX() const
 {
-    return _xPos;
+    return 1;
 }
 
 int Box::getY() const
 {
-    return _yPos;
-}
-
-void Box::setX(int xPos)
-{   
-    _xPos = xPos;
-}
-
-void Box::setY(int yPos)
-{   
-    _yPos = yPos;
+    return 1;
 }
 
 int Box::getHeight() const
@@ -64,3 +49,21 @@ void Box::setWidth(int width)
 {
     _width = width;
 }
+
+void Box::addNote(BoxNote note)
+{
+    _notes.push_back(note);
+}
+
+vector<BoxNote> Box::getAllNotes() const
+{
+   return _notes; 
+}
+
+vector<BoxNote> Box::getLastNotes(int count) const
+{
+    auto start = next(_notes.begin(), (_notes.size()-count));
+    vector<BoxNote> reduced(start, _notes.end());
+    return reduced; 
+}
+        

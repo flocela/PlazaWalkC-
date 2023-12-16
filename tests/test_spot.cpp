@@ -7,6 +7,8 @@ using namespace std;
 TEST_CASE("returns Position")
 {
     Position pos{3, 4};
+
+    // BoardNote{type, boxId}
     BoardNote note1{1, 1};
     BoardNote note2{1, 3};
     BoardNote note3{1, 1};
@@ -22,6 +24,8 @@ TEST_CASE("returns Position")
 TEST_CASE("returns notes that are in Spot, 3 arrivals")
 {
     Position pos{3, 4};
+
+    // BoardNote{type, boxId}
     BoardNote note1{1, 1};
     BoardNote note2{1, 2};
     BoardNote note3{1, 3};

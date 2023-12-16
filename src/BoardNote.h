@@ -26,6 +26,7 @@ private:
 
 };
 
+// TODO find out how to call a hash function and how to test it.
 namespace std
 {
     template<>

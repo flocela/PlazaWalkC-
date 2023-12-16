@@ -3,116 +3,50 @@
 
 #include <memory>
 #include <unordered_set>
-
+#include <iostream>
 using namespace std;
 
-TEST_CASE("setHeight(int height) and setWidth(int width) set the Board's dimensions. getHeight() and getWidth() return the Board's dimensions")
+TEST_CASE("getHeight() and getWidth() return the Board's dimensions")
 {
     Board board{20, 10};
     REQUIRE(board.getHeight() == 10);
     REQUIRE(board.getWidth() == 20); 
-    
-    board.setHeight(5);    
-    board.setWidth(15);
-
-    REQUIRE(board.getHeight() == 5);
-    REQUIRE(board.getWidth() == 15); 
 }
 
-TEST_CASE("getLocation(int boxId) returns the location of the given box id.")
-{
-    
-    Board board{100, 100};
-    board.insert(0, 10, 10, 5, 20);
-    
-    Position location = board.getLocation(0);
-   
-    REQUIRE(location == Position(5, 20)); 
-}
-
-TEST_CASE("If move(int boxId, vector<Positions> positions) is called and the first position is open, then the box moves to the first position in positions vector")
-{
-    Board board{100, 100};
-    board.insert(0, 10, 10, 5, 20);
-  
-    vector<Position> potentialPositions{Position{6, 20}, Position{4, 20}, Position{6, 21}}; 
-     
-    board.move(0, potentialPositions);
-   
-    Position location = board.getLocation(0);
-    cout << "[6, 20]: " << location << endl;
-    REQUIRE(location == Position(6, 20));
-}
-
-TEST_CASE("If move(int boxId, vector<Positions> positions) is called and the first position is taken, then the box moves to the second position in positions vector.")
+TEST_CASE("addNotes to board and get them out. 3 arrivals")
 {   
-    Board board{100, 100};
-    board.insert(0, 10, 10, 5, 20);
-    board.insert(1, 10, 10, 6, 20); // box 0 can not move to where box 1 is.
-    // box 0 must move to its second position.
-  
-    vector<Position> potentialPositions{Position{6, 20}, Position{4, 20}, Position{6, 21}}; 
-     
-    board.move(0, potentialPositions);
-   
-    Position location = board.getLocation(0);
-    REQUIRE(location == Position(4, 20));
+    // BoardNote(int type, int boxId)
+    BoardNote note1{1, 11};
+    BoardNote note2{1, 12};
+    BoardNote note3{1, 13};
+    Board board{20, 10};
+    
+    board.addNote(Position{1,1}, note1);
+    board.addNote(Position{1,1}, note2);
+    board.addNote(Position{1,1}, note3);
+
+    unordered_map<int, BoardNote> expectedNotes{};
+    expectedNotes.insert({11, note1}); 
+    expectedNotes.insert({12, note2}); 
+    expectedNotes.insert({13, note3}); 
+
+    REQUIRE( expectedNotes ==  board.getNotes(Position{1,1}) );
 }
 
-// both the first and second possible positions are taken
-TEST_CASE("If move(int boxId, vector<Positions> positions) is called and the first two positions are taken, then the box moves to the last position in positions vector.")
+TEST_CASE("addNotes to board and get them out. 2 arrivals and 1 departure")
 {   
-    Board board{100, 100};
-    board.insert(0, 10, 10, 5, 20);
-    board.insert(1, 10, 10, 6, 20); // box 0 can not move to where box 1 is.
-    board.insert(2, 10, 10, 4, 20); // box 0 can not move to where box 2 is.
-  
-    vector<Position> potentialPositions{Position{6, 20}, Position{4, 20}, Position{6, 21}}; 
-     
-    board.move(0, potentialPositions);
-   
-    Position location = board.getLocation(0);
-    REQUIRE(location == Position(6, 21));
-}
+    // BoardNote(int type, int boxId)
+    BoardNote note1{1, 11};
+    BoardNote note2{1, 12};
+    BoardNote note3{2, 11};
+    Board board{20, 10};
+    
+    board.addNote(Position{1,1}, note1);
+    board.addNote(Position{1,1}, note2);
+    board.addNote(Position{1,1}, note3);
 
-// all the positions in the potentialPositions vector have been taken by other boxes.
-TEST_CASE("If move(int boxId, vector<Positions> positions) is called and all the positions are taken, then the box does not move.")
-{   
-    Board board{100, 100};
-    board.insert(0, 10, 10, 5, 20);
-    board.insert(1, 10, 10, 6, 20); // box 0 can not move to where box 1 is.
-    board.insert(2, 10, 10, 4, 20); // box 0 can not move to where box 2 is.
-    board.insert(3, 10, 10, 6, 21); // box 0 can not move to where box 3 is.
-  
-    vector<Position> potentialPositions{Position{6, 20}, Position{4, 20}, Position{6, 21}}; 
-     
-    board.move(0, potentialPositions);
-   
-    Position location = board.getLocation(0);
-    REQUIRE(location == Position(5, 20)); // this is Box 0's original position
-}
+    unordered_map<int, BoardNote> expectedNotes{};
+    expectedNotes.insert({12, note2}); 
 
-TEST_CASE("getCopyOfBoxes() returns a copy of the boxes in the Board")
-{
-    // These are the same boxes as the boxes that are put in the board.
-    unordered_set<Box> sameBoxes{};
-    sameBoxes.insert(Box{0, 10, 10, 5, 5});
-    sameBoxes.insert(Box{1, 10, 10, 1, 10});
-    sameBoxes.insert(Box{2, 10, 10, 2, 20});
-    sameBoxes.insert(Box{3, 10, 10, 3, 30});
-  
-    Board board{100, 100};
-    board.insert(0, 10, 10, 5, 5);
-    board.insert(1, 10, 10, 1, 10); 
-    board.insert(2, 10, 10, 2, 20); 
-    board.insert(3, 10, 10, 3, 30); 
- 
-    unordered_set<Box> returnedSetOfBoxes{};
-    for (const Box& box : board.getCopyOfBoxes())
-    { 
-       returnedSetOfBoxes.insert(box); 
-    }
-
-    REQUIRE(sameBoxes == returnedSetOfBoxes);
-     
+    REQUIRE( expectedNotes ==  board.getNotes(Position{1,1}) );
 }

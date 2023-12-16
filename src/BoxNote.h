@@ -17,7 +17,8 @@ public:
     int getType() const;
     Position getToPosition() const;
     Position getFromPosition() const; 
-    
+    bool operator== (const BoxNote& o) const;
+ 
 private:
     const int _type = 0;
     const Position _toPosition;

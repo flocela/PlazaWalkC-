@@ -2,12 +2,15 @@
 #define BOX__H
 
 #include <bitset>
+#include <vector>
 #include <utility>
+
+#include "BoxNote.h"
 
 class Box{
 
 public:
-    Box(int id, int width, int height, int xPos, int yPos);
+    Box(int id, int width, int height);
     Box() = delete;
     Box(const Box& o) = default;
     Box(Box&& o) noexcept = default;
@@ -20,19 +23,22 @@ public:
     int getY() const;
     int getWidth() const;
     int getHeight() const;
-    void setX(int xPos);
-    void setY(int yPos);
     void setHeight(int height);
     void setWidth(int width);
 
+    void addNote(BoxNote note);
+
+    std::vector<BoxNote> getAllNotes() const;
+    std::vector<BoxNote> getLastNotes(int count) const;
+    
     bool operator== (const Box& o) const;
 
 private:
     int _id = 0;
-    int _width  = 0;// make this const
+    int _width  = 0; // make this const
     int _height = 0; // make this const
-    int _xPos   = 0; 
-    int _yPos   = 0;    
+    std::vector<BoxNote> _notes{};
+    
 
 };
 
@@ -43,18 +49,13 @@ namespace std
     {
         size_t operator()(const Box& b) const
         {   return (
-                     (
+                     ( 
                        ( 
                          ( 
-                           ( 
-                             ( 
-                             hash<int>()(b.getId()) ^ ( hash<int>()(b.getWidth()) << 1)
-                             ) >> 1 
-                           ) ^ (hash<int>()(b.getHeight()) << 1)
-                         ) >> 1
-                       ) ^ (hash<int>()(b.getX()) << 1)
-                     ) >> 1
-                   ) ^ (hash<int>()(b.getY()) << 1);
+                         hash<int>()(b.getId()) ^ ( hash<int>()(b.getWidth()) << 1)
+                         ) >> 1 
+                       ) ^ (hash<int>()(b.getHeight()) << 1)
+                     ) >> 1);
         }
     };
 }

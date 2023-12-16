@@ -24,41 +24,6 @@
 
 using namespace std;
 
-void moveUp(Board* board, int boxId)
-{   
-    int count = 500;
-    while (count > 0)
-    {   this_thread::sleep_for(20ms);
-        Position pos = board->getLocation(boxId);
-        vector<Position> positions{{pos.getX(), (pos.getY() - 1)}};
-        board->move(boxId, positions);
-        --count;
-    }
-}
-
-
-void updateSquares(Board& board, SDL_Renderer* renderer)
-{   
-    vector<Box> boxes = board.getCopyOfBoxes();
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-    
-    for (const Box& box : boxes)
-    {
-        SDL_Rect squareRect;
-
-        // Square dimensions: Half of the min(SCREEN_WIDTH, SCREEN_HEIGHT)
-        squareRect.w = 10;
-        squareRect.h = 10;
-
-        // Square position: Top left corner
-        squareRect.x = box.getX();
-        squareRect.y = box.getY();
-        
-        SDL_RenderFillRect(renderer, &squareRect);
-    }
- 
-}
-
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -107,11 +72,13 @@ int main(int argc, char* argv[])
         }
         else
         {
+            // Create Board
             Board board{600, 600};
-            board.insert(0, 10, 10, 5, 599);
-            board.insert(1, 10, 10, 50, 50);
 
-            thread t0(moveUp, &board, 0);
+            // Create Boxes
+            vector<Box> boxes{};
+            boxes.push_back(Box(0, 10, 10));
+            boxes.push_back(Box(0, 10, 10));
 
             Printer printer{};
 
@@ -121,11 +88,8 @@ int main(int argc, char* argv[])
             // Event loop
             while(running)
             {
-                // Print Screen
-                vector<Position> positions1{{(1 + board.getLocation(1).getX()), board.getLocation(1).getY()}};
-                board.move(1, positions1);
-
-                printer.print(renderer, board.getCopyOfBoxes());
+                // Print Screen // this should be a copy of boxes or take into account a time stamp.
+                printer.print(renderer, boxes);
 
                 SDL_Event e;
                 if (SDL_PollEvent(&e) != 0)
@@ -140,8 +104,6 @@ int main(int argc, char* argv[])
            
                 SDL_Delay(20); 
             }
-
-            t0.join();
 
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
