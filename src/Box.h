@@ -2,6 +2,8 @@
 #define BOX__H
 
 #include <bitset>
+#include <mutex>
+#include <shared_mutex>
 #include <vector>
 #include <utility>
 
@@ -12,19 +14,17 @@ class Box{
 public:
     Box(int id, int width, int height);
     Box() = delete;
-    Box(const Box& o) = default;
-    Box(Box&& o) noexcept = default;
-    Box& operator= (const Box& o) = default;
-    Box& operator= (Box&& o) noexcept = default;
+    Box(const Box& o) = delete;
+    Box(Box&& o) noexcept = delete;
+    Box& operator= (const Box& o) = delete;
+    Box& operator= (Box&& o) noexcept = delete;
     ~Box() noexcept = default;
 
     int getId() const;    
-    int getX() const;
-    int getY() const;
     int getWidth() const;
     int getHeight() const;
-    void setHeight(int height);
-    void setWidth(int width);
+
+    Position getPos(std::chrono::time_point<std::chrono::high_resolution_clock> cutOffTime) const;
 
     void addNote(BoxNote note);
 
@@ -39,7 +39,7 @@ private:
     int _height = 0; // make this const
     std::vector<BoxNote> _notes{};
     
-
+    mutable std::shared_mutex _mux;
 };
 
 namespace std

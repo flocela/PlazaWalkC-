@@ -24,6 +24,7 @@
 
 using namespace std;
 
+
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -76,9 +77,9 @@ int main(int argc, char* argv[])
             Board board{600, 600};
 
             // Create Boxes
-            vector<Box> boxes{};
-            boxes.push_back(Box(0, 10, 10));
-            boxes.push_back(Box(0, 10, 10));
+            vector<unique_ptr<Box>> boxes{};
+            boxes.push_back(make_unique<Box>(0, 10, 10));
+            boxes.push_back(make_unique<Box>(1, 10, 10));
 
             Printer printer{};
 

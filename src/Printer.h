@@ -12,7 +12,7 @@ class Printer
 
 public:
     
-    void print(SDL_Renderer* renderer, const std::vector<Box>& boxes);
+    void print(SDL_Renderer* renderer, const std::vector<std::unique_ptr<Box>>& boxes);
 
 private:
     

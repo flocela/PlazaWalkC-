@@ -2,15 +2,15 @@
 
 using namespace std;
 
-void Printer::print(SDL_Renderer* renderer, const std::vector<Box>& boxes)
+void Printer::print(SDL_Renderer* renderer, const std::vector<unique_ptr<Box>>& boxes)
 {
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
     
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
-
-    for (const Box& box : boxes)
-    {
+// TODO take out auto and type in type
+    for (const auto& box : boxes)
+    {   (void) box;
         // create square with width 10.
         SDL_Rect squareRect;
         squareRect.w = 10;
@@ -42,10 +42,11 @@ void Printer::print(SDL_Renderer* renderer, const std::vector<Box>& boxes)
         squareRect.x = position.getX();
         squareRect.y = position.getY();
 */
-
-        squareRect.x = box.getX();
-        squareRect.y = box.getY();
-        SDL_RenderFillRect(renderer, &squareRect);
+        
+        
+        //squareRect.x = box->getX();
+        //squareRect.y = box->getY();
+        //SDL_RenderFillRect(renderer, &squareRect);
     }
 
     SDL_RenderPresent(renderer);

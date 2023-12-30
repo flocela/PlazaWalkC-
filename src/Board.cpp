@@ -29,10 +29,12 @@ int Board::getHeight() const
 
 void Board::addNote(Position position, BoardNote boardNote)
 {
+    unique_lock lock(_mux); 
     _spots[position.getY()][position.getX()].tagNote(boardNote);
 }
 
 unordered_map<int, BoardNote> Board::getNotes(Position position) const
 {
+    shared_lock lock(_mux);
     return _spots[position.getY()][position.getX()].getNotes();
 }
