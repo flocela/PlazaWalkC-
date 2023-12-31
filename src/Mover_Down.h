@@ -7,7 +7,7 @@ class Mover_Down : public Mover
 {
 
 public:
-    std::vector<Position> getFuturePositions(const Box* box) = 0;
+    std::vector<Position> getFuturePositions(const Box& box) override;
 };
 
 #endif

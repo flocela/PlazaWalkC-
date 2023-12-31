@@ -17,7 +17,7 @@ protected:
 public:
     virtual ~Mover() noexcept = default;
     
-    virtual std::vector<Position> getFuturePositions(const Box* box) = 0;
+    virtual std::vector<Position> getFuturePositions(const Box& box) = 0;
 };
 
 #endif

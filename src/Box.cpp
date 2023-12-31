@@ -31,11 +31,13 @@ int Box::getWidth() const
 }
 
 Position Box::getPos(std::chrono::time_point<std::chrono::high_resolution_clock> cutOffTime) const
-{
+{ 
     vector<BoxNote> boxNotes = getLastNotes(8);
-    for(size_t ii=boxNotes.size()-1; ii >= 0; --ii)
+     
+    for(int ii=boxNotes.size()-1; ii >= 0; --ii)
     {
         BoxNote& boxNote = boxNotes[ii];
+        
         if (4 == boxNote.getType())
         {
             std::chrono::duration<float> duration = cutOffTime - boxNote.getTimePoint();
@@ -45,11 +47,11 @@ Position Box::getPos(std::chrono::time_point<std::chrono::high_resolution_clock>
             }
         }
     }
-
+    
     // cutOff not within the last 8 box notes, then check all the box notes.
     boxNotes = getAllNotes();
 
-    for(size_t ii=boxNotes.size()-1; ii >= 0; --ii)
+    for(int ii=boxNotes.size()-1; ii >= 0; --ii)
     {
         BoxNote& boxNote = boxNotes[ii];
         if (4 == boxNote.getType())
@@ -80,9 +82,8 @@ vector<BoxNote> Box::getAllNotes() const
 
 vector<BoxNote> Box::getLastNotes(int count) const
 {
-    shared_lock lock(_mux);
-    auto start = next(_notes.begin(), (_notes.size()-count));
-    vector<BoxNote> reduced(start, _notes.end());
-    return reduced; 
+    int beginningIndex = std::max((int)_notes.size() - count, 0);
+    vector<BoxNote> subSequence{_notes.begin() + beginningIndex, _notes.end()};
+    return subSequence;
 }
         
