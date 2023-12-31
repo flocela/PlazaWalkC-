@@ -91,6 +91,7 @@ src/Box.cpp
 src/BoxNote.cpp
 src/Board.cpp
 src/Mover_Down.cpp
+src/Mover_Up.cpp
 src/HelloWorld.cpp
 src/Position.cpp
 src/Spot.cpp
