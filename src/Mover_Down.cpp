@@ -8,8 +8,8 @@ vector<Position> Mover_Down::getFuturePositions(const Box& box)
     
     vector<Position> newPositions{
         Position{curPosition.getX(), curPosition.getY()+1},
-        Position{curPosition.getX()+1, curPosition.getY()+1},
-        Position{curPosition.getX()-1, curPosition.getY()+1}};
+        Position{curPosition.getX()-1, curPosition.getY()+1},
+        Position{curPosition.getX()+1, curPosition.getY()+1}};
 
     return newPositions;
 }    
