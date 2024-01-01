@@ -16,9 +16,9 @@ TEST_CASE("getHeight() and getWidth() return the Board's dimensions")
 TEST_CASE("addNotes to board and get them out. 3 arrivals")
 {   
     // BoardNote(int type, int boxId)
-    BoardNote note1{1, 11};
-    BoardNote note2{1, 12};
-    BoardNote note3{1, 13};
+    BoardNote note1{4, 11};
+    BoardNote note2{4, 12};
+    BoardNote note3{4, 13};
     Board board{20, 10};
     
     board.addNote(Position{1,1}, note1);
@@ -36,9 +36,9 @@ TEST_CASE("addNotes to board and get them out. 3 arrivals")
 TEST_CASE("addNotes to board and get them out. 2 arrivals and 1 departure")
 {   
     // BoardNote(int type, int boxId)
-    BoardNote note1{1, 11};
-    BoardNote note2{1, 12};
-    BoardNote note3{2, 11};
+    BoardNote note1{4, 11};
+    BoardNote note2{4, 12};
+    BoardNote note3{3, 11};
     Board board{20, 10};
     
     board.addNote(Position{1,1}, note1);

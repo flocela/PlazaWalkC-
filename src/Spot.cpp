@@ -15,7 +15,6 @@ unordered_map<int, BoardNote> Spot::getNotes() const
     return _notes;
 }
 
-// TODO what do I do if I get a type 2 before I get a type 1?
 void Spot::tagNote(BoardNote note)
 {
     unordered_map<int, BoardNote>::iterator it = _notes.find(note.getBoxId());
@@ -25,6 +24,14 @@ void Spot::tagNote(BoardNote note)
     }
     else
     {
-        _notes.erase(note.getBoxId());
+        if (note.getType() == 3)
+        {
+            _notes.erase(note.getBoxId());
+        }
+        else
+        {
+            _notes.erase(note.getBoxId());
+            _notes.insert({note.getBoxId(), note});
+        }
     }
 }

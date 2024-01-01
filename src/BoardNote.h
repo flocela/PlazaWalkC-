@@ -11,8 +11,8 @@ public:
     BoardNote() = delete;
     BoardNote(const BoardNote& o) = default;
     BoardNote(BoardNote&& o) noexcept = default;
-    BoardNote& operator=(const BoardNote& o) = delete;
-    BoardNote& operator=(BoardNote&& o) noexcept = delete;
+    BoardNote& operator=(const BoardNote& o) = default;
+    BoardNote& operator=(BoardNote&& o) noexcept = default;
     ~BoardNote() = default;
 
     int getType() const;
@@ -21,8 +21,8 @@ public:
     bool operator== (const BoardNote& o) const;
 
 private:
-    const int _type;
-    const int _boxId;
+    int _type;
+    int _boxId;
 
 };
 
