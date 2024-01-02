@@ -34,11 +34,11 @@ Position Box::getPos(std::chrono::time_point<std::chrono::high_resolution_clock>
 { 
     vector<BoxNote> boxNotes = getLastNotes(8);
      
-    for(int ii=boxNotes.size()-1; ii >= 0; --ii)
+    for(size_t ii=0; ii<boxNotes.size(); ++ii)
     {
-        BoxNote& boxNote = boxNotes[ii];
+        BoxNote& boxNote = boxNotes[boxNotes.size() -1 - ii];
         
-        if (4 == boxNote.getType())
+        if (11 == boxNote.getType())
         {
             std::chrono::duration<float> duration = cutOffTime - boxNote.getTimePoint();
             if (duration.count() >= 0)

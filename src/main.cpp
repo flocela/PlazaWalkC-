@@ -1,15 +1,18 @@
 #include <chrono>
 #include <iostream>
-#include <thread>
 #include <stdio.h>
 #include <stdbool.h>
 #include <vector>
+#include <thread>
+#include <utility>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
 
 #include "Board.h"
 #include "Box.h"
+#include "Mover_Down.h"
+#include "Mover_Up.h"
 #include "Printer.h"
 
 // Define MAX and MIN macros
@@ -24,13 +27,73 @@
 
 using namespace std;
 
+void moving(Box* box, Mover* mover, Board* board)
+{
+    int count = 600;
+    while (count > 0)
+    {
+        --count;
+        Position curPos = box->getPos(std::chrono::high_resolution_clock::now());
+        if (curPos.getX() > SCREEN_WIDTH || curPos.getX() < 0)
+        {
+            break;
+        }
+        if (curPos.getY() > SCREEN_HEIGHT || curPos.getY() < 0)
+        {
+            break;
+        }
+       
+        for (const Position& newPos : mover->getFuturePositions(*box))
+        {   
+            std::unordered_map<int, BoardNote> boardNotesPerBoxId = board->getNotes(newPos);
+            bool okay = true;
+            for (const auto& boardNotePerBoxId  : boardNotesPerBoxId)
+            {
+                if (boardNotePerBoxId.second.getType() == 4)
+                {
+                    okay = false;
+                    break;
+                }
+            }
+            if (okay)
+            {
+                const std::chrono::time_point<std::chrono::high_resolution_clock> toLeaveTime = std::chrono::high_resolution_clock::now();
+                // add a toLeave BoxNote
+                box->addNote(BoxNote{10, newPos, curPos, toLeaveTime});
+
+                // add toLeave BoardNote in board 
+                board->addNote(curPos, BoardNote{1, box->getId()});
+
+                // add toArrive BoardNote in board
+                board->addNote(newPos, BoardNote{2, box->getId()});
+                
+                this_thread::sleep_for(5ms);
+
+                const std::chrono::time_point<std::chrono::high_resolution_clock> arriveTime = std::chrono::high_resolution_clock::now();
+                
+                // add an arrive BoxNote in box
+                box->addNote(BoxNote{11, newPos, curPos, arriveTime});
+
+                // add left BoardNote in board
+                board->addNote(curPos, BoardNote{3, box->getId()});
+
+                // add arrive BoardNote in board
+                board->addNote(newPos, BoardNote{4, box->getId()});
+
+                break;
+            }
+        }
+
+        this_thread::sleep_for(20ms);
+    }
+}
 
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
     (void) argc;
     (void) argv;
-
+    
     // Initialize SDL2
     if(SDL_Init(SDL_INIT_VIDEO) < 0)
     {
@@ -73,14 +136,19 @@ int main(int argc, char* argv[])
         }
         else
         {
+            // Create Mover
+            Mover_Down dMover{};
+
             // Create Board
             Board board{600, 600};
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
             boxes.push_back(make_unique<Box>(0, 10, 10));
-            boxes.push_back(make_unique<Box>(1, 10, 10));
+            boxes[boxes.size()-1]->addNote(BoxNote{11, Position{10, 0}, Position{10, 0}, std::chrono::high_resolution_clock::now()});
 
+            std::thread t0{moving, boxes[boxes.size()-1].get(), &(dMover), &(board)};
+                                
             Printer printer{};
 
             // Event loop exit flag
@@ -105,6 +173,8 @@ int main(int argc, char* argv[])
            
                 SDL_Delay(20); 
             }
+
+            t0.join(); 
 
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
