@@ -1,8 +1,8 @@
-#include "Mover_Down.h"
+#include "PositionManager_Down.h"
 
 using namespace std;
 
-vector<Position> Mover_Down::getFuturePositions(const Box& box)
+vector<Position> PositionManager_Down::getFuturePositions(const Box& box)
 {
     Position curPosition = box.getPos(std::chrono::high_resolution_clock::now());
     

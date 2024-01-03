@@ -11,8 +11,8 @@
 
 #include "Board.h"
 #include "Box.h"
-#include "Mover_Down.h"
-#include "Mover_Up.h"
+#include "PositionManager_Down.h"
+#include "PositionManager_Up.h"
 #include "Printer.h"
 
 // Define MAX and MIN macros
@@ -27,7 +27,7 @@
 
 using namespace std;
 
-void moving(Box* box, Mover* mover, Board* board)
+void moving(Box* box, PositionManager* mover, Board* board)
 {
     int count = 500;
     while (count > 0)
@@ -137,9 +137,9 @@ int main(int argc, char* argv[])
         }
         else
         {
-            // Create Mover
-            Mover_Down dMover{};
-            Mover_Up uMover{};
+            // Create PositionManger
+            PositionManager_Down dPositionManger{};
+            PositionManager_Up uPositionManger{};
 
             // Create Board
             Board board{600, 600};
@@ -151,8 +151,8 @@ int main(int argc, char* argv[])
             boxes.push_back(make_unique<Box>(1,10,10));
             boxes[boxes.size()-1]->addNote(BoxNote{11, Position{10, 500}, Position{10, 500}, std::chrono::high_resolution_clock::now()});
             
-            std::thread t0{moving, boxes[0].get(), &(dMover), &(board)};
-            std::thread t1{moving, boxes[1].get(), &(uMover), &(board)};
+            std::thread t0{moving, boxes[0].get(), &(dPositionManger), &(board)};
+            std::thread t1{moving, boxes[1].get(), &(uPositionManger), &(board)};
                                 
             Printer printer{};
 

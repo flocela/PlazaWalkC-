@@ -1,5 +1,5 @@
 #include "catch.hpp"
-#include "../src/Mover_Down.h"
+#include "../src/PositionManager_Down.h"
 
 using namespace std;
 
@@ -14,8 +14,8 @@ TEST_CASE("Should return next positions, which are down, then the diagonal posit
     Box box{0, 10, 10};
     box.addNote(note0);
 
-    Mover_Down downMover{};
-    vector<Position> positions = downMover.getFuturePositions(box);
+    PositionManager_Down downPositionMover{};
+    vector<Position> positions = downPositionMover.getFuturePositions(box);
     REQUIRE(positions[0] == Position{5, 6});
     REQUIRE(positions[1] == Position{4, 6});
     REQUIRE(positions[2] == Position{6, 6});

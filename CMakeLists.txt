@@ -90,8 +90,8 @@ src/BoardNote.cpp
 src/Box.cpp
 src/BoxNote.cpp
 src/Board.cpp
-src/Mover_Down.cpp
-src/Mover_Up.cpp
+src/PositionManager_Down.cpp
+src/PositionManager_Up.cpp
 src/HelloWorld.cpp
 src/Position.cpp
 src/Spot.cpp
