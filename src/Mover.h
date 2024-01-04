@@ -3,7 +3,7 @@
 
 class Mover
 {
-    virtual void funcMoveBox(BoardChanger& boardChanger, BoxChanger& boxChanger) = 0;
+    virtual void funcMoveBox() = 0;
 };
 
 #endif
