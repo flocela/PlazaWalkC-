@@ -25,6 +25,8 @@ public:
 
 private:
     const Position _position;
+    
+    // BoardNotes per boxId
     std::unordered_map<int, BoardNote> _notes;
 
 };
