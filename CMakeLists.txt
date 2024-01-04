@@ -87,6 +87,8 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 file(GLOB test_SRCS tests/*.cpp
 src/BoardNote.cpp
+src/BoardChanger_Reg.cpp
+src/BoardReader_Reg.cpp
 src/Box.cpp
 src/BoxNote.cpp
 src/Board.cpp
