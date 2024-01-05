@@ -31,6 +31,8 @@ void Board::addNote(Position position, BoardNote boardNote)
 {
     unique_lock lock(_mux); 
     _spots[position.getY()][position.getX()].tagNote(boardNote);
+    lock.unlock();
+
     if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
     {
         _boardCallbacksPerPos.at(position).callBack({std::chrono::high_resolution_clock::now(), getNotes(position)});
@@ -41,4 +43,9 @@ unordered_map<int, BoardNote> Board::getNotes(Position position) const
 {
     shared_lock lock(_mux);
     return _spots[position.getY()][position.getX()].getNotes();
+}
+
+void Board::registerCallback(Position pos, BoardCallback& callBack)
+{
+    _boardCallbacksPerPos.insert({pos, callBack});
 }
