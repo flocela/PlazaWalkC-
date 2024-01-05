@@ -3,4 +3,13 @@ CMakeLists.txt.*
 *.swp
 *.swn
 *.swo
+*.cpp.o
+*.cpp.o.d
+tests/CMakeFiles/
+tests/Makefile
+tests/RunTests
+tests/assets/
+tests/cmake_install.cmake
+tests/sdl2-ttf-sample
+tests/CmakeCache.txt
 
