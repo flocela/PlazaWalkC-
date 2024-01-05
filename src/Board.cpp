@@ -31,6 +31,10 @@ void Board::addNote(Position position, BoardNote boardNote)
 {
     unique_lock lock(_mux); 
     _spots[position.getY()][position.getX()].tagNote(boardNote);
+    if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
+    {
+        _boardCallbacksPerPos.at(position).callBack({std::chrono::high_resolution_clock::now(), getNotes(position)});
+    }
 }
 
 unordered_map<int, BoardNote> Board::getNotes(Position position) const

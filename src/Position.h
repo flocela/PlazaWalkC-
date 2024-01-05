@@ -28,5 +28,17 @@ private:
     int _y = 0;
 };
 
+namespace std
+{
+    template<>
+    struct hash<Position>
+    {
+        size_t operator()(const Position& p) const
+        {
+            return ( hash<int>()(p.getX()) ^ (hash<int>()(p.getY()) << 1) );
+        }
+    };
+}
+
 
 #endif
