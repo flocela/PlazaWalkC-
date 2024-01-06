@@ -31,7 +31,7 @@ void Mover_Reg::moveBox(Position position)
     this_thread::sleep_for(5ms);
 
     _box.addNote(BoxNote{10, position, oldPosition, std::chrono::high_resolution_clock::now()});
-    _board.addNote(position, BoardNote{3, boxId});
+    _board.addNote(oldPosition, BoardNote{3, boxId});
     _board.addNote(position, BoardNote{4, boxId});
 }
 
