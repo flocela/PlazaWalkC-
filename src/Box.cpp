@@ -86,4 +86,3 @@ vector<BoxNote> Box::getLastNotes(int count) const
     vector<BoxNote> subSequence{_notes.begin() + beginningIndex, _notes.end()};
     return subSequence;
 }
-        

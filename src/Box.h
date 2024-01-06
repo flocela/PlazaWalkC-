@@ -5,8 +5,8 @@
 #include <mutex>
 #include <shared_mutex>
 #include <vector>
+#include <unordered_set>
 #include <utility>
-
 #include "BoxNote.h"
 
 class Box{
@@ -30,7 +30,7 @@ public:
 
     std::vector<BoxNote> getAllNotes() const;
     std::vector<BoxNote> getLastNotes(int count) const;
-    
+
     bool operator== (const Box& o) const;
 
 private:

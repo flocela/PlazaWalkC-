@@ -5,7 +5,7 @@
 
 using namespace std;
 
-TEST_CASE("Adding a BoardNote to the board results in a callback being added to the BoardCallback object.")
+TEST_CASE("Adding a BoardNote to the board results in a message being added to the BoardCallback object.")
 {
     // BoardNotes from box 0
     BoardNote box0NoteType2{2, 0}; // box 0 is about to arrive
