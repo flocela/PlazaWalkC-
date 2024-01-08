@@ -16,7 +16,8 @@ protected:
 
 public:
     virtual ~PositionManager() noexcept = default;
-    
+
+    virtual bool atEnd(const Box& box) = 0;    
     virtual std::vector<Position> getFuturePositions(const Box& box) = 0;
 };
 

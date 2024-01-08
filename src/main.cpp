@@ -138,8 +138,8 @@ int main(int argc, char* argv[])
         else
         {
             // Create PositionManger
-            PositionManager_Down dPositionManger{};
-            PositionManager_Up uPositionManger{};
+            PositionManager_Down dPositionManger{Position{0, 500}};
+            PositionManager_Up uPositionManger{Position{0, 0}};
 
             // Create Board
             Board board{600, 600};
