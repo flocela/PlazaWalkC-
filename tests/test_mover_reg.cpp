@@ -30,17 +30,17 @@ TEST_CASE("Moving a box on a board, adds the correct BoxNotes to the box and the
     REQUIRE( box0NoteType2 == callbackForPos0.getNotes().at(0).second.at(0) );
     std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = callbackForPos0.getNotes().at(0).first;
 
-    // BoxNotes at index 0 has BoxNote{11, pos0, pos0, toArriveTime}.
+    // BoxNotes at index 0 has BoxNote{10, pos0, pos0, toArriveTime}.
     BoxNote toArriveAtPos0BoxNote = box0.getAllNotes().at(0);
-    REQUIRE( 11 == toArriveAtPos0BoxNote.getType());
+    REQUIRE( 10 == toArriveAtPos0BoxNote.getType());
     REQUIRE( pos0 == toArriveAtPos0BoxNote.getToPosition() );
     REQUIRE( pos0 == toArriveAtPos0BoxNote.getFromPosition() );
     REQUIRE( (toArriveAtPos0BoxNote.getTimePoint() - lastTime).count() > 0 );
     lastTime = toArriveAtPos0BoxNote.getTimePoint(); 
     
-    // BoxNotes at index 1 has BoxNote{10, pos0, pos0, ArrivalTime}.
+    // BoxNotes at index 1 has BoxNote{11, pos0, pos0, ArrivalTime}.
     BoxNote arrivalAtPos0BoxNote = box0.getAllNotes().at(1);
-    REQUIRE( 10 == arrivalAtPos0BoxNote.getType());
+    REQUIRE( 11 == arrivalAtPos0BoxNote.getType());
     REQUIRE( pos0 == arrivalAtPos0BoxNote.getToPosition() );
     REQUIRE( pos0 == arrivalAtPos0BoxNote.getFromPosition() );
     REQUIRE( (arrivalAtPos0BoxNote.getTimePoint() - lastTime).count() > 0 );
@@ -64,17 +64,17 @@ TEST_CASE("Moving a box on a board, adds the correct BoxNotes to the box and the
     REQUIRE( (callbackForPos0.getNotes().at(2).first - lastTime).count() > 0);
     lastTime = callbackForPos0.getNotes().at(2).first;
     
-    // BoxNotes at index 2 has BoxNote{11, pos1, pos0, toArriveTime}.
+    // BoxNotes at index 2 has BoxNote{10, pos1, pos0, toArriveTime}.
     BoxNote toArriveAtPos1BoxNote = box0.getAllNotes().at(2);
-    REQUIRE( 11 == toArriveAtPos1BoxNote.getType());
+    REQUIRE( 10 == toArriveAtPos1BoxNote.getType());
     REQUIRE( pos1 == toArriveAtPos1BoxNote.getToPosition() );
     REQUIRE( pos0 == toArriveAtPos1BoxNote.getFromPosition() );
     REQUIRE( (toArriveAtPos1BoxNote.getTimePoint() - lastTime).count() > 0 );
     lastTime = toArriveAtPos1BoxNote.getTimePoint(); 
     
-    // BoxNotes at index 3 has BoxNote{10, pos1, pos0, arrivalTime}.
+    // BoxNotes at index 3 has BoxNote{11, pos1, pos0, arrivalTime}.
     BoxNote arriveAtPos1BoxNote = box0.getAllNotes().at(3);
-    REQUIRE( 10 == arriveAtPos1BoxNote.getType());
+    REQUIRE( 11 == arriveAtPos1BoxNote.getType());
     REQUIRE( pos1 == arriveAtPos1BoxNote.getToPosition() );
     REQUIRE( pos0 == arriveAtPos1BoxNote.getFromPosition() );
     REQUIRE( (arriveAtPos1BoxNote.getTimePoint() - lastTime).count() > 0 );
