@@ -30,8 +30,7 @@ void Spot::tagNote(BoardNote note)
         }
         else
         {
-            _notes.erase(note.getBoxId());
-            _notes.insert({note.getBoxId(), note});
+            _notes.at(note.getBoxId()) = note;
         }
     }
 }
