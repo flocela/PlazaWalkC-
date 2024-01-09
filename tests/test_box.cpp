@@ -73,6 +73,7 @@ TEST_CASE("Box returns last 4 notes.")
 
     REQUIRE(expectedNotes == box.getLastNotes(4));
 }
+
 TEST_CASE("Boxes with different ids are not equal '=='")
 {
     Box boxA{0, 1, 2};
