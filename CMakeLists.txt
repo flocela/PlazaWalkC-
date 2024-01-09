@@ -95,6 +95,7 @@ src/BoxChanger_Reg.cpp
 src/BoxReader_Reg.cpp
 src/BoxNote.cpp
 src/Board.cpp
+src/Decider_Safe.cpp
 src/PositionManager_Down.cpp
 src/PositionManager_Up.cpp
 src/HelloWorld.cpp
