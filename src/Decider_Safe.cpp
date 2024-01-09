@@ -7,21 +7,25 @@ Position Decider_Safe::getNextPosition(
     const Board& board,
     unordered_map<int, Box*> boxesPerBoxId)
 {
-    (void)possiblePositions;
-    (void) board;
-    (void) boxesPerBoxId;
+    // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {
+        bool isOccupied = false;
+       
+        // Each boxId in boardNotesPerBoxId represents a box that may be at position. 
         unordered_map<int, BoardNote> boardNotesPerBoxId = board.getNotes(position);
 
-        bool isOccupied = false;
+        // Take each boxId associated with position and compare box's current position with position
         for (const auto& boxIdAndBoardNote : boardNotesPerBoxId)
         {
             int boxId = boxIdAndBoardNote.first;
             if (boxesPerBoxId.find(boxId) != boxesPerBoxId.end())
             {
-                isOccupied = true;
-                break;
+                if (boxesPerBoxId.at(boxId)->getPos(std::chrono::high_resolution_clock::now()) == position)
+                {
+                    isOccupied = true;
+                    break;
+                }
             }
         }
         if (!isOccupied)
