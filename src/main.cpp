@@ -11,6 +11,7 @@
 
 #include "Board.h"
 #include "Box.h"
+#include "Decider.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Up.h"
 #include "Printer.h"
@@ -27,8 +28,9 @@
 
 using namespace std;
 
-void moving(Box* box, PositionManager* mover, Board* board)
-{
+void funcMoveBox(Box* box, Board* board, PositionManager* posManager, Decider* decider)
+{   (void) decider;
+    
     int count = 500;
     while (count > 0)
     {
@@ -43,7 +45,7 @@ void moving(Box* box, PositionManager* mover, Board* board)
             break;
         }
        
-        for (const Position& newPos : mover->getFuturePositions(*box))
+        for (const Position& newPos : posManager->getFuturePositions(*box))
         {   
             std::unordered_map<int, BoardNote> boardNotesPerBoxId = board->getNotes(newPos);
             bool okay = true;
@@ -138,7 +140,7 @@ int main(int argc, char* argv[])
         else
         {
             // Create PositionManger
-            PositionManager_Down dPositionManger{Position{0, 500}};
+            PositionManager_Down dPositionManger{0, 0, 599, 0, 599};
             PositionManager_Up uPositionManger{Position{0, 0}};
 
             // Create Board
@@ -151,8 +153,8 @@ int main(int argc, char* argv[])
             boxes.push_back(make_unique<Box>(1,10,10));
             boxes[boxes.size()-1]->addNote(BoxNote{11, Position{10, 500}, Position{10, 500}, std::chrono::high_resolution_clock::now()});
             
-            std::thread t0{moving, boxes[0].get(), &(dPositionManger), &(board)};
-            std::thread t1{moving, boxes[1].get(), &(uPositionManger), &(board)};
+            //std::thread t0{funcMoveBox, boxes[0].get(), &(dPositionManger), &(board)};
+            //std::thread t1{funcMoveBox, boxes[1].get(), &(uPositionManger), &(board)};
                                 
             Printer printer{};
 
@@ -184,8 +186,8 @@ int main(int argc, char* argv[])
             cout << "box0: " << pos0.getX() << ", " << pos0.getY() << endl;
             cout << "box1: " << pos1.getX() << ", " << pos1.getY() << endl;
 
-            t0.join(); 
-            t1.join();
+            //t0.join(); 
+            //t1.join();
 
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
