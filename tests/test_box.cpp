@@ -126,7 +126,7 @@ TEST_CASE("getPos() returns last arrive position before given timestamp")
     BoxNote boxNote5{10, Position{2,1}, Position{1,1}, std::chrono::high_resolution_clock::now()};
     box.addNote(boxNote5);
 
-    BoxNote boxNote6{4, Position{2,1}, Position{1,1}, std::chrono::high_resolution_clock::now()};
+    BoxNote boxNote6{11, Position{2,1}, Position{1,1}, std::chrono::high_resolution_clock::now()};
     box.addNote(boxNote6);
 
     REQUIRE(Position{1,1} == box.getPos(cutOffTime));
