@@ -11,7 +11,8 @@
 
 #include "Board.h"
 #include "Box.h"
-#include "Decider.h"
+#include "Decider_Safe.h"
+#include "Mover_Reg.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Up.h"
 #include "Printer.h"
@@ -28,63 +29,28 @@
 
 using namespace std;
 
-void funcMoveBox(Box* box, Board* board, PositionManager* posManager, Decider* decider)
-{   (void) decider;
-    
+void funcMoveBox(
+        Box* box,
+        Board* board,
+        unordered_map<int, Box*>* boxesPerBoxId,
+        PositionManager* posManager,
+        Decider* decider,
+        Mover* mover
+        )
+{
     int count = 500;
     while (count > 0)
     {
         --count;
-        Position curPos = box->getPos(std::chrono::high_resolution_clock::now());
-        if (curPos.getX() > SCREEN_WIDTH || curPos.getX() < 0)
+      
+        Position nextPosition = decider->getNextPosition(
+                                            posManager->getFuturePositions(*box),
+                                            *board,
+                                            *boxesPerBoxId);
+
+        if (nextPosition != Position{-1, -1})
         {
-            break;
-        }
-        if (curPos.getY() > SCREEN_HEIGHT || curPos.getY() < 0)
-        {
-            break;
-        }
-       
-        for (const Position& newPos : posManager->getFuturePositions(*box))
-        {   
-            std::unordered_map<int, BoardNote> boardNotesPerBoxId = board->getNotes(newPos);
-            bool okay = true;
-            for (const auto& boardNotePerBoxId  : boardNotesPerBoxId)
-            {
-                if (boardNotePerBoxId.second.getType() == 4)
-                {
-                    okay = false;
-                    break;
-                }
-            }
-            if (okay)
-            {
-                // add toLeave BoardNote in board 
-                board->addNote(curPos, BoardNote{1, box->getId()});
-
-                // add toArrive BoardNote in board
-                board->addNote(newPos, BoardNote{2, box->getId()});
-                
-                const std::chrono::time_point<std::chrono::high_resolution_clock> toLeaveTime = std::chrono::high_resolution_clock::now();
-                
-                // add a toLeave BoxNote
-                box->addNote(BoxNote{10, newPos, curPos, toLeaveTime});
-
-                this_thread::sleep_for(5ms);
-
-                const std::chrono::time_point<std::chrono::high_resolution_clock> arriveTime = std::chrono::high_resolution_clock::now();
-                
-                // add an arrive BoxNote in box
-                box->addNote(BoxNote{11, newPos, curPos, arriveTime});
-
-                // add left BoardNote in board
-                board->addNote(curPos, BoardNote{3, box->getId()});
-
-                // add arrive BoardNote in board
-                board->addNote(newPos, BoardNote{4, box->getId()});
-
-                break;
-            }
+            mover->moveBox(nextPosition);
         }
 
         this_thread::sleep_for(20ms);
@@ -140,21 +106,35 @@ int main(int argc, char* argv[])
         else
         {
             // Create PositionManger
-            PositionManager_Down dPositionManger{0, 0, 599, 0, 599};
-            PositionManager_Up uPositionManger{599, 0, 599, 0, 599};
-
+            PositionManager_Down dPositionManger{599, 0, 599, 0, 599};
+            PositionManager_Up uPositionManger{0, 0, 599, 0, 599};
+            
             // Create Board
             Board board{600, 600};
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
             boxes.push_back(make_unique<Box>(0, 10, 10));
-            boxes[boxes.size()-1]->addNote(BoxNote{11, Position{10, 0}, Position{10, 0}, std::chrono::high_resolution_clock::now()});
-            boxes.push_back(make_unique<Box>(1,10,10));
-            boxes[boxes.size()-1]->addNote(BoxNote{11, Position{10, 500}, Position{10, 500}, std::chrono::high_resolution_clock::now()});
-            
-            //std::thread t0{funcMoveBox, boxes[0].get(), &(dPositionManger), &(board)};
-            //std::thread t1{funcMoveBox, boxes[1].get(), &(uPositionManger), &(board)};
+            boxes.push_back(make_unique<Box>(1, 10, 10));
+
+            // Create map of boxes per boxId
+            unordered_map<int, Box*> boxesPerBoxId{};
+            boxesPerBoxId.insert({0, boxes[0].get()});
+            boxesPerBoxId.insert({1, boxes[1].get()});
+         
+            // Create mover 
+            Mover_Reg mover0{*(boxes[0].get()), board};
+            Mover_Reg mover1{*(boxes[1].get()), board};
+
+            // Add starting postions to boxes.
+            mover0.addBox(Position{10, 0});
+            mover1.addBox(Position{10, 500});
+
+            // Create decider
+            Decider_Safe decider{};
+             
+            std::thread t0(funcMoveBox, boxes[0].get(), &board, &boxesPerBoxId, &(dPositionManger), &decider, &mover0);
+            std::thread t1(funcMoveBox, boxes[1].get(), &board, &boxesPerBoxId, &(uPositionManger), &decider, &mover1);
                                 
             Printer printer{};
 
@@ -186,8 +166,8 @@ int main(int argc, char* argv[])
             cout << "box0: " << pos0.getX() << ", " << pos0.getY() << endl;
             cout << "box1: " << pos1.getX() << ", " << pos1.getY() << endl;
 
-            //t0.join(); 
-            //t1.join();
+            t0.join(); 
+            t1.join();
 
             // Destroy renderer
             SDL_DestroyRenderer(renderer);
