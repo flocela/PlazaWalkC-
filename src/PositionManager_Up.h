@@ -6,7 +6,7 @@
 class PositionManager_Up : public PositionManager
 {
 public:
-    PositionManager_Up(Position finalPosition);
+    PositionManager_Up(int finalY, int smallX, int largeX, int smallY, int largeY);
     PositionManager_Up() = delete;
     PositionManager_Up(const PositionManager_Up& o) = default;
     PositionManager_Up(PositionManager_Up&& o) noexcept = default;
@@ -18,7 +18,11 @@ public:
     bool atEnd(const Box& box) override;
 
 private:
-    Position _endPosition;
+    int _endY;
+    int _smallX;
+    int _largeX;
+    int _smallY;
+    int _largeY;
 };
 
 #endif
