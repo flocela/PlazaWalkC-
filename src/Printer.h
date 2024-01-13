@@ -12,11 +12,7 @@ class Printer
 
 public:
     
-    void print(SDL_Renderer* renderer, const std::vector<std::unique_ptr<Box>>& boxes);
-
-private:
-    
-    bool isOpen(std::vector<BoxNote> boxNotes);
+    virtual void print(SDL_Renderer* renderer, const std::vector<std::unique_ptr<Box>>& boxes) = 0;
 
 };
 

@@ -15,7 +15,7 @@
 #include "Mover_Reg.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Up.h"
-#include "Printer.h"
+#include "Printer_BoxOutline.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
             std::thread t0(funcMoveBox, boxes[0].get(), &board, &boxesPerBoxId, &(dPositionManger), &decider, &mover0);
             std::thread t1(funcMoveBox, boxes[1].get(), &board, &boxesPerBoxId, &(uPositionManger), &decider, &mover1);
                                 
-            Printer printer{};
+            Printer_BoxOutline printer{};
 
             // Event loop exit flag
             bool running  = true;

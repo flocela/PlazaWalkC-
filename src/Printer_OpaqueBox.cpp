@@ -1,8 +1,8 @@
-#include "Printer.h"
+#include "Printer_OpaqueBox.h"
 
 using namespace std;
 
-void Printer::print(SDL_Renderer* renderer, const std::vector<unique_ptr<Box>>& boxes)
+void Printer_OpaqueBox::print(SDL_Renderer* renderer, const std::vector<unique_ptr<Box>>& boxes)
 {
     SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(renderer);
