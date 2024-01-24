@@ -1,4 +1,0 @@
-/Users/flo/Projects/PlazaWalk/sdl2-ttf-sample/src/CMakeFiles/sdl2-ttf-sample.dir
-/Users/flo/Projects/PlazaWalk/sdl2-ttf-sample/src/CMakeFiles/RunTests.dir
-/Users/flo/Projects/PlazaWalk/sdl2-ttf-sample/src/CMakeFiles/edit_cache.dir
-/Users/flo/Projects/PlazaWalk/sdl2-ttf-sample/src/CMakeFiles/rebuild_cache.dir
