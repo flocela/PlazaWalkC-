@@ -10,10 +10,9 @@ void Printer_OpaqueBox::print(SDL_Renderer* renderer, const std::vector<unique_p
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
 // TODO take out auto and type in type
 
-    const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
     for (const auto& box : boxes)
     {   
-        Position pos = box->getPos(now); 
+        Position pos = box->getPosition(); 
     
         // create square with width 10.
         SDL_Rect squareRect;

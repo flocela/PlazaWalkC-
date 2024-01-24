@@ -12,7 +12,7 @@ PositionManager_Up::PositionManager_Up(int finalY, int smallX, int largeX, int s
 
 vector<Position> PositionManager_Up::getFuturePositions(const Box& box)
 {
-    Position curPosition = box.getPos(std::chrono::high_resolution_clock::now());
+    Position curPosition = box.getPosition();
 
     vector<Position> newPositions{};
 
@@ -43,7 +43,7 @@ vector<Position> PositionManager_Up::getFuturePositions(const Box& box)
 
 bool PositionManager_Up::atEnd(const Box& box)
 {
-    return box.getPos(std::chrono::high_resolution_clock::now()).getY() == _endY;
+    return box.getPosition().getY() == _endY;
 }
     
     

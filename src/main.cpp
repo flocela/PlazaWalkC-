@@ -161,8 +161,8 @@ int main(int argc, char* argv[])
                 SDL_Delay(20); 
             }
 
-            Position pos0 = boxes[0]->getPos(std::chrono::high_resolution_clock::now());
-            Position pos1 = boxes[1]->getPos(std::chrono::high_resolution_clock::now());
+            Position pos0 = boxes[0]->getPosition();
+            Position pos1 = boxes[1]->getPosition();
             cout << "box0: " << pos0.getX() << ", " << pos0.getY() << endl;
             cout << "box1: " << pos1.getX() << ", " << pos1.getY() << endl;
 

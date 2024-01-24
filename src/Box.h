@@ -23,23 +23,19 @@ public:
     int getId() const;    
     int getWidth() const;
     int getHeight() const;
-
-    Position getPos(std::chrono::time_point<std::chrono::high_resolution_clock> cutOffTime) const;
-
-    void addNote(BoxNote note);
-
-    std::vector<BoxNote> getAllNotes() const;
-    std::vector<BoxNote> getLastNotes(int count) const;
+    Position getPosition() const;
+    
+    void setPosition(Position position);
 
     bool operator== (const Box& o) const;
 
 private:
-    int _id = 0;
+    int _id     = 0;
     int _width  = 0; // make this const
     int _height = 0; // make this const
-    std::vector<BoxNote> _notes{};
+
+    Position _position{-1, -1};
     
-    mutable std::shared_mutex _mux;
 };
 
 namespace std

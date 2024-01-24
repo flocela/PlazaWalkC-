@@ -17,6 +17,15 @@ TEST_CASE("Box:: width and height is declared in the constructor")
     REQUIRE(8 == box.getWidth());
 }
 
+TEST_CASE("Box:: check getter and setter for _position attribute.")
+{
+    Box box{10, 1, 2};
+    
+    Position newPosition{33, 44};
+    box.setPosition(newPosition);
+    REQUIRE(newPosition == box.getPosition());
+}
+
 
 TEST_CASE("Boxes with different ids are not equal '=='")
 {

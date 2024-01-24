@@ -21,7 +21,7 @@ Position Decider_Safe::getNextPosition(
             int boxId = boxIdAndBoardNote.first;
             if (boxesPerBoxId.find(boxId) != boxesPerBoxId.end())
             {
-                if (boxesPerBoxId.at(boxId)->getPos(std::chrono::high_resolution_clock::now()) == position)
+                if (boxesPerBoxId.at(boxId)->getPosition() == position)
                 {
                     isOccupied = true;
                     break;
