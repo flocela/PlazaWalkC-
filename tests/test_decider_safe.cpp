@@ -17,8 +17,6 @@ TEST_CASE("box1 is deciding to move to positionA, but box0 occupies positionA. D
 
     // box0 has arrived at positionA.
     board.addNote(positionA, boardNoteToArrive);
-    box0.addNote(BoxNote{10, positionA, positionA, std::chrono::high_resolution_clock::now()});
-    box0.addNote(BoxNote{11, positionA, positionA, std::chrono::high_resolution_clock::now()});
     board.addNote(positionA, boardNoteArrived);
 
     Decider_Safe decider{};
@@ -47,14 +45,11 @@ TEST_CASE("box1 is deciding to move to postionA. box0 occupies positionA, but tw
 
     // box0 has arrived at positionA.
     board.addNote(positionA, boardNoteToArrive);
-    box0.addNote(BoxNote{10, positionA, positionA, std::chrono::high_resolution_clock::now()});
-    box0.addNote(BoxNote{11, positionA, positionA, std::chrono::high_resolution_clock::now()});
     board.addNote(positionA, boardNoteArrived);
 
     // BoardNote signaling box0 will move from positionA is registered with board.
     // BoxNote signaling box0 will move from positionA is registered with box0.
     board.addNote(positionA, boardNoteToLeave);
-    box0.addNote(BoxNote{10, positionB, positionA, std::chrono::high_resolution_clock::now()});
 
     Decider_Safe decider{};
 
@@ -83,17 +78,11 @@ TEST_CASE("box1 is deciding to move to postionA. box0 originally occupies positi
 
     // box0 has arrived at positionA.
     board.addNote(positionA, boardNoteToArrive);
-    box0.addNote(BoxNote{10, positionA, positionA, std::chrono::high_resolution_clock::now()});
-    box0.addNote(BoxNote{11, positionA, positionA, std::chrono::high_resolution_clock::now()});
     board.addNote(positionA, boardNoteArrived);
 
     // BoardNote signaling box0 will move from positionA is registered with board.
     // BoxNote signaling box0 will move from positionA is registered with box0.
     board.addNote(positionA, boardNoteToLeave);
-    box0.addNote(BoxNote{10, positionB, positionA, std::chrono::high_resolution_clock::now()});
-
-    // BoxNote signalling box0 has moved to positionB is registered with box0.
-    box0.addNote(BoxNote{11, positionB, positionA, std::chrono::high_resolution_clock::now()});
 
     Decider_Safe decider{};
 
@@ -122,17 +111,13 @@ TEST_CASE("box1 is deciding to move to postionA. box0 originally occupies positi
 
     // box0 has arrived at positionA.
     board.addNote(positionA, boardNoteToArrive);
-    box0.addNote(BoxNote{10, positionA, positionA, std::chrono::high_resolution_clock::now()});
-    box0.addNote(BoxNote{11, positionA, positionA, std::chrono::high_resolution_clock::now()});
     board.addNote(positionA, boardNoteArrived);
 
     // BoardNote signaling box0 will move from positionA is registered with board.
     // BoxNote signaling box0 will move from positionA is registered with box0.
     board.addNote(positionA, boardNoteToLeave);
-    box0.addNote(BoxNote{10, positionB, positionA, std::chrono::high_resolution_clock::now()});
 
     // BoxNote signalling box0 has moved to positionB is registered with box0.
-    box0.addNote(BoxNote{11, positionB, positionA, std::chrono::high_resolution_clock::now()});
 
     board.addNote(positionA, boardNoteLeft);
 

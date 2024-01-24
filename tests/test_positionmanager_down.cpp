@@ -12,7 +12,6 @@ TEST_CASE("Should return next positions, which are down, then the diagonal posit
     // note0's type is 4, which means it arrives at Position(5, 5);
     BoxNote note0{4, Position{5, 5}, Position{5, 4}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
 
     PositionManager_Down downPositionManager{10, 0, 10, 0, 10};
     vector<Position> positions = downPositionManager.getFuturePositions(box);
@@ -27,7 +26,6 @@ TEST_CASE(" PositionManager_Down::atEnd() returns true if box has reached its fi
     // box has arrived at Position{1, 1}.    
     BoxNote note0{4, Position{1, 1}, Position{1, 1}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
     PositionManager_Down downPositionManager(1, 0, 10, 0, 10);
     REQUIRE(true == downPositionManager.atEnd(box));
 }
@@ -37,7 +35,6 @@ TEST_CASE(" PositionManager_Down::atEnd() returns false if box is not at its fin
     // box has arrived at Position{0, 0}.    
     BoxNote note0{4, Position{0, 0}, Position{0, 0}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
     PositionManager_Down downPositionManager(1, 0, 10, 0, 10);
     REQUIRE(false == downPositionManager.atEnd(box));
 }
@@ -47,7 +44,6 @@ TEST_CASE("box's current position is already at end, then getFuturePositions ret
     // box is at Position{10, 10}.
     BoxNote note0{4, Position{10, 10}, Position{10, 10}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
    
     // final y is at y = 10. Board is a 20x20 board.
     PositionManager_Down downPositionManager{10, 0, 19, 0, 19};
@@ -59,7 +55,6 @@ TEST_CASE("getFuturePositions doesn't return any positions that are off the boar
     // box is at Position{19, 9}.
     BoxNote note0{4, Position{19, 9}, Position{19, 9}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
    
     // final y is at y = 10. Board is a 20x20 board.
     PositionManager_Down downPositionManager(10, 0, 19, 0, 19);
@@ -78,7 +73,6 @@ TEST_CASE("getFuturePositions doesn't return any positions that are off the boar
     // box is at Position{0, 9}.
     BoxNote note0{4, Position{0, 9}, Position{0, 9}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
    
     // final y is at y = 10. Board is a 20x20 board.
     PositionManager_Down downPositionManager(10, 0, 19, 0, 19);

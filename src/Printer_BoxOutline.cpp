@@ -10,11 +10,10 @@ void Printer_BoxOutline::print(SDL_Renderer* renderer, const std::vector<unique_
     SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
 // TODO take out auto and type in type
 
-    const std::chrono::time_point<std::chrono::high_resolution_clock> now = std::chrono::high_resolution_clock::now();
     for (const auto& box : boxes)
     {   
         // Square's information.
-        Position pos = box->getPos(now); 
+        Position pos = box->getPosition(); 
         
         // Creating square with width 9, requires 4 lines to outlining the square.
 

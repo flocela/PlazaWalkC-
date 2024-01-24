@@ -9,7 +9,6 @@ TEST_CASE("Should return next positions, which are up, then the diagonal positio
     // note0's type is 4, which means it arrives at Position(5, 5);
     BoxNote note0{4, Position{5, 5}, Position{5, 5}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
 
     PositionManager_Up upPositionManager{0, 0, 10, 0, 10};
     vector<Position> positions = upPositionManager.getFuturePositions(box);
@@ -24,7 +23,6 @@ TEST_CASE("PositionManager_Up::atEnd() returns true if box has reached its final
     // box has arrived at Position{1, 1}.    
     BoxNote note0{4, Position{1, 1}, Position{1, 1}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
     PositionManager_Up upPositionManager(1, 0, 10, 0, 10);
     REQUIRE(true == upPositionManager.atEnd(box));
 }
@@ -34,7 +32,6 @@ TEST_CASE("PositionManager_Up::atEnd() returns false if box is not at its final 
     // box has arrived at Position{2, 2}.    
     BoxNote note0{4, Position{2, 2}, Position{2, 2}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
     PositionManager_Up upPositionManager(1, 0, 10, 0, 10);
     REQUIRE(false == upPositionManager.atEnd(box));
 }
@@ -44,7 +41,6 @@ TEST_CASE("PositionManager_Up:: box's current position is already at end, then g
     // box is at Position{0, 0}.
     BoxNote note0{4, Position{0, 0}, Position{0, 0}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
    
     // final y is at y = 0. Board is a 20x20 board.
     PositionManager_Up upPositionManager{0, 0, 19, 0, 19};
@@ -56,7 +52,6 @@ TEST_CASE("PositionManager_Up:: getFuturePositions doesn't return any positions 
     // box is at Position{19, 1}.
     BoxNote note0{4, Position{19, 1}, Position{19, 1}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
    
     // final y is at y = 0. Board is a 20x20 board.
     PositionManager_Up upPositionManager(0, 0, 19, 0, 19);
@@ -75,7 +70,6 @@ TEST_CASE("PositionManager_Up:: getFuturePositions doesn't return any positions 
     // box is at Position{0, 1}.
     BoxNote note0{4, Position{0, 1}, Position{0, 1}, std::chrono::high_resolution_clock::now()};
     Box box{0, 10, 10};
-    box.addNote(note0);
    
     // final y is at y = 0. Board is a 20x20 board.
     PositionManager_Up upPositionManager(0, 0, 19, 0, 19);
