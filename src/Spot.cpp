@@ -23,7 +23,9 @@ void Spot::tagNote(BoardNote note)
         _notes.insert({note.getBoxId(), note});
     }
     else
-    {
+    {   
+        // If note is type 3, box has left. Erase existing box note from map because spot no 
+        // longer needs to keep track of this box.
         if (note.getType() == 3)
         {
             _notes.erase(note.getBoxId());
