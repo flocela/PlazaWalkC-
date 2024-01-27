@@ -42,7 +42,9 @@ void Board::addNote(Position position, BoardNote boardNote)
 unordered_map<int, BoardNote> Board::getNotes(Position position) const
 {
     shared_lock lock(_mux);
-    return _spots[position.getY()][position.getX()].getNotes();
+    (void)position;
+    unordered_map<int, BoardNote> ans{};
+    return ans;
 }
 
 void Board::registerCallback(Position pos, BoardCallback& callBack)

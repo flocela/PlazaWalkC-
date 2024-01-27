@@ -10,29 +10,101 @@ Position Spot::getPosition() const
     return _position;
 }
 
-unordered_map<int, BoardNote> Spot::getNotes() const
+bool Spot::tagNote(BoardNote note)
 {
-    return _notes;
-}
+    int noteBoxId = note.getBoxId();
+    int noteType  = note.getType();
 
-void Spot::tagNote(BoardNote note)
-{
-    unordered_map<int, BoardNote>::iterator it = _notes.find(note.getBoxId());
-    if (it == _notes.end())
-    {
-        _notes.insert({note.getBoxId(), note});
-    }
-    else
-    {   
-        // If note is type 3, box has left. Erase existing box note from map because spot no 
-        // longer needs to keep track of this box.
-        if (note.getType() == 3)
+    if (_type == -1)
+    { 
+        if (noteType != 2)
         {
-            _notes.erase(note.getBoxId());
+            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
         }
         else
         {
-            _notes.at(note.getBoxId()) = note;
+            _boxId = noteBoxId;
+            _type = noteType;
+            return true;
         }
     }
+    if (_type == 1)
+    {  
+        if (noteType == 2 && noteBoxId != _boxId)
+        {
+            return false;
+        } 
+        else if (noteType != 3)
+        {
+            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        }
+        else
+        {
+            if (_boxId == noteBoxId)
+            {
+                _boxId = -1;
+                _type = -1;
+                return true;
+            }
+            else
+            {
+                throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+            }
+        }
+    }
+    if (_type == 2)
+    {   
+        if (noteType == 2 && noteBoxId != _boxId)
+        {
+            return false;
+        }
+        else if (_boxId != noteBoxId)
+        {
+            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        } 
+        else if (noteType != 4)
+        {
+            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        }
+        else
+        {
+            _boxId = noteBoxId;
+            _type = noteType;
+            return true;
+        }
+    }
+    if (_type == 4)
+    {   
+        if (noteType == 2 && noteBoxId != _boxId)
+        {
+            return false;
+        }
+        else if (_boxId != noteBoxId)
+        {
+            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        } 
+        else if (noteType != 1)
+        {
+            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        }
+        else
+        {
+            _boxId = noteBoxId;
+            _type = noteType;
+            return true;
+        }
+    }
+    return true;
 }
+
+int Spot::getBoxId() const
+{
+    return _boxId;
+}
+
+int Spot::getType() const
+{
+    return _type;
+}
+
+

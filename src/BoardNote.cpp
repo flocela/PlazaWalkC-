@@ -1,6 +1,6 @@
 #include "BoardNote.h"
 
-BoardNote::BoardNote(int type, int boxId):_type{type}, _boxId{boxId}
+BoardNote::BoardNote(int boxId, int type):_type{type}, _boxId{boxId}
 {}
 
 // Needs a test for operator==

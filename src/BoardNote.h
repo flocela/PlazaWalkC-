@@ -7,7 +7,7 @@ class BoardNote
 {
 
 public:
-    BoardNote(int type, int boxId);
+    BoardNote(int boxId, int type);
     BoardNote() = delete;
     BoardNote(const BoardNote& o) = default;
     BoardNote(BoardNote&& o) noexcept = default;

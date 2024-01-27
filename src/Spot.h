@@ -18,16 +18,16 @@ public:
     ~Spot() = default;
 
     Position getPosition() const;
-    std::unordered_map<int, BoardNote> getNotes() const;
+    int getBoxId() const;
+    int getType() const;
 
-    void tagNote(BoardNote note);
+    bool tagNote(BoardNote note);
 
 
 private:
     const Position _position;
-    
-    // BoardNotes per boxId
-    std::unordered_map<int, BoardNote> _notes;
+    int _boxId = -1;
+    int _type = -1;
 
 };
 

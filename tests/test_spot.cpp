@@ -4,162 +4,389 @@
 
 using namespace std;
 
-TEST_CASE("returns Position")
+TEST_CASE("Spot:: Spot is constructed and should be in a default state.")
 {
-    Position pos{3, 4};
-
-    // BoardNote{type, boxId}
-    BoardNote note1{1, 1};
-    BoardNote note2{1, 3};
-    BoardNote note3{1, 1};
-
-    Spot spot{pos};
-    spot.tagNote(note1);
-    spot.tagNote(note2);
-    spot.tagNote(note3);
-    
-    REQUIRE(pos == spot.getPosition());
-}
-    
-TEST_CASE("returns notes that are in Spot, 3 arrivals")
-{
-    Position pos{3, 4};
-
-    // BoardNote{type, boxId}
-    BoardNote note1{4, 1};
-    BoardNote note2{4, 2};
-    BoardNote note3{4, 3};
-
-    Spot spot{pos};
-    spot.tagNote(note1);
-    spot.tagNote(note2);
-    spot.tagNote(note3);
-    
-    unordered_map<int, BoardNote> requiredNotes{};
-    requiredNotes.insert({note1.getBoxId(), note1});
-    requiredNotes.insert({note2.getBoxId(), note2});
-    requiredNotes.insert({note3.getBoxId(), note3});
-
-    REQUIRE(requiredNotes == spot.getNotes());
-}
-
-TEST_CASE("returns notes that are in Spot, 2 arrivals, 1 departure")
-{
-    Position pos{3, 4};
-    BoardNote note1{4, 1};
-    BoardNote note2{4, 2};
-    BoardNote note3{3, 1};
-
-    Spot spot{pos};
-    spot.tagNote(note1);
-    spot.tagNote(note2);
-    spot.tagNote(note3);
-    
-    unordered_map<int, BoardNote> requiredNotes{};
-    requiredNotes.insert({note2.getBoxId(), note2});
-    REQUIRE(requiredNotes == spot.getNotes());
-}
-
-TEST_CASE("a 'type left' note will remove other type notes.")
-{
-    Position pos{3, 4};
-    BoardNote note1{1, 1}; // box 1 to leave
-    BoardNote note2{3, 1}; // box 1 left
-
-    Spot spot{pos};
-
-    spot.tagNote(note1);
-    spot.tagNote(note2);
-    REQUIRE(spot.getNotes().empty());
-
-    BoardNote note3{2,1}; // box 1 to arrive
-    spot.tagNote(note3);
-    spot.tagNote(note2);
-    REQUIRE(spot.getNotes().empty());
-
-    BoardNote note4{4, 1}; // box 1 arrives
-    spot.tagNote(note4);
-    spot.tagNote(note2);
-    REQUIRE(spot.getNotes().empty());
-}
-
-TEST_CASE("a 'type to leave' note will replace other types of notes")
-{
+    // Construct Spot.
     Position pos{3, 4};
     Spot spot{pos};
+
+    SECTION("Returns the Position given in the constructor.")
+    {
+        REQUIRE(pos == spot.getPosition());
+    }
     
-    BoardNote toLeaveNote{1, 1}; // box 1 to leave
-
-    // Add a note, where box 1 is to arrive, that's type 2. Then add a note where box 1 is to leave, that's type 1.
-    // Will result in returned notes having one pair {boxId 1, toLeaveNote}.
-    BoardNote note1{2, 1}; // box 1 is to arrive
-    spot.tagNote(note1);
-    spot.tagNote(toLeaveNote);
-    REQUIRE((spot.getNotes()).size() == 1); // map has a pair with box id equal to 1, and note is toLeaveNote. 
-    REQUIRE(spot.getNotes().at(1) == toLeaveNote);
-
-    // Clear notes in spot by adding a note with type 3, which is "left" note.
-    spot.tagNote(BoardNote{3, 1}); 
-
-    // Add a note, where box 1 arrives, that's type 4. Then add a note where box 1 is to leave, that's type 1.
-    // Will result in returned notes having one pair {boxId 1, toLeaveNote}.
-    BoardNote note2{4, 1}; // box 1 arrives
-    spot.tagNote(note2);
-    spot.tagNote(toLeaveNote);
-    REQUIRE((spot.getNotes()).size() == 1); // map has a pair with box id equal to 1, and note is toLeaveNote. 
-    REQUIRE(spot.getNotes().at(1) == toLeaveNote);
+    SECTION("Returns the default type and default boxId.")
+    {
+        REQUIRE(-1 == spot.getType());
+        REQUIRE(-1 == spot.getBoxId());
+    }
 }
 
-TEST_CASE("a 'type to arrive' note will replace other types of notes")
+TEST_CASE("Spot:: Spot originally does not hold a box)")
 {
-    Position pos{3, 4};
-    Spot spot{pos};
+    Spot spot{Position{100, 200}};
+
+    SECTION("and receives an 'Imminent Arrival' note, then spot will contain the new box_id and type 2.")
+    {
+        // Box with boxId 10 is about to arrive.
+        // 'Imminent Arrival' type is 2.
+        BoardNote imminentArrivalNote{10, 2};
+
+        Spot spot{Position{8, 9}};
+        spot.tagNote(imminentArrivalNote);
+        
+        REQUIRE(10 == spot.getBoxId());
+        REQUIRE(2 == spot.getType());
+    }
+   
+    SECTION("and receives an 'Arrival' note, then an exception is thrown. Spot's type must be 'Imminent Arrival' type to accept an 'Arrival' note.")
+    {   
+        // Box with boxId 10 arrives.
+        // 'Arrives' type is 4.
+        BoardNote arrivalNote{10, 4};
+
+        REQUIRE_THROWS(spot.tagNote(arrivalNote));
+        REQUIRE(-1 == spot.getBoxId());
+        REQUIRE(-1 == spot.getType());
+    }
     
-    BoardNote toArriveNote{2, 1}; // box 1 to arrive 
+    SECTION("and receives an 'Imminent Departure' note, then an exception is thrown. Spot's type must be'Arrived' type to accept an 'Imminent Departure' note.")
+    {
+        // Box with boxId 10 is about to leave.
+        // 'Imminent Departure' type is 1.
+        BoardNote imminentDepartureNote{10, 1};
 
-    // Add a note, where box 1 is to leave, that's type 1. Then add a note where box 1 is to arrive, that's type 2.
-    // Will result in returned notes having one pair {boxId 1, toArriveNote}.
-    BoardNote note1{1, 1}; // box 1 is to leave 
-    spot.tagNote(note1);
-    spot.tagNote(toArriveNote);
-    REQUIRE((spot.getNotes()).size() == 1); // map has a pair with box id equal to 1, and note is toLeaveNote. 
-    REQUIRE(spot.getNotes().at(1) == toArriveNote);
+        REQUIRE_THROWS(spot.tagNote(imminentDepartureNote));
+        REQUIRE(-1 == spot.getBoxId());
+        REQUIRE(-1 == spot.getType());
+    }
+    
+    SECTION("and recieves a 'Departure' note, then an exception is thrown. Spot's type must be 'Imminent Departure' type before accepting a 'Departure' note.")
+    {
+        // Box with boxId 10 leaves.
+        // 'Departure' type is 3.
+        BoardNote departureNote{10, 3};
 
-    // Clear notes in spot by adding a note with type 3, which is "left" note.
-    spot.tagNote(BoardNote{3, 1}); 
-
-    // Add a note, where box 1 arrives, that's type 4. Then add a note where box 1 is to arrive, that's type 2.
-    // Will result in returned notes having one pair {boxId 1, toArriveNote}.
-    BoardNote note2{4, 1}; // box 1 arrives
-    spot.tagNote(note2);
-    spot.tagNote(toArriveNote);
-    REQUIRE((spot.getNotes()).size() == 1); // map has a pair with box id equal to 1, and note is toArriveNote. 
-    REQUIRE(spot.getNotes().at(1) == toArriveNote);
+        REQUIRE_THROWS(spot.tagNote(departureNote));
+        REQUIRE(-1 == spot.getBoxId());
+        REQUIRE(-1 == spot.getType());
+    }
 }
 
-TEST_CASE("a 'type arrive' note will replace other types of notes")
+TEST_CASE("Spot:: Spot originally has the type 'Imminent Departure'")
 {
-    Position pos{3, 4};
-    Spot spot{pos};
+    // Box with boxId 10 is about to leave.
+    // 'Imminently Departure' type is 1.
+    BoardNote imminentArrivalNote{10, 2};
+    BoardNote arrivalNote{10, 4};
+    BoardNote imminentDepartureNote{10, 1};
+    Spot spot{Position{100, 200}};
+    spot.tagNote(imminentArrivalNote);
+    spot.tagNote(arrivalNote);
+    spot.tagNote(imminentDepartureNote);
+
+    SECTION("and receives a note with the with the same boxId")
+    {
+        SECTION("and an 'Imminent Departure' type, then an exception is thrown. The Spot's type is already 'Imminent Departure.")
+        {
+            // Box with boxId 10 is about to leave.
+            // 'Imminent Departure' type is 1.
+            BoardNote imminentDepartureNote{10, 1};
+            REQUIRE_THROWS(spot.tagNote(imminentDepartureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+        
+        SECTION("and an 'Imminent Arrival' type, then an exception is thrown. The Spot's type must be The box can not be about to arrive, it has already arrived and is about to leave.")
+        {
+            // Box with boxId 10 is about to arrive.
+            // 'Imminent Arrival' type is 2.
+            BoardNote imminentArrivalNote{10, 2};
+
+            REQUIRE_THROWS(spot.tagNote(imminentArrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+
+        SECTION("and a 'Departure' type, then the Spot's boxId and type will change to -1 and -1.")
+        {
+            // Box with boxId 10 leaves.
+            // 'Departure' type is 3.
+            BoardNote departureNote{10, 3};
+
+            REQUIRE(true == spot.tagNote(departureNote));
+            REQUIRE(-1 == spot.getBoxId());
+            REQUIRE(-1 == spot.getType());
+        }
+        
+        SECTION("and an 'Arrival' type, then an exception is thrown. The Spot's type must be 'Imminent Arrival' to accept an 'Arrival' note.")
+        {
+            // Box with boxId 10 arrives.
+            // 'Arrival' type is 4.
+            BoardNote arrivalNote{10, 4};
+
+            REQUIRE_THROWS(spot.tagNote(arrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+    }
+
+
+    SECTION("and receives a note with the with a different boxId")
+        SECTION("and an 'Imminent Departure' type, then an exception is thrown. Spot's type must be 'Arrived' to accept an 'Imminent Departure' note.")
+        {
+            // Box with boxId 99 is about to leave.
+            // 'Imminent Departure' type is 1.
+            BoardNote imminentDepartureNote{99, 1};
+
+            REQUIRE_THROWS(spot.tagNote(imminentDepartureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+        
+        SECTION("and an 'Imminent Arrival' type, then false is returned, because the Spot currently has the original box, and two boxes can not be at the same spot.")
+        {
+            // Box with boxId 99 is about to arrive.
+            // 'Imminent Arrival' type is 2.
+            BoardNote imminentArrivalNote{99, 2};
+
+            REQUIRE_FALSE(spot.tagNote(imminentArrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+
+        SECTION("and a 'Departure' type, then an exception is thrown. Spot's type must be 'ImminentDeparture' to accept an 'Departure' note.")
+        {
+            // Box with boxId 99 leaves.
+            // 'Departure' type is 3.
+            BoardNote departureNote{99, 3};
+
+            REQUIRE_THROWS(spot.tagNote(departureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+        
+        SECTION("and an 'Arrival' type, then an exception is thrown. Spot's type must be 'Imminent Arrival' to accept an 'Arrival' note.")
+        {
+            // Box with boxId 99 arrives.
+            // 'Arrives' type is 4.
+            BoardNote arrivalNote{99, 4};
+
+            REQUIRE_THROWS(spot.tagNote(arrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+    }
+
+TEST_CASE("Spot:: Spot originally has the type 'Imminent Arrival'")
+{
+    // Box with boxId 10 is about to arrive.
+    // 'Imminent Arrival' type is 2.
+    BoardNote imminentArrivalNote{10, 2};
+    Spot spot{Position{100, 200}};
+    spot.tagNote(imminentArrivalNote);
+
+    SECTION("and receives a note with the same boxId")
+    {
+        SECTION("and 'Imminent Departure' type, then an exception is thrown. Spot's type must be 'Arrival' to accept an 'Imminent Departure' note.")
+        {
+            // Box with boxId 10 is about to leave.
+            // 'Imminent Departure' type is 1.
+            BoardNote imminentDepartureNote{10, 1};
+
+            REQUIRE_THROWS(spot.tagNote(imminentDepartureNote));
+            
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
+        
+        SECTION("and 'Imminent Arrival' type, then an exception is thrown because the box is already about to leave.")
+        {
+            // Box with boxId 10 is about to arrive.
+            // 'Imminent Arrival' type is 2.
+            BoardNote imminentArrivalNote{10, 2};
+
+            REQUIRE_THROWS(spot.tagNote(imminentArrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
+
+        SECTION("and 'Departure' type, then an exception is thrown. Spot's type must be 'Imminent Departure' note to accept a 'Departure' note.")
+        {
+            // Box with boxId 10 leaves.
+            // 'Departure' type is 3.
+            BoardNote departureNote{10, 3};
+
+            REQUIRE_THROWS(spot.tagNote(departureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
+        
+        SECTION("and 'Arrival' type, then Spot will have type 4.")
+        {
+            // Box with boxId 10 arrives.
+            // 'Arrives' type is 4.
+            BoardNote arrivalNote{10, 4};
+
+            REQUIRE(true == spot.tagNote(arrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+
+    }
     
-    BoardNote arriveNote{4, 1}; // box 1 arrive 
+    SECTION("and receives a note with a different box (different boxId)")
+    {
+        SECTION("and 'ImminentDeparture' type, then an exception is thrown. Spot must receive an 'Arrival note before it can accept an 'Imminent Departure' note.")
+        {
+            // Box with boxId 99 is about to leave.
+            // 'Imminent Departure' type is 1.
+            BoardNote imminentDepartureNote{99, 1};
 
-    // Add a note, where box 1 is to leave, that's type 1. Then add a note where box 1 is arriving, that's type 4.
-    // Will result in returned notes having one pair {boxId 1, arriveNote}.
-    BoardNote note1{1, 1}; // box 1 is to leave 
-    spot.tagNote(note1);
-    spot.tagNote(arriveNote);
-    REQUIRE((spot.getNotes()).size() == 1); // map has a pair with box id equal to 1, and note is toLeaveNote. 
-    REQUIRE(spot.getNotes().at(1) == arriveNote);
+            REQUIRE_THROWS(spot.tagNote(imminentDepartureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
+        
+        SECTION("and 'Imminent Arrival' type, then false is returned. The Spot already contains a box.")
+        {
+            // Box with boxId 99 is about to arrive.
+            // 'Imminent Arrival' type is 2.
+            BoardNote imminentArrivalNote{99, 2};
 
-    // Clear notes in spot by adding a note with type 3, which is "left" note.
-    spot.tagNote(BoardNote{3, 1}); 
+            REQUIRE_FALSE(spot.tagNote(imminentArrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
 
-    // Add a note, where box 1 is to arrive, that's type 2. Then add a note where box 1 arrives, that's type 4.
-    // Will result in returned notes having one pair {boxId 1, arriveNote}.
-    BoardNote note2{2, 1}; // box 1 toArrive 
-    spot.tagNote(note2);
-    spot.tagNote(arriveNote);
-    REQUIRE((spot.getNotes()).size() == 1); // map has a pair with box id equal to 1, and note is arriveNote. 
-    REQUIRE(spot.getNotes().at(1) == arriveNote);
+        SECTION("and 'Departure' type, then an exception is thrown. Spot must receive an 'Imminent Departure' note before accepting a 'Departure' note.")
+        {
+            // Box with boxId 99 leaves.
+            // 'Departure' type is 3.
+            BoardNote departureNote{99, 3};
+
+            REQUIRE_THROWS(spot.tagNote(departureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
+        
+        SECTION("and 'Arrival' type, then an exception is thrown. Spot must receive an 'Imminent Arrival' note with the same boxId before accepting an 'Arrival' note.")
+        {
+            // Box with boxId 99 arrives.
+            // 'Arrives' type is 4.
+            BoardNote arrivalNote{99, 4};
+
+            REQUIRE_THROWS(spot.tagNote(arrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(2 == spot.getType());
+        }
+    }
 }
+
+TEST_CASE("Spot:: Spot originally has the type 'Arrived'")
+{
+    // Box with boxId 10 has arrived.
+    // 'Arrival' type is 4.
+    BoardNote imminentArrivalNote{10, 2};
+    BoardNote arrivalNote{10, 4};
+    Spot spot{Position{100, 200}};
+    spot.tagNote(imminentArrivalNote);
+    spot.tagNote(arrivalNote);
+
+    SECTION("and receives a note with the same boxId")
+    {
+        SECTION("and 'Imminent Departure' type, then the Spot's type will change to type 1.")
+        {
+            // Box with boxId 10 is about to leave.
+            // 'Imminent Departure' type is 1.
+            BoardNote imminentDepartureNote{10, 1};
+
+            REQUIRE(true == spot.tagNote(imminentDepartureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(1 == spot.getType());
+        }
+        
+        SECTION("and 'Imminent Arrival' type, then an exception is thrown because the box can not be about to arrive, it has already arrived.")
+        {
+            // Box with boxId 10 is about to arrive.
+            // 'Imminent Arrival' type is 2.
+            BoardNote imminentArrivalNote{10, 2};
+
+            REQUIRE_THROWS(spot.tagNote(imminentArrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+
+        SECTION("and 'Departure' type, then an exception is thrown. A Spot's type must be 'Imminent Departure' to accept a 'Departure' note.")
+        {
+            // Box with boxId 10 leaves.
+            // 'Departure' type is 3.
+            BoardNote departureNote{10, 3};
+
+            REQUIRE_THROWS(spot.tagNote(departureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+        
+        SECTION("and 'Arrival' type, then an exception is thrown. Spot's type must be 'Imminent Arrival' to accept an 'Arrival' note.")
+        {
+            // Box with boxId 10 arrives.
+            // 'Arrival' type is 4.
+            BoardNote arrivalNote{10, 4};
+
+            REQUIRE_THROWS(spot.tagNote(arrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+
+    }
+
+    SECTION("and receives a note with a different box (different boxId)")
+    {
+        SECTION("and 'Imminent Departure' type, then an exception is thrown. Spot's type  must be 'Arrival' to accept an 'Imminent Departure' note.")
+        {
+            // Box with boxId 99 is about to leave.
+            // 'Imminent Departure' type is 1.
+            BoardNote imminentDepartureNote{99, 1};
+
+            REQUIRE_THROWS(spot.tagNote(imminentDepartureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+
+        SECTION("and 'Imminent Arrival' type, then false is returned. Two boxes can not be at the same spot.")
+        {
+            // Box with boxId 99 is about to arrive.
+            // 'Imminent Arrival' type is 2.
+            BoardNote imminentArrivalNote{99, 2};
+
+            REQUIRE_FALSE(spot.tagNote(imminentArrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+
+        SECTION("and 'Departure' type, then an exception is thrown. Spot's type must be 'Imminent Departure' to accept a 'Departure' note.")
+        {
+            // Box with boxId 99 leaves.
+            // 'Departure' type is 3.
+            BoardNote departureNote{99, 3};
+
+            REQUIRE_THROWS(spot.tagNote(departureNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+        
+        SECTION("and 'Arrival' type, then an exception is thrown. Spot's type  must be 'Imminent Arrival' to accept an 'Arrival' note.")
+        {
+            // boxId 99 arrives. "Arrives" type is 4.
+            BoardNote arrivalNote{99, 4};
+
+            REQUIRE_THROWS(spot.tagNote(arrivalNote));
+            REQUIRE(10 == spot.getBoxId());
+            REQUIRE(4 == spot.getType());
+        }
+
+    }
+}
+
+
