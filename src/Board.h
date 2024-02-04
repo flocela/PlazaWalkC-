@@ -26,17 +26,19 @@ public:
     int getWidth() const;
     int getHeight() const;
 
-    void addNote(Position position, BoardNote boardNote);
+    bool addNote(Position position, BoardNote boardNote);
+    BoardNote getNoteAt(Position position) const;
     void registerCallback(Position pos, BoardCallback& callBack);
-
-    // returns unordered_map of BoardNotes per boxId.
-    std::unordered_map<int, BoardNote> getNotes(Position position) const;
+    void registerCallback(BoardCallback* callBack);
 
 private:
     int _width;
     int _height;
     std::vector<std::vector<Spot>> _spots;
+    // TODO these callbacks should be const:w
+
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
+    std::unordered_set<BoardCallback*> _boardCallbacks;
     
 
     mutable std::shared_mutex _mux;

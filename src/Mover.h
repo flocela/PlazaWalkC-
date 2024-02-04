@@ -8,9 +8,9 @@ class Mover
 
 public:
 
-    virtual void addBox(Position position) = 0;
+    virtual bool addBox(Position position) = 0;
 
-    virtual void moveBox(Position position) = 0;
+    virtual bool moveBox(Position oldPosition, Position newPosition) = 0;
 };
 
 #endif

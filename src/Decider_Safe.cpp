@@ -7,31 +7,18 @@ Position Decider_Safe::getNextPosition(
     const Board& board,
     unordered_map<int, Box*> boxesPerBoxId)
 {
+    (void) boxesPerBoxId;
     // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {
-        bool isOccupied = false;
-       
-        // Each boxId in boardNotesPerBoxId represents a box that may be at position. 
-        unordered_map<int, BoardNote> boardNotesPerBoxId = board.getNotes(position);
+        // BoardNote at position will tell us what box (if any) is currently at that postion. 
+        BoardNote boardNote = board.getNoteAt(position);
 
-        // Take each boxId associated with position and compare box's current position with position
-        for (const auto& boxIdAndBoardNote : boardNotesPerBoxId)
-        {
-            int boxId = boxIdAndBoardNote.first;
-            if (boxesPerBoxId.find(boxId) != boxesPerBoxId.end())
-            {
-                if (boxesPerBoxId.at(boxId)->getPosition() == position)
-                {
-                    isOccupied = true;
-                    break;
-                }
-            }
-        }
-        if (!isOccupied)
+        // if the BoardNote's type is empty, then return current position. 
+        if (boardNote.getType() == -1)
         {
             return position;
-        }
+        }       
     }
     
     return Position{-1, -1};

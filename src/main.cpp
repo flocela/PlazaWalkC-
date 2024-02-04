@@ -10,12 +10,13 @@
 #include <SDL_ttf.h>
 
 #include "Board.h"
+#include "BoardCallback_Printer.h"
 #include "Box.h"
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Up.h"
-#include "Printer_BoxOutline.h"
+#include "Printer_OpaqueBox.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -30,7 +31,7 @@
 using namespace std;
 
 void funcMoveBox(
-        Box* box,
+        Position position,
         Board* board,
         unordered_map<int, Box*>* boxesPerBoxId,
         PositionManager* posManager,
@@ -38,23 +39,31 @@ void funcMoveBox(
         Mover* mover
         )
 {
+    Position curPosition = position;
+    // TODO what to do if box isn't successfully added to the board?
+    mover->addBox(curPosition);
+
     int count = 500;
     while (count > 0)
     {
         --count;
       
         Position nextPosition = decider->getNextPosition(
-                                            posManager->getFuturePositions(*box),
+                                            posManager->getFuturePositions(curPosition),
                                             *board,
                                             *boxesPerBoxId);
 
         if (nextPosition != Position{-1, -1})
         {
-            mover->moveBox(nextPosition);
+            if (mover->moveBox(curPosition, nextPosition))
+            {
+                curPosition = nextPosition;
+            }
         }
 
         this_thread::sleep_for(20ms);
     }
+    cout << "position: " << curPosition << endl;
 }
 
 int main(int argc, char* argv[])
@@ -111,6 +120,9 @@ int main(int argc, char* argv[])
             
             // Create Board
             Board board{600, 600};
+            Printer_OpaqueBox printer{renderer};
+            BoardCallback_Printer callbackPrinter{&board, &printer};
+            board.registerCallback(&callbackPrinter);
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
@@ -126,27 +138,18 @@ int main(int argc, char* argv[])
             Mover_Reg mover0{*(boxes[0].get()), board};
             Mover_Reg mover1{*(boxes[1].get()), board};
 
-            // Add starting postions to boxes.
-            mover0.addBox(Position{10, 0});
-            mover1.addBox(Position{10, 500});
-
             // Create decider
             Decider_Safe decider{};
              
-            std::thread t0(funcMoveBox, boxes[0].get(), &board, &boxesPerBoxId, &(dPositionManger), &decider, &mover0);
-            std::thread t1(funcMoveBox, boxes[1].get(), &board, &boxesPerBoxId, &(uPositionManger), &decider, &mover1);
+            std::thread t0(funcMoveBox, Position{10, 10}, &board, &boxesPerBoxId, &(dPositionManger), &decider, &mover0);
+            std::thread t1(funcMoveBox, Position{10, 500}, &board, &boxesPerBoxId, &(uPositionManger), &decider, &mover1);
                                 
-            Printer_BoxOutline printer{};
-
             // Event loop exit flag
             bool running  = true;
 
             // Event loop
             while(running)
             {
-                // Print Screen // this should be a copy of boxes or take into account a time stamp.
-                printer.print(renderer, boxes);
-
                 SDL_Event e;
                 if (SDL_PollEvent(&e) != 0)
                 {
@@ -160,11 +163,6 @@ int main(int argc, char* argv[])
            
                 SDL_Delay(20); 
             }
-
-            Position pos0 = boxes[0]->getPosition();
-            Position pos1 = boxes[1]->getPosition();
-            cout << "box0: " << pos0.getX() << ", " << pos0.getY() << endl;
-            cout << "box1: " << pos1.getX() << ", " << pos1.getY() << endl;
 
             t0.join(); 
             t1.join();

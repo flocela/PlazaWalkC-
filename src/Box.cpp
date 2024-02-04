@@ -30,13 +30,3 @@ int Box::getWidth() const
     return _width;
 }
 
-Position Box::getPosition() const
-{ 
-    return _position;
-}
-
-void Box::setPosition(Position position)
-{
-    _position = position;
-};
-

@@ -27,27 +27,35 @@ int Board::getHeight() const
     return _height;
 }
 
-void Board::addNote(Position position, BoardNote boardNote)
+bool Board::addNote(Position position, BoardNote boardNote)
 {
-    unique_lock lock(_mux); 
-    _spots[position.getY()][position.getX()].tagNote(boardNote);
-    lock.unlock();
+    bool success = _spots[position.getY()][position.getX()].tagNote(boardNote);
 
     if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
     {
-        _boardCallbacksPerPos.at(position).callBack({std::chrono::high_resolution_clock::now(), getNotes(position)});
+        _boardCallbacksPerPos.at(position).callback(position);
     }
+    // TODO BoardCallback& should be const
+    for (BoardCallback* callback : _boardCallbacks)
+    {
+        callback->callback(position);
+    }
+
+    return success;
 }
 
-unordered_map<int, BoardNote> Board::getNotes(Position position) const
+BoardNote Board::getNoteAt(Position position) const
 {
-    shared_lock lock(_mux);
-    (void)position;
-    unordered_map<int, BoardNote> ans{};
-    return ans;
+    return BoardNote{_spots[position.getY()][position.getX()].getBoxId(),
+                     _spots[position.getY()][position.getX()].getType()};
 }
 
 void Board::registerCallback(Position pos, BoardCallback& callBack)
 {
     _boardCallbacksPerPos.insert({pos, callBack});
+}
+
+void Board::registerCallback(BoardCallback* callBack)
+{
+    _boardCallbacks.insert(callBack);
 }

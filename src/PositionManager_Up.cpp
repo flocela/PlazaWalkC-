@@ -2,17 +2,17 @@
 
 using namespace std;
 
-PositionManager_Up::PositionManager_Up(int finalY, int smallX, int largeX, int smallY, int largeY)
+PositionManager_Up::PositionManager_Up(int finalY, int boardMinX, int boardMaxX, int boardMinY, int boardMaxY)
 : _endY{finalY},
-  _smallX{smallX},
-  _largeX{largeX},
-  _smallY{smallY},
-  _largeY{largeY}
+  _boardMinX{boardMinX},
+  _boardMaxX{boardMaxX},
+  _boardMinY{boardMinY},
+  _boardMaxY{boardMaxY}
 {}
 
-vector<Position> PositionManager_Up::getFuturePositions(const Box& box)
+vector<Position> PositionManager_Up::getFuturePositions(Position position)
 {
-    Position curPosition = box.getPosition();
+    Position curPosition = position;
 
     vector<Position> newPositions{};
 
@@ -29,10 +29,10 @@ vector<Position> PositionManager_Up::getFuturePositions(const Box& box)
     for (Position pos : tempPositions)
     {
         if (pos.getY() >= _endY &&
-            pos.getY() >= _smallY &&
-            pos.getY() <= _largeY &&
-            pos.getX() >= _smallX &&
-            pos.getX() <= _largeX)
+            pos.getY() >= _boardMinY &&
+            pos.getY() <= _boardMaxY &&
+            pos.getX() >= _boardMinX &&
+            pos.getX() <= _boardMaxX)
         {
             newPositions.push_back(pos);
         }
@@ -41,9 +41,9 @@ vector<Position> PositionManager_Up::getFuturePositions(const Box& box)
     return newPositions;
 }
 
-bool PositionManager_Up::atEnd(const Box& box)
+bool PositionManager_Up::atEnd(Position position)
 {
-    return box.getPosition().getY() == _endY;
+    return position.getY() == _endY;
 }
     
     

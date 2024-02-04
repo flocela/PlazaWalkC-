@@ -3,7 +3,6 @@
 
 #include "Board.h"
 #include "Box.h"
-#include "BoxNote.h"
 #include "Mover.h"
 
 class Mover_Reg : public Mover
@@ -18,9 +17,9 @@ public:
     Mover_Reg& operator=(Mover_Reg&& o) noexcept = delete;
     ~Mover_Reg() noexcept = default;
 
-    void addBox(Position position) override;
+    bool addBox(Position position) override;
     
-    void moveBox(Position position) override;
+    bool moveBox(Position oldPosition, Position newPosition) override;
 
 private:
     

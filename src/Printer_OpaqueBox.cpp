@@ -1,30 +1,33 @@
+#include "BoardNote.h"
 #include "Printer_OpaqueBox.h"
 
 using namespace std;
 
-void Printer_OpaqueBox::print(SDL_Renderer* renderer, const std::vector<unique_ptr<Box>>& boxes)
+Printer_OpaqueBox::Printer_OpaqueBox(SDL_Renderer* renderer): _renderer{renderer} {}
+
+void Printer_OpaqueBox::print(const Board& board, Position position)
 {
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderClear(_renderer);
     
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0xFF);
 // TODO take out auto and type in type
 
-    for (const auto& box : boxes)
-    {   
-        Position pos = box->getPosition(); 
-    
-        // create square with width 10.
-        SDL_Rect squareRect;
-        squareRect.w = 10;
-        squareRect.h = 10;
-        squareRect.x = pos.getX();
-        squareRect.y = pos.getY();
-        SDL_RenderFillRect(renderer, &squareRect);
+    BoardNote boardNote = board.getNoteAt(position);
+
+    if (boardNote.getType() != -1)
+    {
+        SDL_SetRenderDrawColor(_renderer, 0xFF, 0x00, 0x00, 0xFF);
     }
 
-    SDL_RenderPresent(renderer);
-    
+    // create square with width 10.
+    SDL_Rect squareRect;
+    squareRect.w = 10;
+    squareRect.h = 10;
+    squareRect.x = position.getX();
+    squareRect.y = position.getY();
+    SDL_RenderFillRect(_renderer, &squareRect);
+
+    SDL_RenderPresent(_renderer);
 }
         
             

@@ -7,7 +7,6 @@
 #include <vector>
 #include <unordered_set>
 #include <utility>
-#include "BoxNote.h"
 
 class Box{
 
@@ -23,19 +22,13 @@ public:
     int getId() const;    
     int getWidth() const;
     int getHeight() const;
-    Position getPosition() const;
     
-    void setPosition(Position position);
-
     bool operator== (const Box& o) const;
 
 private:
     int _id     = 0;
     int _width  = 0; // make this const
     int _height = 0; // make this const
-
-    Position _position{-1, -1};
-    
 };
 
 namespace std

@@ -7,7 +7,7 @@ class PositionManager_Down : public PositionManager
 {
 
 public:
-    PositionManager_Down(int finalY, int smallX, int largeX, int smallY, int largeY);
+    PositionManager_Down(int finalY, int boardMinX, int boardMaxX, int boardMinY, int boardMaxY);
     PositionManager_Down() = delete;
     PositionManager_Down(const PositionManager_Down& o) = default;
     PositionManager_Down(PositionManager_Down&& o) noexcept = default;
@@ -15,17 +15,17 @@ public:
     PositionManager_Down& operator=(PositionManager_Down&& o) noexcept = default;
     ~PositionManager_Down() = default;
 
-    std::vector<Position> getFuturePositions(const Box& box) override;
-    bool atEnd(const Box& box) override;
+    std::vector<Position> getFuturePositions(Position position) override;
+    bool atEnd(Position position) override;
 
 private:
     int _endY;
 
     // edges of the board
-    int _smallX = 0;
-    int _largeX = 0;
-    int _smallY = 0;
-    int _largeY = 0;
+    int _boardMinX = 0;
+    int _boardMaxX = 0;
+    int _boardMinY = 0;
+    int _boardMaxY = 0;
 };
 
 #endif

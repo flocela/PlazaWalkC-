@@ -7,47 +7,36 @@ using namespace std;
 //      first position is Position(a, b+1). Corresponding to moving down.
 //      second position is Position(a-1, b+1).
 //      third position is Position(a+1, b+1).
-TEST_CASE("Should return next positions, which are down, then the diagonal position down and right, then the diagonal position down and left.")
+TEST_CASE("When getFututePositions() is called, should return the following positions in this order: down, diagonal (down and right), diagonal (down and left.")
 {
-    // note0's type is 4, which means it arrives at Position(5, 5);
-    BoxNote note0{4, Position{5, 5}, Position{5, 4}, std::chrono::high_resolution_clock::now()};
-    Box box{0, 10, 10};
-
+    // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager{10, 0, 10, 0, 10};
-    vector<Position> positions = downPositionManager.getFuturePositions(box);
+
+    vector<Position> positions = downPositionManager.getFuturePositions(Position{5, 5});
     REQUIRE(positions[0] == Position{5, 6});
     REQUIRE(positions[1] == Position{4, 6});
     REQUIRE(positions[2] == Position{6, 6});
-
 }
 
-TEST_CASE(" PositionManager_Down::atEnd() returns true if box has reached its final position.")
+TEST_CASE("PositionManager_Down::atEnd() returns true if box reached the final Y position.")
 {
-    // box has arrived at Position{1, 1}.    
-    BoxNote note0{4, Position{1, 1}, Position{1, 1}, std::chrono::high_resolution_clock::now()};
-    Box box{0, 10, 10};
+    // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager(1, 0, 10, 0, 10);
-    REQUIRE(true == downPositionManager.atEnd(box));
+    REQUIRE(true == downPositionManager.atEnd(Position{1, 1}));
 }
 
-TEST_CASE(" PositionManager_Down::atEnd() returns false if box is not at its final position.")
+TEST_CASE("PositionManager_Down::atEnd() returns false if box has not reached the final Y position.")
 {
-    // box has arrived at Position{0, 0}.    
-    BoxNote note0{4, Position{0, 0}, Position{0, 0}, std::chrono::high_resolution_clock::now()};
-    Box box{0, 10, 10};
+    // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager(1, 0, 10, 0, 10);
-    REQUIRE(false == downPositionManager.atEnd(box));
+    REQUIRE(false == downPositionManager.atEnd(Position{0, 0}));
 }
 
 TEST_CASE("box's current position is already at end, then getFuturePositions returns an empty vector.")
 {
-    // box is at Position{10, 10}.
-    BoxNote note0{4, Position{10, 10}, Position{10, 10}, std::chrono::high_resolution_clock::now()};
-    Box box{0, 10, 10};
-   
-    // final y is at y = 10. Board is a 20x20 board.
+    // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager{10, 0, 19, 0, 19};
-    REQUIRE(vector<Position>{} == downPositionManager.getFuturePositions(box));
+    REQUIRE(vector<Position>{} == downPositionManager.getFuturePositions(Position{10, 10}));
 }
 
 TEST_CASE("getFuturePositions doesn't return any positions that are off the board. Testing where box would have a next position larger than board.size()-1")
@@ -57,6 +46,7 @@ TEST_CASE("getFuturePositions doesn't return any positions that are off the boar
     Box box{0, 10, 10};
    
     // final y is at y = 10. Board is a 20x20 board.
+    // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager(10, 0, 19, 0, 19);
 
     // futurePositions usually would contain positions {19, 10}, {18, 10}, {20, 10}.

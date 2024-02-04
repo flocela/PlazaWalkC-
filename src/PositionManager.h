@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Box.h"
+#include "Position.h"
 
 class PositionManager
 {
@@ -17,8 +18,8 @@ protected:
 public:
     virtual ~PositionManager() noexcept = default;
 
-    virtual bool atEnd(const Box& box) = 0;    
-    virtual std::vector<Position> getFuturePositions(const Box& box) = 0;
+    virtual bool atEnd(Position position) = 0;    
+    virtual std::vector<Position> getFuturePositions(Position position) = 0;
 };
 
 #endif

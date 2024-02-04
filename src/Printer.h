@@ -1,10 +1,9 @@
 #ifndef PRINTER__H
 #define PRINTER__H
 
-#include <memory>
-#include <vector>
-#include "Box.h"
-#include "BoxNote.h"
+#include "Board.h"
+#include "BoardNote.h"
+#include "Position.h"
 #include "SDL.h"
 
 class Printer
@@ -12,7 +11,7 @@ class Printer
 
 public:
     
-    virtual void print(SDL_Renderer* renderer, const std::vector<std::unique_ptr<Box>>& boxes) = 0;
+    virtual void print(const Board& board, Position position) = 0;
 
 };
 

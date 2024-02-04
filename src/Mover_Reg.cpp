@@ -1,34 +1,40 @@
 #include <thread>
 #include "Mover_Reg.h"
-#include "BoardNote.h"
-#include "BoxNote.h"
 
 using namespace std;
 
 Mover_Reg::Mover_Reg(Box& box, Board& board): _box{box}, _board{board} {}
 
-void Mover_Reg::addBox(Position position)
+// TODO this return value needs to be tested.
+bool Mover_Reg::addBox(Position position)
 {
     int boxId = _box.getId();
-    _board.addNote(position, BoardNote{2, boxId});
-    
-    this_thread::sleep_for(5ms);
-
-    _board.addNote(position, BoardNote{4, boxId});
+    bool success = _board.addNote(position, BoardNote{boxId, 2});
+    if (success)
+    {
+        this_thread::sleep_for(5ms);
+        _board.addNote(position, BoardNote{boxId, 4});
+    }
+    return success;
 }
 
-void Mover_Reg::moveBox(Position position)
+// TODO this return value needs to be tested. Along with the order of these moves.
+bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
 {
     int boxId = _box.getId();
-    Position oldPosition = _box.getPosition();
        
-    _board.addNote(position, BoardNote{2, boxId});
-    _board.addNote(oldPosition, BoardNote{1, boxId});
-    
-    this_thread::sleep_for(5ms);
+    bool success = _board.addNote(newPosition, BoardNote{boxId, 2});
+    if (success)
+    {
+        _board.addNote(oldPosition, BoardNote{boxId, 1});
+        
+        this_thread::sleep_for(5ms);
 
-    _board.addNote(oldPosition, BoardNote{3, boxId});
-    _board.addNote(position, BoardNote{4, boxId});
+        _board.addNote(oldPosition, BoardNote{boxId, 3});
+        _board.addNote(newPosition, BoardNote{boxId, 4});
+    }
+    
+    return success;
 }
 
 
