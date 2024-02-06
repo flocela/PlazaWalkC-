@@ -32,8 +32,9 @@ bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
         
         this_thread::sleep_for(5ms);
 
-        _board.addNote(oldPosition, BoardNote{boxId, 3});
         _board.addNote(newPosition, BoardNote{boxId, 4});
+        _board.addNote(oldPosition, BoardNote{boxId, 3});
+    
     }
    
     return success;

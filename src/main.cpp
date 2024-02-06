@@ -108,9 +108,17 @@ int main(int argc, char* argv[])
         }
         else
         {
+   
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0x99, 0x99, 0xFF);
+            SDL_RenderClear(renderer);
+            SDL_RenderPresent(renderer);
+            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
+            SDL_RenderPresent(renderer);
+
+
             // Create PositionManger
-            PositionManager_Down dPositionManger{599, 0, 599, 0, 599};
-            PositionManager_Up uPositionManger{0, 0, 599, 0, 599};
+            PositionManager_Down dPositionManger{300, 0, 599, 0, 599};
+            PositionManager_Up uPositionManger{300, 0, 599, 0, 599};
             
             // Create Board
             Board board{600, 600};

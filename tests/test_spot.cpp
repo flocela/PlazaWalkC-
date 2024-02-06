@@ -338,7 +338,6 @@ TEST_CASE("Spot:: Spot originally has the type 'Arrived'")
             REQUIRE(10 == spot.getBoxId());
             REQUIRE(4 == spot.getType());
         }
-
     }
 
     SECTION("and receives a note with a different box (different boxId)")

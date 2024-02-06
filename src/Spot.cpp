@@ -19,7 +19,7 @@ bool Spot::tagNote(BoardNote note)
     if (_type == -1)
     { 
         if (noteType != 2)
-        {   cout << errorString(note) << endl;
+        {   //cout << errorString(note) << endl;
             throw invalid_argument(errorString(note));
         }
         else
@@ -29,7 +29,7 @@ bool Spot::tagNote(BoardNote note)
             return true;
         }
     }
-    if (_type == 1)
+    else if (_type == 1)
     {  
         if (noteType == 2 && noteBoxId != _boxId)
         {
@@ -44,56 +44,44 @@ bool Spot::tagNote(BoardNote note)
             }
             else
             {
-                cout << errorString(note) << endl;
+                //cout << errorString(note) << endl;
                 throw invalid_argument(errorString(note));
             }
         } 
     }
-    if (_type == 2)
-    {   
+    else if (_type == 2)
+    {  
         if (noteType == 2 && noteBoxId != _boxId)
-        {
+        {  
             return false;
         }
-        else if (_boxId != noteBoxId)
-        {
-            cout << errorString(note) << endl;
-            throw invalid_argument(errorString(note));
-        } 
-        else if (noteType != 4)
-        { 
-            cout << errorString(note) << endl;
-            throw invalid_argument(errorString(note));
-        }
-        else
-        {
+        else if (_boxId == noteBoxId && noteType == 4)
+        {   
             _boxId = noteBoxId;
             _type = noteType;
-            return true;
         }
+        else 
+        {
+            //cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
+        } 
     }
-    if (_type == 4)
+    else if (_type == 4)
     {   
         if (noteType == 2 && noteBoxId != _boxId)
         {
             return false;
         }
-        else if (_boxId != noteBoxId)
-        {
-            cout << errorString(note) << endl;
-            throw invalid_argument(errorString(note));
-        } 
-        else if (noteType != 1)
-        {
-            cout << errorString(note) << endl;
-            throw invalid_argument(errorString(note));
-        }
-        else
+        else if (_boxId == noteBoxId && noteType == 1)
         {
             _boxId = noteBoxId;
             _type = noteType;
-            return true;
         }
+        else
+        {
+            //cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
+        } 
     }
     return true;
 }
