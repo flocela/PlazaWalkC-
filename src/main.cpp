@@ -38,10 +38,11 @@ void funcMoveBox(
         Mover* mover
         )
 {
-
+    cout << "funcMoveBox: " << endl;
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
     mover->addBox(curPosition);
+    cout << "curPositon: " << curPosition << endl;
     while (!posManager->atEnd(curPosition))
     {
         Position nextPosition = decider->getNextPosition(
@@ -55,7 +56,6 @@ void funcMoveBox(
                 curPosition = nextPosition;
             }
         }
-
         this_thread::sleep_for(20ms);
     }
 }

@@ -1,6 +1,8 @@
 #ifndef PRINTER_OPAQUEBOX__H
 #define PRINTER_OPAQUEBOX__H
 
+#include <mutex>
+#include <shared_mutex>
 #include "Printer.h"
 #include "SDL.h"
 
@@ -20,6 +22,7 @@ public:
 
 private:
     SDL_Renderer* _renderer;
+    mutable std::shared_mutex _mux;
 
 };
 

@@ -1,6 +1,8 @@
 #ifndef SPOT__H 
 #define SPOT__H
 
+#include <mutex>
+#include <shared_mutex>
 #include <unordered_map>
 #include "BoardNote.h"
 #include "Position.h"

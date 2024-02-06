@@ -11,7 +11,7 @@ Board::Board(int width, int height)
         vector<Spot> rowOfSpots{};
         for(int col=0; col<width; ++col)
         {
-            rowOfSpots.push_back(Spot(Position(col, row)));
+            rowOfSpots.push_back(Spot{Position(col, row)});
         }
         _spots.push_back(rowOfSpots);
     }
