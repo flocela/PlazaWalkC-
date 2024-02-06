@@ -1,6 +1,8 @@
 #ifndef BOARDCALLBACK_PRINTER__H
 #define BOARDCALLBACK_PRINTER__H
 
+#include <vector>
+#include "Board.h"
 #include "BoardCallback.h"
 #include "Printer.h"
 
@@ -16,7 +18,7 @@ public:
     BoardCallback_Printer& operator=(BoardCallback_Printer&& o) noexcept = delete;
     ~BoardCallback_Printer() noexcept = default;
 
-    void callback(Position position) override;
+    void callback(BoardNote boardNote, Position position) override;
 
 private:
     const Board* _board;

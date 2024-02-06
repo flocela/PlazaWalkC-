@@ -4,10 +4,9 @@ using namespace std;
 
 Position Decider_Safe::getNextPosition(
     vector<Position> possiblePositions,
-    const Board& board,
-    unordered_map<int, Box*> boxesPerBoxId)
+    const Board& board
+    )
 {
-    (void) boxesPerBoxId;
     // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {

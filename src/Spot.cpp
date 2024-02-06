@@ -1,4 +1,5 @@
 #include "Spot.h"
+#include <iostream>
 
 using namespace std;
 
@@ -18,8 +19,8 @@ bool Spot::tagNote(BoardNote note)
     if (_type == -1)
     { 
         if (noteType != 2)
-        {
-            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        {   cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
         }
         else
         {
@@ -33,24 +34,20 @@ bool Spot::tagNote(BoardNote note)
         if (noteType == 2 && noteBoxId != _boxId)
         {
             return false;
-        } 
-        else if (noteType != 3)
-        {
-            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
         }
         else
         {
-            if (_boxId == noteBoxId)
+            if (_boxId == noteBoxId && noteType == 3)
             {
-                _boxId = -1;
                 _type = -1;
-                return true;
+                _boxId = -1;
             }
             else
             {
-                throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+                cout << errorString(note) << endl;
+                throw invalid_argument(errorString(note));
             }
-        }
+        } 
     }
     if (_type == 2)
     {   
@@ -60,11 +57,13 @@ bool Spot::tagNote(BoardNote note)
         }
         else if (_boxId != noteBoxId)
         {
-            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+            cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
         } 
         else if (noteType != 4)
-        {
-            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+        { 
+            cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
         }
         else
         {
@@ -81,11 +80,13 @@ bool Spot::tagNote(BoardNote note)
         }
         else if (_boxId != noteBoxId)
         {
-            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+            cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
         } 
         else if (noteType != 1)
         {
-            throw invalid_argument("Can not accept the received BoardNote with boxId of " + to_string(noteBoxId) + " and type of "  + to_string(noteType) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".");
+            cout << errorString(note) << endl;
+            throw invalid_argument(errorString(note));
         }
         else
         {
@@ -107,4 +108,7 @@ int Spot::getType() const
     return _type;
 }
 
-
+string Spot::errorString(BoardNote boardNote)
+{ return "At {" + to_string(_position.getX()) + ", " + to_string(_position.getY()) + "} "  + " can not accept the received BoardNote with boxId of " + to_string(boardNote.getBoxId()) + " and type of "  + to_string(boardNote.getType()) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".";
+}
+    

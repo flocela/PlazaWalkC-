@@ -4,7 +4,6 @@
 #include "Board.h"
 #include "BoardNote.h"
 #include "Position.h"
-#include "SDL.h"
 
 class Printer
 {

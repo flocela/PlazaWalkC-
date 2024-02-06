@@ -11,7 +11,7 @@ Board::Board(int width, int height)
         vector<Spot> rowOfSpots{};
         for(int col=0; col<width; ++col)
         {
-            rowOfSpots.push_back(Spot(Position(row, col)));
+            rowOfSpots.push_back(Spot(Position(col, row)));
         }
         _spots.push_back(rowOfSpots);
     }
@@ -33,12 +33,13 @@ bool Board::addNote(Position position, BoardNote boardNote)
 
     if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
     {
-        _boardCallbacksPerPos.at(position).callback(position);
+        _boardCallbacksPerPos.at(position).callback(boardNote, position);
     }
+
     // TODO BoardCallback& should be const
     for (BoardCallback* callback : _boardCallbacks)
     {
-        callback->callback(position);
+        callback->callback(boardNote, position);
     }
 
     return success;

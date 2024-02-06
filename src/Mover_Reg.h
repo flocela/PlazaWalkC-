@@ -18,7 +18,6 @@ public:
     ~Mover_Reg() noexcept = default;
 
     bool addBox(Position position) override;
-    
     bool moveBox(Position oldPosition, Position newPosition) override;
 
 private:

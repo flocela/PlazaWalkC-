@@ -39,9 +39,6 @@ private:
 
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
     std::unordered_set<BoardCallback*> _boardCallbacks;
-    
-
-    mutable std::shared_mutex _mux;
      
 };
 

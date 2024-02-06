@@ -7,7 +7,7 @@
 class BoardCallback
 {
 public:
-    virtual void callback(Position position) = 0;
+    virtual void callback(BoardNote boardnote, Position position) = 0;
 };
 
 #endif

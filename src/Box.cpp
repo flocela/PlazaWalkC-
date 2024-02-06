@@ -7,7 +7,7 @@ Box::Box (int id, int width, int height)
     _width{width},
     _height{height}
 {}
-// TODO need a test for == operator that makes sure that each attribute is in the return statement list.
+
 bool Box::operator== (const Box& o) const
 {
     return  _id == o._id &&

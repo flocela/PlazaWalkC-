@@ -10,11 +10,13 @@ bool Mover_Reg::addBox(Position position)
 {
     int boxId = _box.getId();
     bool success = _board.addNote(position, BoardNote{boxId, 2});
+
     if (success)
     {
         this_thread::sleep_for(5ms);
         _board.addNote(position, BoardNote{boxId, 4});
     }
+   
     return success;
 }
 
@@ -33,7 +35,7 @@ bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
         _board.addNote(oldPosition, BoardNote{boxId, 3});
         _board.addNote(newPosition, BoardNote{boxId, 4});
     }
-    
+   
     return success;
 }
 

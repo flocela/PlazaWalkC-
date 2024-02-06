@@ -3,19 +3,34 @@
 #include <iostream>
 using namespace std;
 
-TEST_CASE("box1 is deciding to move to positionA, but box0 occupies positionA. Decider does not return positionA.")
+TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. Decider returns the next position.")
 {
     Board board{10, 10};
-    Box box0{0, 10, 10};
-    unordered_map<int, Box*> boxesPerBoxId{};
-    boxesPerBoxId.insert({box0.getId(), &box0});
+    Position positionA{5, 5};
 
-    BoardNote boardNoteToArrive{2, 0};
-    BoardNote boardNoteArrived{4, 0};
+    // BoardNote{boxId, type}. Box1 arrives.
+    BoardNote boardNoteToArrive{1, 2};
+    BoardNote boardNoteArrived{1, 4};
+    board.addNote(positionA, boardNoteToArrive);
+    board.addNote(positionA, boardNoteArrived);
 
-    Position positionA{0, 0};
+    Decider_Safe decider{};
 
-    // box0 has arrived at positionA.
+    vector<Position> possiblePositions = {positionA, Position{5, 4}, Position{6, 4}};
+
+    Position nextPosition = decider.getNextPosition(possiblePositions, board);
+
+    REQUIRE(Position{5, 4} == nextPosition);
+}
+
+TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. The decider is given a vector with only one position, PositionA. Because there are no other positions to choose, Decider returns Position{-1, -1}.")
+{
+    Board board{10, 10};
+    Position positionA{5, 5};
+
+    // BoardNote{boxId, type}. Box1 arrives.
+    BoardNote boardNoteToArrive{1, 2};
+    BoardNote boardNoteArrived{1, 4};
     board.addNote(positionA, boardNoteToArrive);
     board.addNote(positionA, boardNoteArrived);
 
@@ -23,109 +38,61 @@ TEST_CASE("box1 is deciding to move to positionA, but box0 occupies positionA. D
 
     vector<Position> possiblePositions = {positionA};
 
-    Position nextPosition = decider.getNextPosition(possiblePositions, board, boxesPerBoxId);
-
+    Position nextPosition = decider.getNextPosition(possiblePositions, board);
     REQUIRE(Position{-1, -1} == nextPosition);
 }
 
-TEST_CASE("box1 is deciding to move to postionA. box0 occupies positionA, but two notes - each signaling box0 will move - have been registered (BoardNote of Type1 and BoxNote of Type 11). Because box0 still hasn't left, the decider does not return positionA.")
+TEST_CASE("Box0 is deciding to move to postionA. Box1 has sent a note to Board that it will arrive at positionA. Because positionA will be occupied, Decider returns Position{-1, -1} deciding not to move to PositionA")
 {
     Board board{10, 10};
-    Box box0{0, 10, 10};
-    
-    unordered_map<int, Box*> boxesPerBoxId{};
-    boxesPerBoxId.insert({box0.getId(), &box0});
+    Position positionA{5, 5};
 
-    BoardNote boardNoteToLeave{1, 0};
-    BoardNote boardNoteToArrive{2, 0};
-    BoardNote boardNoteArrived{4, 0};
-
-    Position positionA{0, 0};
-    Position positionB{1, 1};
-
-    // box0 has arrived at positionA.
+    // BoardNote{boxId, type}. Box1 signals that it will arrive.
+    BoardNote boardNoteToArrive{1, 2};
     board.addNote(positionA, boardNoteToArrive);
-    board.addNote(positionA, boardNoteArrived);
-
-    // BoardNote signaling box0 will move from positionA is registered with board.
-    // BoxNote signaling box0 will move from positionA is registered with box0.
-    board.addNote(positionA, boardNoteToLeave);
 
     Decider_Safe decider{};
 
     vector<Position> possiblePositions = {positionA};
 
-    Position nextPosition = decider.getNextPosition(possiblePositions, board, boxesPerBoxId);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board);
 
     REQUIRE(Position{-1, -1} == nextPosition);
 }
 
-TEST_CASE("box1 is deciding to move to postionA. box0 originally occupies positionA. A BoxNote is registered with box0 that indicates box0 has left. But a BoardNote indicated box0 has left is not registered to the board. Because the box has actually left the decider returns positionA the next position.")
+TEST_CASE("Box0 is deciding to move to postionA. Box1 occupies positionA, but has given a type 1 (imminent departure) note to the board. The decider still returns Position{-1, -1} because the position is occupied.")
 {
     Board board{10, 10};
-    Box box0{0, 10, 10};
-    
-    unordered_map<int, Box*> boxesPerBoxId{};
-    boxesPerBoxId.insert({box0.getId(), &box0});
+    Position positionA{5, 5};
 
-    BoardNote boardNoteToLeave{1, 0};
-    BoardNote boardNoteToArrive{2, 0};
-    BoardNote boardNoteLeft{3, 0};
-    BoardNote boardNoteArrived{4, 0};
-
-    Position positionA{0, 0};
-    Position positionB{1, 1};
-
-    // box0 has arrived at positionA.
+    // BoardNote{boxId, type}. Box1 arrives, but is about to leave.
+    BoardNote boardNoteToArrive{1, 2};
+    BoardNote boardNoteArrived{1, 4};
+    BoardNote boardNoteAboutToLeave{1, 1};
     board.addNote(positionA, boardNoteToArrive);
     board.addNote(positionA, boardNoteArrived);
-
-    // BoardNote signaling box0 will move from positionA is registered with board.
-    // BoxNote signaling box0 will move from positionA is registered with box0.
-    board.addNote(positionA, boardNoteToLeave);
+    board.addNote(positionA, boardNoteAboutToLeave);
 
     Decider_Safe decider{};
 
-    vector<Position> possiblePositions = {positionA, Position{2, 2}};
+    vector<Position> possiblePositions = {positionA};
 
-    Position nextPosition = decider.getNextPosition(possiblePositions, board, boxesPerBoxId);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board);
 
-    REQUIRE(positionA == nextPosition);
+    REQUIRE(Position{-1, -1} == nextPosition);
 }
 
-TEST_CASE("box1 is deciding to move to postionA. box0 originally occupies positionA. A BoxNote is registered with box0 that indicates box0 has left. A BoardNote indicating that box0 has left is registered with the board. Because box1 has left, the decider returns positionA as the next position.")
+
+TEST_CASE("Box0 is deciding to move to postionA. PositionA is unoccupied. Decider returns PositionA meaning that it is okay to move there.")
 {
     Board board{10, 10};
-    Box box0{0, 10, 10};
-    
-    unordered_map<int, Box*> boxesPerBoxId{};
-    boxesPerBoxId.insert({box0.getId(), &box0});
-
-    BoardNote boardNoteToLeave{1, 0};
-    BoardNote boardNoteToArrive{2, 0};
-    BoardNote boardNoteLeft{3, 0};
-    BoardNote boardNoteArrived{4, 0};
-
-    Position positionA{0, 0};
-    Position positionB{1, 1};
-
-    // box0 has arrived at positionA.
-    board.addNote(positionA, boardNoteToArrive);
-    board.addNote(positionA, boardNoteArrived);
-
-    // BoardNote signaling box0 will move from positionA is registered with board.
-    // BoxNote signaling box0 will move from positionA is registered with box0.
-    board.addNote(positionA, boardNoteToLeave);
-
-    // BoxNote signalling box0 has moved to positionB is registered with box0.
-
-    board.addNote(positionA, boardNoteLeft);
+    Position positionA{5, 5};
 
     Decider_Safe decider{};
 
-    vector<Position> possiblePositions = {positionA, Position{2, 2}};
-
-    Position nextPosition = decider.getNextPosition(possiblePositions, board, boxesPerBoxId);
+    vector<Position> possiblePositions = {positionA, Position{5, 4}, Position{6, 4}};
+   
+    Position nextPosition = decider.getNextPosition(possiblePositions, board);
 
     REQUIRE(positionA == nextPosition);
 }

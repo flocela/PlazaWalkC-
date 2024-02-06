@@ -86,8 +86,8 @@ target_link_libraries(${PROJECT_NAME} SDL2::TTF)
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 file(GLOB test_SRCS tests/*.cpp
-src/BoardCallback.cpp
-src/BoardChanger_Reg.cpp
+src/BoardCallback_Accountant.cpp
+src/BoardCallback_Printer.cpp
 src/BoardNote.cpp
 src/BoardReader_Reg.cpp
 src/Box.cpp
@@ -96,6 +96,7 @@ src/BoxReader_Reg.cpp
 src/BoxNote.cpp
 src/Board.cpp
 src/Decider_Safe.cpp
+src/Mover_Reg.cpp
 src/PositionManager_Down.cpp
 src/PositionManager_Up.cpp
 src/HelloWorld.cpp

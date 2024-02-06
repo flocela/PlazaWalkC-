@@ -28,6 +28,8 @@ private:
     const Position _position;
     int _boxId = -1;
     int _type = -1;
+    
+    std::string errorString(BoardNote boardNote);
 
 };
 

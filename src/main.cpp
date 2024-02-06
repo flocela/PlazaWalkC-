@@ -33,25 +33,20 @@ using namespace std;
 void funcMoveBox(
         Position position,
         Board* board,
-        unordered_map<int, Box*>* boxesPerBoxId,
         PositionManager* posManager,
         Decider* decider,
         Mover* mover
         )
 {
+
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
     mover->addBox(curPosition);
-
-    int count = 500;
-    while (count > 0)
+    while (!posManager->atEnd(curPosition))
     {
-        --count;
-      
         Position nextPosition = decider->getNextPosition(
                                             posManager->getFuturePositions(curPosition),
-                                            *board,
-                                            *boxesPerBoxId);
+                                            *board);
 
         if (nextPosition != Position{-1, -1})
         {
@@ -63,7 +58,6 @@ void funcMoveBox(
 
         this_thread::sleep_for(20ms);
     }
-    cout << "position: " << curPosition << endl;
 }
 
 int main(int argc, char* argv[])
@@ -141,8 +135,8 @@ int main(int argc, char* argv[])
             // Create decider
             Decider_Safe decider{};
              
-            std::thread t0(funcMoveBox, Position{10, 10}, &board, &boxesPerBoxId, &(dPositionManger), &decider, &mover0);
-            std::thread t1(funcMoveBox, Position{10, 500}, &board, &boxesPerBoxId, &(uPositionManger), &decider, &mover1);
+            std::thread t0(funcMoveBox, Position{10, 10}, &board, &(dPositionManger), &decider, &mover0);
+            std::thread t1(funcMoveBox, Position{10, 500}, &board, &(uPositionManger), &decider, &mover1);
                                 
             // Event loop exit flag
             bool running  = true;
@@ -164,7 +158,8 @@ int main(int argc, char* argv[])
                 SDL_Delay(20); 
             }
 
-            t0.join(); 
+            
+            t0.join();
             t1.join();
 
             // Destroy renderer

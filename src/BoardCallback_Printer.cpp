@@ -6,7 +6,8 @@ BoardCallback_Printer::BoardCallback_Printer(Board* board, Printer* printer)
     _printer{printer}
 {}
 
-void BoardCallback_Printer::callback(Position position)
+void BoardCallback_Printer::callback(BoardNote boardNote, Position position)
 {
+    (void) boardNote;
     _printer->print(*_board, position);
 }
