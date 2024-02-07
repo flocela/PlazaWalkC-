@@ -9,7 +9,6 @@ void Printer_OpaqueBox::print(const Board& board, Position position)
 {  (void) board;
     (void) position; 
     (void) _renderer;
-    unique_lock lock(_mux);
    /* 
     
     BoardNote boardNote = board.getNoteAt(position);

@@ -22,7 +22,6 @@ public:
 
 private:
     SDL_Renderer* _renderer;
-    mutable std::shared_mutex _mux;
 
 };
 
