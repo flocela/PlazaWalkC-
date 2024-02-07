@@ -3,12 +3,11 @@
 
 using namespace std;
 
-Printer_OpaqueBox::Printer_OpaqueBox(SDL_Renderer* renderer): _renderer{renderer} {}
+Printer_OpaqueBox::Printer_OpaqueBox() {}
 
 void Printer_OpaqueBox::print(const Board& board, Position position)
 {  (void) board;
     (void) position; 
-    (void) _renderer;
    /* 
     
     BoardNote boardNote = board.getNoteAt(position);

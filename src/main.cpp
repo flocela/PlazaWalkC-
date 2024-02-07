@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
             
             // Create Board
             Board board{600, 600};
-            Printer_OpaqueBox printer{renderer};
+            Printer_OpaqueBox printer{};
             BoardCallback_Printer callbackPrinter{&board, &printer};
             board.registerCallback(&callbackPrinter);
 
