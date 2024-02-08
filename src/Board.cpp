@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "BoardRecorderAgent.h"
 
 using namespace std;
 
@@ -36,12 +37,6 @@ bool Board::addNote(Position position, BoardNote boardNote)
         _boardCallbacksPerPos.at(position).callback(boardNote, position);
     }
 
-    // TODO BoardCallback& should be const
-    for (BoardCallback* callback : _boardCallbacks)
-    {
-        callback->callback(boardNote, position);
-    }
-
     return success;
 }
 
@@ -56,7 +51,12 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
     _boardCallbacksPerPos.insert({pos, callBack});
 }
 
-void Board::registerCallback(BoardCallback* callBack)
+void Board::sendChanges()
 {
-    _boardCallbacks.insert(callBack);
+    for(BoardRecorderAgent* boardRecorderAgent : _boardRecorderAgents)
+    {
+        unordered_map<Position,int> typePerPosition{};
+        boardRecorderAgent->receiveChanges(typePerPosition);
+    }
 }
+        

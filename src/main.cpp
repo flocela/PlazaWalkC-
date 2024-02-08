@@ -10,13 +10,11 @@
 #include <SDL_ttf.h>
 
 #include "Board.h"
-#include "BoardCallback_Printer.h"
 #include "Box.h"
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Up.h"
-#include "Printer_OpaqueBox.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -122,9 +120,9 @@ int main(int argc, char* argv[])
             
             // Create Board
             Board board{600, 600};
-            Printer_OpaqueBox printer{};
-            BoardCallback_Printer callbackPrinter{&board, &printer};
-            board.registerCallback(&callbackPrinter);
+            //Printer_OpaqueBox printer{};
+            //BoardCallback_Printer callbackPrinter{&board, &printer};
+            //board.registerCallback(&callbackPrinter);
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
@@ -165,7 +163,6 @@ int main(int argc, char* argv[])
            
                 SDL_Delay(20); 
             }
-
             
             t0.join();
             t1.join();

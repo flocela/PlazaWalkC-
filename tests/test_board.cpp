@@ -28,6 +28,8 @@ TEST_CASE("Add BoardNotes, then Spot should contain corresponding box and type."
     REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{-1, -1});
 }
 
+
+// TODO these addNote() tests are really already tested in test_spot.cpp. Maybe delete them.
 TEST_CASE("Spot has a box with type -1. It's empty.")
 {
     Board board{20, 10};
@@ -83,7 +85,7 @@ TEST_CASE("Spot has a box with type 1.")
     }
 }
 
-TEST_CASE("XSpot has a box with type 2.")
+TEST_CASE("Spot has a box with type 2.")
 {
     Board board{20, 10};
     board.addNote(Position{5, 5}, BoardNote{10, 2});

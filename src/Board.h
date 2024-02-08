@@ -1,5 +1,5 @@
-#ifndef BOARD__H
-#define BOARD__H
+#ifndef FLOBOARD__H
+#define FLOBOARD__H
 
 #include <memory>
 #include <mutex>
@@ -12,7 +12,7 @@
 #include "Box.h"
 #include "Position.h"
 #include "Spot.h"
-
+class BoardRecorderAgent;
 class Board
 {
 public:
@@ -29,7 +29,7 @@ public:
     bool addNote(Position position, BoardNote boardNote);
     BoardNote getNoteAt(Position position) const;
     void registerCallback(Position pos, BoardCallback& callBack);
-    void registerCallback(BoardCallback* callBack);
+    void sendChanges();
 
 private:
     int _width;
@@ -38,7 +38,7 @@ private:
     // TODO these callbacks should be const:w
 
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
-    std::unordered_set<BoardCallback*> _boardCallbacks;
+    std::unordered_set<BoardRecorderAgent*> _boardRecorderAgents;
      
 };
 
