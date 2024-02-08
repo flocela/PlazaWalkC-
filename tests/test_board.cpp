@@ -166,3 +166,4 @@ TEST_CASE("Spot has a box with type 4.")
     }
 }
 
+

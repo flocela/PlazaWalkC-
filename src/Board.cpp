@@ -59,4 +59,9 @@ void Board::sendChanges()
         boardRecorderAgent->receiveChanges(typePerPosition);
     }
 }
+
+void Board::registerBoardRecorderAgent(BoardRecorderAgent* boardRecorderAgent)
+{
+    _boardRecorderAgents.insert(boardRecorderAgent);
+}
         

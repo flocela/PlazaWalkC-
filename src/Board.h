@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "BoardCallback.h"
+#include "BoardRecorderAgent.h"
 #include "Box.h"
 #include "Position.h"
 #include "Spot.h"
@@ -29,6 +30,7 @@ public:
     bool addNote(Position position, BoardNote boardNote);
     BoardNote getNoteAt(Position position) const;
     void registerCallback(Position pos, BoardCallback& callBack);
+    void registerBoardRecorderAgent(BoardRecorderAgent* boardRecorderAgent);
     void sendChanges();
 
 private:
