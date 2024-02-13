@@ -131,8 +131,8 @@ TEST_CASE("Spot:: Spot originally has the type 'Imminent Departure'")
         }
     }
 
-
     SECTION("and receives a note with the with a different boxId")
+    {
         SECTION("and an 'Imminent Departure' type, then an exception is thrown. Spot's type must be 'Arrived' to accept an 'Imminent Departure' note.")
         {
             // Box with boxId 99 is about to leave.
@@ -177,6 +177,7 @@ TEST_CASE("Spot:: Spot originally has the type 'Imminent Departure'")
             REQUIRE(1 == spot.getType());
         }
     }
+}
 
 TEST_CASE("Spot:: Spot originally has the type 'Imminent Arrival'")
 {

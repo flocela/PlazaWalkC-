@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "BoardCallback.h"
-#include "BoardRecorderAgent.h"
+#include "Agent.h"
 #include "Box.h"
 #include "Position.h"
 #include "Spot.h"
@@ -30,7 +30,7 @@ public:
     bool addNote(Position position, BoardNote boardNote);
     BoardNote getNoteAt(Position position) const;
     void registerCallback(Position pos, BoardCallback& callBack);
-    void registerBoardRecorderAgent(BoardRecorderAgent* boardRecorderAgent);
+    void registerAgent(Agent* agent);
     void sendChanges();
 
 private:
@@ -40,7 +40,9 @@ private:
     // TODO these callbacks should be const:w
 
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
-    std::unordered_set<BoardRecorderAgent*> _boardRecorderAgents;
+    std::unordered_set<Agent*> _agents;
+    
+    mutable std::shared_mutex _mux;
      
 };
 

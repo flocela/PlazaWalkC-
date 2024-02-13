@@ -3,16 +3,17 @@
 
 using namespace std;
 
-// box is moving down. If Current position is Position(a, b), then 
+// Box is moving down. If Current position is Position(a, b), then 
 // first position is Position(a, b+1). Corresponding to moving down.
-// second position is Position(a-1, b).
-// third  position is Position(a+1, b).
+// second position is Position(a-1, b). Corresponding to mvoing left.
+// third  position is Position(a+1, b). Corresponding to moving right.
 TEST_CASE("When getFututePositions() is called, should return the following positions in this order: straight down, left, right")
 {
     // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager{10, 0, 10, 0, 10};
 
     vector<Position> positions = downPositionManager.getFuturePositions(Position{5, 5});
+    REQUIRE(3 == positions.size());
     REQUIRE(positions[0] == Position{5, 6});
     REQUIRE(positions[1] == Position{4, 5});
     REQUIRE(positions[2] == Position{6, 5});
@@ -32,11 +33,11 @@ TEST_CASE("PositionManager_Down::atEnd() returns false if box has not reached th
     REQUIRE(false == downPositionManager.atEnd(Position{0, 0}));
 }
 
-TEST_CASE("PositionManager_Down::atEnd() returns false if box is past the final Y position.")
-{
+TEST_CASE("PositionManager_Down::atEnd() returns true if box is past the final Y position.")
+{   
     // PositionManager_Down{finalY, boardMinX, boardMaxX, boardMinY, boardMaxY}
     PositionManager_Down downPositionManager(1, 0, 10, 0, 10);
-    REQUIRE(false == downPositionManager.atEnd(Position{0, 0}));
+    REQUIRE(true == downPositionManager.atEnd(Position{2, 2}));
 }
 
 TEST_CASE("box's current position is already at end, then getFuturePositions returns an empty vector.")

@@ -42,6 +42,6 @@ vector<Position> PositionManager_Down::getFuturePositions(Position position)
 }    
      
 bool PositionManager_Down::atEnd(Position position)
-{
-    return position.getY() == _endY;
+{   
+    return position.getY() >= _endY;
 }

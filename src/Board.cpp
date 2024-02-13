@@ -30,6 +30,8 @@ int Board::getHeight() const
 
 bool Board::addNote(Position position, BoardNote boardNote)
 {
+    shared_lock<shared_mutex> lock(_mux);
+
     bool success = _spots[position.getY()][position.getX()].tagNote(boardNote);
 
     if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
@@ -40,8 +42,10 @@ bool Board::addNote(Position position, BoardNote boardNote)
     return success;
 }
 
+// TODO maybe delete this method if it isn't used.
 BoardNote Board::getNoteAt(Position position) const
 {
+    unique_lock<shared_mutex> lock(_mux);
     return BoardNote{_spots[position.getY()][position.getX()].getBoxId(),
                      _spots[position.getY()][position.getX()].getType()};
 }
@@ -53,15 +57,26 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
 
 void Board::sendChanges()
 {
-    for(BoardRecorderAgent* boardRecorderAgent : _boardRecorderAgents)
+    unordered_map<Position, int> typePerPosition;
     {
-        unordered_map<Position,int> typePerPosition{};
-        boardRecorderAgent->receiveChanges(typePerPosition);
+        unique_lock<shared_mutex> lock(_mux);
+        for (int ii=0; ii<_height; ++ii)
+        {
+            for (int jj=0; jj<_width; ++jj)
+            {
+                typePerPosition.insert({Position{ii, jj}, _spots[ii][jj].getType()});
+            }
+        }
+    }
+    
+    for(Agent* agent : _agents)
+    {   
+        agent->receiveChanges(typePerPosition);
     }
 }
 
-void Board::registerBoardRecorderAgent(BoardRecorderAgent* boardRecorderAgent)
+void Board::registerAgent(Agent* agent)
 {
-    _boardRecorderAgents.insert(boardRecorderAgent);
+    _agents.insert(agent);
 }
         

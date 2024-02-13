@@ -8,7 +8,7 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. D
     Board board{10, 10};
     Position positionA{5, 5};
 
-    // BoardNote{boxId, type}. Box1 arrives.
+    // Box1 arrives at positionA. 
     BoardNote boardNoteToArrive{1, 2};
     BoardNote boardNoteArrived{1, 4};
     board.addNote(positionA, boardNoteToArrive);
@@ -20,6 +20,7 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. D
 
     Position nextPosition = decider.getNextPosition(possiblePositions, board);
 
+    // Decider does not return positionA because that's where Box1 is. It returns the next position.
     REQUIRE(Position{5, 4} == nextPosition);
 }
 
@@ -28,7 +29,7 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. T
     Board board{10, 10};
     Position positionA{5, 5};
 
-    // BoardNote{boxId, type}. Box1 arrives.
+    // Box1 arrives at positionA. 
     BoardNote boardNoteToArrive{1, 2};
     BoardNote boardNoteArrived{1, 4};
     board.addNote(positionA, boardNoteToArrive);
@@ -38,6 +39,7 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. T
 
     vector<Position> possiblePositions = {positionA};
 
+    // Decider does not return positionA because that's where Box1 is. It returns {-1, -1} because the possiblePositions vector only had one position.
     Position nextPosition = decider.getNextPosition(possiblePositions, board);
     REQUIRE(Position{-1, -1} == nextPosition);
 }
@@ -83,7 +85,7 @@ TEST_CASE("Box0 is deciding to move to postionA. Box1 occupies positionA, but ha
 }
 
 
-TEST_CASE("Box0 is deciding to move to postionA. PositionA is unoccupied. Decider returns PositionA meaning that it is okay to move there.")
+TEST_CASE("Box0 is deciding to move to postionA. PositionA is unoccupied. Decider returns PositionA meaning that it is okay to move to PositionA.")
 {
     Board board{10, 10};
     Position positionA{5, 5};

@@ -3,10 +3,11 @@
 
 #include <vector>
 #include <unordered_set>
+#include "Agent.h"
 #include "Recorder.h"
 
 class Board;
-class BoardRecorderAgent
+class BoardRecorderAgent : public Agent
 {
 public:
     // TODO this should be a const Board
@@ -18,8 +19,8 @@ public:
     BoardRecorderAgent& operator=(BoardRecorderAgent&& o) noexcept = delete;
     ~BoardRecorderAgent() noexcept = default;
 
-    void updateWithChanges();
-    void receiveChanges(std::unordered_map<Position, int> typePerPosition);
+    void updateWithChanges() override;
+    void receiveChanges(std::unordered_map<Position, int> typePerPosition) override;
 
 private:
     Board* _board;
