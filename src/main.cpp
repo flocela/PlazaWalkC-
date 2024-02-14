@@ -10,11 +10,14 @@
 #include <SDL_ttf.h>
 
 #include "Board.h"
+#include "BoardAgent.h"
 #include "Box.h"
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Up.h"
+#include "Printer_OneColor.h"
+#include "Recorder.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -115,14 +118,18 @@ int main(int argc, char* argv[])
 
 
             // Create PositionManger
-            PositionManager_Down dPositionManger{300, 0, 599, 0, 599};
-            PositionManager_Up uPositionManger{300, 0, 599, 0, 599};
+            PositionManager_Down dPositionManger{50, 0, 599, 0, 599};
+            PositionManager_Up uPositionManger{550, 0, 599, 0, 599};
             
             // Create Board
             Board board{600, 600};
-            //Printer_OpaqueBox printer{};
-            //BoardCallback_Printer callbackPrinter{&board, &printer};
-            //board.registerCallback(&callbackPrinter);
+            Recorder recorder{};
+            BoardAgent boardAgent(&board);
+            board.registerAgent(&boardAgent);
+            boardAgent.registerListener(&recorder);
+            Printer_OneColor printer(renderer);
+            recorder.registerListener(&printer);
+             
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
@@ -160,8 +167,11 @@ int main(int argc, char* argv[])
                             break; 
                     }
                 }
-           
-                SDL_Delay(20); 
+          
+                boardAgent.updateWithChanges();
+                cout <<"main boardAgent.updateWithChanges()" <<endl;
+                
+                //SDL_Delay(20); 
             }
             
             t0.join();

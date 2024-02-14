@@ -1,39 +1,69 @@
 #include <utility>
 #include "Recorder.h"
+#include <iostream>
 
 using namespace std;
 
-void Recorder::receiveChanges(std::unordered_map<Position, int>& typePerPosition)
-{ 
-    // _positionSetsPerType is a map of sets per type. Remove position from former set (if it is contained in a former set). Add position to corresponding set. 
-    for (const auto& pairTypePerPosition : typePerPosition)
+Recorder::Recorder()
+{
+    for (int ii=1; ii<=4; ++ii)
     {
-        Position givenPosition = pairTypePerPosition.first;
-        int givenType = pairTypePerPosition.second;
+        _positionsetsPerType.insert({ii, unordered_set<Position>{}});
+    }        
+}
 
-        // iterate through each type in _positionSetsPerType 
-        for (const auto& pairPositionSetPerType : _positionSetsPerType)
+void Recorder::receiveChanges(std::unordered_map<Position, int> typesPerPosition)
+{ 
+    cout << "Recorder.cpp receiveChanges" << endl;
+    cout << "Recorder typesPerPosition size: " << typesPerPosition.size() << endl;
+    // _positionSetsPerType is a map of sets per type.
+    // It may be that position needs to be moved from one type set to another type set.
+    // Remove position from former set (if it is contained in a former set).
+    // And add position to its new set. 
+    for (const auto& typePerPosition : typesPerPosition)
+    {
+        Position givenPosition = typePerPosition.first;
+        int givenType          = typePerPosition.second;
+
+        // iterate through each type in _positionsetsPerType 
+        for (const auto& positionsetPerType : _positionsetsPerType)
         {
-            int recordedType = pairPositionSetPerType.first;
-            if (_positionSetsPerType.at(recordedType).find(givenPosition) != _positionSetsPerType.at(recordedType).end())
+            int curType = positionsetPerType.first;
+            cout <<"Recorder: curType " << curType << endl;
+
+            // find set corresponding to curType. 
+            if (_positionsetsPerType.at(curType).find(givenPosition) != _positionsetsPerType.at(curType).end())
             {
-                if (recordedType != givenType)
+                // if curType is not the given type, then delete position from curType's set.
+                if (curType != givenType)
                 {
-                    _positionSetsPerType.at(recordedType).erase(givenPosition);
+                    _positionsetsPerType.at(curType).erase(givenPosition);
                 }
                 
             }
-            if (givenType == recordedType && givenType != -1)
+            
+            // if the givenType == curType then add givenPosition to the curType's set. 
+            if (givenType == curType)
             {
-                _positionSetsPerType.at(recordedType).insert(givenPosition);
+                _positionsetsPerType.at(curType).insert(givenPosition);
             }
         }
+    }
+    
+    for (RecorderListener* listener : _listeners)
+    {
+        listener->receiveAllPositions(_positionsetsPerType);
     }
 }
 
 unordered_map<int, unordered_set<Position>> Recorder::getPositions()
 {
     return unordered_map<int, unordered_set<Position>>{};
+}
+
+void Recorder::registerListener(RecorderListener* listener)
+{
+    _listeners.push_back(listener);
 }
 
    /* 

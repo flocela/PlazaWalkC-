@@ -1,5 +1,5 @@
 #include "Board.h"
-#include "BoardRecorderAgent.h"
+#include "BoardAgent.h"
 
 using namespace std;
 
