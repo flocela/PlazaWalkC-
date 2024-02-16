@@ -4,10 +4,7 @@
 #include <vector>
 #include <unordered_set>
 #include "Agent.h"
-//#include "Board.h"
-#include "BoardAgentListener.h"
-
-class Board;
+#include "Board.h"
 
 class BoardAgent : public Agent
 {
@@ -22,14 +19,9 @@ public:
     ~BoardAgent() noexcept = default;
 
     void updateWithChanges() override;
-    void receiveChanges(std::unordered_map<Position, int> typePerPosition) override;
-
-    void registerListener(BoardAgentListener* listener);
 
 private:
     Board* _board;
-    std::vector<BoardAgentListener*> _listeners;
-    std::vector<std::unordered_set<Position>> _positionsPerType{};
 };
 
 #endif

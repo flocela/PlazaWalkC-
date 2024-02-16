@@ -10,6 +10,7 @@ Position Decider_Safe::getNextPosition(
     // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {
+        cout << "Decider_Safe position: " << position << endl;
         // BoardNote at position will tell us what box (if any) is currently at that postion. 
         BoardNote boardNote = board.getNoteAt(position);
 

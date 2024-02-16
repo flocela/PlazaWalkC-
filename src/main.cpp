@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <chrono>
 #include <iostream>
 #include <stdio.h>
@@ -39,7 +40,7 @@ void funcMoveBox(
         Mover* mover
         )
 {
-    cout << "funcMoveBox: " << endl;
+    //cout << "funcMoveBox: " << endl;
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
     mover->addBox(curPosition);
@@ -52,12 +53,13 @@ void funcMoveBox(
 
         if (nextPosition != Position{-1, -1})
         {
+            cout << "main.cpp: mover movesBox from " << curPosition << " to " << nextPosition << endl;
             if (mover->moveBox(curPosition, nextPosition))
             {
                 curPosition = nextPosition;
             }
         }
-        this_thread::sleep_for(20ms);
+        this_thread::sleep_for(100ms);
     }
 }
 
@@ -118,18 +120,16 @@ int main(int argc, char* argv[])
 
 
             // Create PositionManger
-            PositionManager_Down dPositionManger{50, 0, 599, 0, 599};
-            PositionManager_Up uPositionManger{550, 0, 599, 0, 599};
+            PositionManager_Down dPositionManger{100, 0, 299, 0, 299};
+            PositionManager_Up uPositionManger{50, 0, 299, 0, 299};
             
             // Create Board
-            Board board{600, 600};
-            Recorder recorder{};
+            Board board{300, 300};
             BoardAgent boardAgent(&board);
-            board.registerAgent(&boardAgent);
-            boardAgent.registerListener(&recorder);
+            Recorder recorder{};
+            board.registerListener(&recorder);
             Printer_OneColor printer(renderer);
             recorder.registerListener(&printer);
-             
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
@@ -149,10 +149,13 @@ int main(int argc, char* argv[])
             Decider_Safe decider{};
              
             std::thread t0(funcMoveBox, Position{10, 10}, &board, &(dPositionManger), &decider, &mover0);
-            std::thread t1(funcMoveBox, Position{10, 500}, &board, &(uPositionManger), &decider, &mover1);
+            std::thread t1(funcMoveBox, Position{10, 200}, &board, &(uPositionManger), &decider, &mover1);
                                 
             // Event loop exit flag
             bool running  = true;
+
+            
+            clock_t start, end;     
 
             // Event loop
             while(running)
@@ -167,10 +170,12 @@ int main(int argc, char* argv[])
                             break; 
                     }
                 }
-          
+                start = clock(); 
                 boardAgent.updateWithChanges();
-                cout <<"main boardAgent.updateWithChanges()" <<endl;
-                
+                end = clock();
+                double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+                cout << "time taken to print is : " << fixed << time_taken << setprecision(5);
+                cout << "sec" << endl;               
                 //SDL_Delay(20); 
             }
             

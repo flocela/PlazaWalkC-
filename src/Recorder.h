@@ -4,10 +4,10 @@
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
-#include "BoardAgentListener.h"
+#include "BoardListener.h"
 #include "RecorderListener.h"
 
-class Recorder : public BoardAgentListener
+class Recorder : public BoardListener
 {
 
 public:
@@ -20,15 +20,15 @@ public:
     ~Recorder() noexcept = default; 
 
     // Need for typePerPosition memory to not be deleted until call is finished. 
-    void receiveChanges(std::unordered_map<Position, int> typesPerPosition) override;
+    void receiveChanges(std::unordered_map<int, std::unordered_set<Drop>> setsOfDropsPerType);
 
-    std::unordered_map<int, std::unordered_set<Position>> getPositions();
+    std::unordered_map<int, std::unordered_set<Drop>> getDrops();
 
     void registerListener(RecorderListener* listener);
 
 private:
    
-    std::unordered_map<int, std::unordered_set<Position>> _positionsetsPerType{}; 
+    std::unordered_map<int, std::unordered_set<Drop>> _dropSetsPerType{}; 
     std::vector<RecorderListener*> _listeners;
 
 };

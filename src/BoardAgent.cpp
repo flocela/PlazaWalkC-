@@ -13,16 +13,3 @@ void BoardAgent::updateWithChanges()
     _board->sendChanges();
 }
 
-void BoardAgent::receiveChanges(unordered_map<Position, int> typePerPosition)
-{
-    for (BoardAgentListener* listener : _listeners)
-    {
-        listener->receiveChanges(typePerPosition);
-    }
-}   
-
-void BoardAgent::registerListener(BoardAgentListener* listener)
-{
-    _listeners.push_back(listener);
-}
-    

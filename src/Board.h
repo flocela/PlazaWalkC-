@@ -9,11 +9,12 @@
 #include <vector>
 
 #include "BoardCallback.h"
-#include "Agent.h"
+#include "BoardListener.h"
 #include "Box.h"
+#include "Drop.h"
 #include "Position.h"
 #include "Spot.h"
-class BoardRecorderAgent;
+
 class Board
 {
 public:
@@ -30,17 +31,24 @@ public:
     bool addNote(Position position, BoardNote boardNote);
     BoardNote getNoteAt(Position position) const;
     void registerCallback(Position pos, BoardCallback& callBack);
-    void registerAgent(Agent* agent);
+    void registerListener(BoardListener* listener);
     void sendChanges();
 
 private:
     int _width;
     int _height;
+    
+    // this is the master board.
     std::vector<std::vector<Spot>> _spots;
-    // TODO these callbacks should be const:w
 
+    // these boards keep track of the changes to the board that have not been sent out
+    std::vector<std::vector<Drop>> _dropBoard1;
+    std::vector<std::vector<Drop>> _dropBoard2;
+    int _curDropBoard = 1;
+
+    // TODO these callbacks should be const
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
-    std::unordered_set<Agent*> _agents;
+    std::unordered_set<BoardListener*> _listeners;
     
     mutable std::shared_mutex _mux;
      

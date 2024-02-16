@@ -8,57 +8,73 @@ Recorder::Recorder()
 {
     for (int ii=1; ii<=4; ++ii)
     {
-        _positionsetsPerType.insert({ii, unordered_set<Position>{}});
+        _dropSetsPerType.insert({ii, unordered_set<Drop>{}});
     }        
 }
 
-void Recorder::receiveChanges(std::unordered_map<Position, int> typesPerPosition)
+void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> changedSetsOfDropsPerType)
 { 
-    cout << "Recorder.cpp receiveChanges" << endl;
-    cout << "Recorder typesPerPosition size: " << typesPerPosition.size() << endl;
     // _positionSetsPerType is a map of sets per type.
-    // It may be that position needs to be moved from one type set to another type set.
+    // It may be that position needs to be moved from one type's set to another type's set.
+
     // Remove position from former set (if it is contained in a former set).
     // And add position to its new set. 
-    for (const auto& typePerPosition : typesPerPosition)
+
+    int receivedcount = 0;
+    for (const auto& setOfDropsPerType : changedSetsOfDropsPerType)
     {
-        Position givenPosition = typePerPosition.first;
-        int givenType          = typePerPosition.second;
+        receivedcount += setOfDropsPerType.second.size();
+    }
 
-        // iterate through each type in _positionsetsPerType 
-        for (const auto& positionsetPerType : _positionsetsPerType)
+    cout << "Recorder receivecCount: " << receivedcount << endl;
+    
+
+
+    for (const auto& changedSetPerType : changedSetsOfDropsPerType)
+    {
+        
+        int newType = changedSetPerType.first;
+
+        for (const auto& drop : changedSetPerType.second)
         {
-            int curType = positionsetPerType.first;
-            cout <<"Recorder: curType " << curType << endl;
+            int eraseCount = 0; 
+            // for each set in _positionsetsPerType 
+            for (const auto& dropSetPerType : _dropSetsPerType)
+            {
+                int curType = dropSetPerType.first;
 
-            // find set corresponding to curType. 
-            if (_positionsetsPerType.at(curType).find(givenPosition) != _positionsetsPerType.at(curType).end())
-            {
-                // if curType is not the given type, then delete position from curType's set.
-                if (curType != givenType)
+                if (_dropSetsPerType.at(curType).find(drop) != _dropSetsPerType.at(curType).end())
                 {
-                    _positionsetsPerType.at(curType).erase(givenPosition);
+                    _dropSetsPerType.at(curType).erase(drop);
+                    ++eraseCount;
+                    break; 
                 }
-                
             }
-            
-            // if the givenType == curType then add givenPosition to the curType's set. 
-            if (givenType == curType)
+            cout << "eraseCount: " << eraseCount << endl;
+
+            if (newType != -1)
             {
-                _positionsetsPerType.at(curType).insert(givenPosition);
+                _dropSetsPerType[newType].insert(drop);
             }
         }
     }
+
+    int count = 0;
+    for (const auto& dropSetPerType : _dropSetsPerType)
+    {
+        count += dropSetPerType.second.size();
+    }
+    cout << "Recorder num of drops in dropSetsPerType: " << count << endl;
     
     for (RecorderListener* listener : _listeners)
     {
-        listener->receiveAllPositions(_positionsetsPerType);
+        listener->receiveAllDrops(_dropSetsPerType);
     }
 }
 
-unordered_map<int, unordered_set<Position>> Recorder::getPositions()
+unordered_map<int, unordered_set<Drop>> Recorder::getDrops()
 {
-    return unordered_map<int, unordered_set<Position>>{};
+    return unordered_map<int, unordered_set<Drop>>{};
 }
 
 void Recorder::registerListener(RecorderListener* listener)

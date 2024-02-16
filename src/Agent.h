@@ -8,8 +8,6 @@ class Agent
 {
 public:
     virtual void updateWithChanges() = 0;
-
-    virtual void receiveChanges(std::unordered_map<Position, int> typePerPosition) = 0;
 };
 
 #endif
