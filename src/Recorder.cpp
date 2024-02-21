@@ -20,13 +20,13 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
     // Remove position from former set (if it is contained in a former set).
     // And add position to its new set. 
 
-    int receivedcount = 0;
-    for (const auto& setOfDropsPerType : changedSetsOfDropsPerType)
-    {
-        receivedcount += setOfDropsPerType.second.size();
-    }
+    //int receivedcount = 0;
+    //for (const auto& setOfDropsPerType : changedSetsOfDropsPerType)
+    //{
+    //    receivedcount += setOfDropsPerType.second.size();
+    //}
 
-    cout << "Recorder receivecCount: " << receivedcount << endl;
+    //cout << "Recorder receivecCount: " << receivedcount << endl;
     
 
 
@@ -37,7 +37,7 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
 
         for (const auto& drop : changedSetPerType.second)
         {
-            int eraseCount = 0; 
+            //int eraseCount = 0; 
             // for each set in _positionsetsPerType 
             for (const auto& dropSetPerType : _dropSetsPerType)
             {
@@ -46,11 +46,11 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
                 if (_dropSetsPerType.at(curType).find(drop) != _dropSetsPerType.at(curType).end())
                 {
                     _dropSetsPerType.at(curType).erase(drop);
-                    ++eraseCount;
+                    //++eraseCount;
                     break; 
                 }
             }
-            cout << "eraseCount: " << eraseCount << endl;
+            //cout << "eraseCount: " << eraseCount << endl;
 
             if (newType != -1)
             {
@@ -58,14 +58,14 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
             }
         }
     }
-
+/*
     int count = 0;
     for (const auto& dropSetPerType : _dropSetsPerType)
     {
         count += dropSetPerType.second.size();
     }
     cout << "Recorder num of drops in dropSetsPerType: " << count << endl;
-    
+*/    
     for (RecorderListener* listener : _listeners)
     {
         listener->receiveAllDrops(_dropSetsPerType);

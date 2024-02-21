@@ -77,7 +77,7 @@ void Board::sendChanges()
     // Collect changes in setsOfDropsPerType  
     unordered_map<int, unordered_set<Drop>> setsOfDropsPerType;
 
-    int count = 0;
+    //int count = 0;
     for (int row=0; row<_height; ++row)
     {
         for (int col=0; col<_width; ++col)
@@ -85,7 +85,7 @@ void Board::sendChanges()
             Drop curDrop = (*changedBoard)[row][col];
             if (curDrop._changed)
             {
-                ++count;
+                //++count;
                 setsOfDropsPerType[curDrop._type].insert(curDrop);
                 (*changedBoard)[row][col]._boxId = -1;
                 (*changedBoard)[row][col]._type = -1;
@@ -93,7 +93,7 @@ void Board::sendChanges()
             }
         }
     }
-    cout << "Board: will send these many Changes: " << count << endl; 
+    //cout << "Board: will send these many Changes: " << count << endl; 
     
     for(BoardListener* listener : _listeners)
     {   

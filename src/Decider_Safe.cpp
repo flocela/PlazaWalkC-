@@ -7,6 +7,7 @@ Position Decider_Safe::getNextPosition(
     const Board& board
     )
 {
+    cout << "Decider possiblePositions.size(): " << possiblePositions.size() << ", ";
     // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {
@@ -20,6 +21,8 @@ Position Decider_Safe::getNextPosition(
             return position;
         }       
     }
+
+    cout << "Decider says not to move." << endl;
     
     return Position{-1, -1};
 } 

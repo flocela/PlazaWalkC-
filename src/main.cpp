@@ -25,8 +25,8 @@
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 // Define screen dimensions
-#define SCREEN_WIDTH    600
-#define SCREEN_HEIGHT   600
+#define SCREEN_WIDTH    800
+#define SCREEN_HEIGHT   800
 
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
 
@@ -117,45 +117,58 @@ int main(int argc, char* argv[])
             SDL_RenderPresent(renderer);
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
             SDL_RenderPresent(renderer);
-
-
-            // Create PositionManger
-            PositionManager_Down dPositionManger{100, 0, 299, 0, 299};
-            PositionManager_Up uPositionManger{50, 0, 299, 0, 299};
             
             // Create Board
-            Board board{300, 300};
+            Board board{800, 800};
             BoardAgent boardAgent(&board);
             Recorder recorder{};
             board.registerListener(&recorder);
             Printer_OneColor printer(renderer);
             recorder.registerListener(&printer);
-
-            // Create Boxes
-            vector<unique_ptr<Box>> boxes{};
-            boxes.push_back(make_unique<Box>(0, 10, 10));
-            boxes.push_back(make_unique<Box>(1, 10, 10));
-
-            // Create map of boxes per boxId
-            unordered_map<int, Box*> boxesPerBoxId{};
-            boxesPerBoxId.insert({0, boxes[0].get()});
-            boxesPerBoxId.insert({1, boxes[1].get()});
-         
-            // Create mover 
-            Mover_Reg mover0{*(boxes[0].get()), board};
-            Mover_Reg mover1{*(boxes[1].get()), board};
+            
+            // Create PositionManger
+            PositionManager_Down dPositionManager{100, 0, board.getWidth(), 0, board.getHeight()};
+            PositionManager_Up uPositionManager{0, 0, board.getWidth(), 0, board.getHeight()};
 
             // Create decider
             Decider_Safe decider{};
-             
-            std::thread t0(funcMoveBox, Position{10, 10}, &board, &(dPositionManger), &decider, &mover0);
-            std::thread t1(funcMoveBox, Position{10, 200}, &board, &(uPositionManger), &decider, &mover1);
-                                
+
+            // Create Boxes
+            vector<unique_ptr<Box>> boxes{};
+            for (int ii=0; ii<4; ++ii)
+            {
+                boxes.push_back(make_unique<Box>(0, 3, 3));
+            }
+
+            // Create movers 
+            vector<unique_ptr<Mover_Reg>> movers{};
+            for (uint32_t ii=0; ii<boxes.size(); ++ii)
+            {
+                movers.push_back(make_unique<Mover_Reg>(*(boxes[ii].get()), board));
+            }  
+
+            vector<unique_ptr<thread>> threads{};
+            uint32_t boxIdx = 0;
+            for (uint32_t ii=0; ii<360; ii+= 3)
+            {
+                // TODO change Position's attribute types to be uint32_t
+                if (boxIdx < boxes.size())
+                {
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 10}, &board, &(dPositionManager), &decider, movers[boxIdx].get()));
+                }
+                ++boxIdx; 
+                if (boxIdx < boxes.size())
+                {
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 100}, &board, &(uPositionManager), &decider, movers[boxIdx].get()));
+                } 
+            }                                
+            
+
             // Event loop exit flag
             bool running  = true;
 
             
-            clock_t start, end;     
+            //clock_t start, end;     
 
             // Event loop
             while(running)
@@ -170,17 +183,19 @@ int main(int argc, char* argv[])
                             break; 
                     }
                 }
-                start = clock(); 
+                //start = clock(); 
                 boardAgent.updateWithChanges();
-                end = clock();
-                double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-                cout << "time taken to print is : " << fixed << time_taken << setprecision(5);
-                cout << "sec" << endl;               
+                //end = clock();
+                //double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+                //cout << "time taken to print is : " << fixed << time_taken << setprecision(5);
+                //cout << "sec" << endl;               
                 //SDL_Delay(20); 
             }
             
-            t0.join();
-            t1.join();
+            for(uint32_t ii=0; ii<threads.size(); ++ii)
+            {
+                threads[ii]->join();
+            }
 
             // Destroy renderer
             SDL_DestroyRenderer(renderer);

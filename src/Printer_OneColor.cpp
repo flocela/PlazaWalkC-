@@ -24,8 +24,8 @@ void Printer_OneColor::print(unordered_map<int, unordered_set<Drop>> dropsPerTyp
         {
             // TODO Can I initialize a SDL_Rect in the constructor, instead of 4 lines?
             SDL_Rect squareRect;
-            squareRect.w = 10;
-            squareRect.h = 10;
+            squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
+            squareRect.h = 3;
             squareRect.x = drop._position.getX();
             squareRect.y = drop._position.getY();
 
