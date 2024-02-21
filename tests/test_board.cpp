@@ -54,6 +54,7 @@ TEST_CASE("Sends changes to registered Agents")
 
     Board board{10, 10};
     BoardListener_Test listener{};
+
     board.registerListener(&listener);
 
     board.addNote(Position{5, 5}, BoardNote{0, 2});
@@ -62,7 +63,7 @@ TEST_CASE("Sends changes to registered Agents")
     board.sendChanges();
     REQUIRE(listener._dropsPerPosition.size() == 2);
     REQUIRE(2 == listener._dropsPerPosition.at(Position{5, 5})._type);
-    //REQUIRE(2 == listener._dropsPerPosition[Position{6, 6}]._type);
+    REQUIRE(2 == listener._dropsPerPosition.at(Position{6, 6})._type);
 
     listener._dropsPerPosition.clear();
 
@@ -71,6 +72,6 @@ TEST_CASE("Sends changes to registered Agents")
     board.sendChanges();
     
     REQUIRE(listener._dropsPerPosition.size() == 2);
-    //REQUIRE(4 == listener._dropsPerPosition[Position{5, 5}]._type);
-    //REQUIRE(2 == listener._dropsPerPosition[Position{7, 7}]._type);
+    REQUIRE(4 == listener._dropsPerPosition.at(Position{5, 5})._type);
+    REQUIRE(2 == listener._dropsPerPosition.at(Position{7, 7})._type);
 }

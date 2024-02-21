@@ -41,13 +41,15 @@ bool Board::addNote(Position position, BoardNote boardNote)
 
     bool success = _spots[position.getY()][position.getX()].tagNote(boardNote);
    
-    // if success == true, then type at this position definitely changed. (Maybe changed to -1. Still needs to be recorded.)
     if (success)
     {
+        // Record change in boxId and/or type at position in _curDropBoard.
+
         (*_curDropBoard)[position.getY()][position.getX()]._boxId = _spots[position.getY()][position.getX()].getBoxId();
         (*_curDropBoard)[position.getY()][position.getX()]._type = _spots[position.getY()][position.getX()].getType();
         (*_curDropBoard)[position.getY()][position.getX()]._changed = true;
 
+        // Notify all BoardCallbacks. Should be zero as BoardCallbacks are only used in testing.
         if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
         {
             _boardCallbacksPerPos.at(position).callback(boardNote, position);
@@ -62,22 +64,23 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
     _boardCallbacksPerPos.insert({pos, callBack});
 }
 
-// sendChanges() should only be called by one thread at a time.
+// TODO sendChanges() should only be called by one thread at a time.
 void Board::sendChanges()
 {
-    // I will be returning the changes inside changedBoard. 
+    // changedBoard holds the current matrix where changes are being made. 
     vector<vector<Drop>>* changedBoard = _curDropBoard;
 
-    // While I'm collecting and sending the changes, addNote() will be modifying the other dropboard.   
+    // Toggle _curDropBoard to _dropBoard1 or dropBoard2.
+    // New changes from addNote() will be recorded in the newly selected board while changes are made to changedBoard.
     {
         unique_lock<shared_mutex> lockUq(_mux);    
         _curDropBoard = (_curDropBoard == &_dropBoard1) ? (&_dropBoard2) : (&_dropBoard1);
     }
-   
+  
+    // TODO return setOfDropsPerPosition changing to per type should be done by the listener
     // Collect changes in setsOfDropsPerType  
     unordered_map<int, unordered_set<Drop>> setsOfDropsPerType;
 
-    //int count = 0;
     for (int row=0; row<_height; ++row)
     {
         for (int col=0; col<_width; ++col)
@@ -85,7 +88,6 @@ void Board::sendChanges()
             Drop curDrop = (*changedBoard)[row][col];
             if (curDrop._changed)
             {
-                //++count;
                 setsOfDropsPerType[curDrop._type].insert(curDrop);
                 (*changedBoard)[row][col]._boxId = -1;
                 (*changedBoard)[row][col]._type = -1;
