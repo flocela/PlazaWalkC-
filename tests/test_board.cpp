@@ -11,23 +11,23 @@ TEST_CASE("getHeight() and getWidth() return the Board's dimensions")
 }
 
 TEST_CASE("Add BoardNotes with different types to Position{5, 5}. The retrieved boardnotes' types should reflect the newly given boardnotes.")
-{   
+{  
+    int boxId = 10; 
     Board board{20, 10};
     
     // BoardNote(int type, int boxId)
-    board.addNote(Position{5, 5}, BoardNote{10, 2});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{10, 2});
-    cout << "test_board line 20" << endl;
-/*
-    board.addNote(Position{5, 5}, BoardNote{10, 4});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{10, 4});
+    board.addNote(Position{5, 5}, BoardNote{boxId, 2});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, 2});
 
-    board.addNote(Position{5, 5}, BoardNote{10, 1});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{10, 1});
+    board.addNote(Position{5, 5}, BoardNote{boxId, 4});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, 4});
 
-    board.addNote(Position{5, 5}, BoardNote{10, 3});
+    board.addNote(Position{5, 5}, BoardNote{boxId, 1});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, 1});
+
+    board.addNote(Position{5, 5}, BoardNote{boxId, 3});
     REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{-1, -1});
-*/
+
 }
 
 TEST_CASE("Sends changes to registered Agents")

@@ -42,10 +42,7 @@ private:
     std::vector<std::vector<Spot>> _spots;
 
     // _dropBoard1 and _dropBoard2 boards keep track of the changes to the board that have not been sent out.
-    // Every time sendChanges() is called, _curDropBoard is toggled between _dropBoard1 and _dropBoard2.
-    // Say sendChanges() is called when _curDropBoard is _dropBoard1. Then a ptr to _curDropBoard is made.
-    // _curDropBoard is made to point to _dropBoard2. Then while changes are being sent out from _dropBoard1
-    // new changes are being added to _dropBoard2. 
+    // Where changes reside is toggled between _dropBoard1 and _dropBoard2 by changing which one _curDropBoard points to.
     std::vector<std::vector<Drop>> _dropBoard1;
     std::vector<std::vector<Drop>> _dropBoard2;
     std::vector<std::vector<Drop>>* _curDropBoard = nullptr;
