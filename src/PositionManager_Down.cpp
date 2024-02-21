@@ -12,7 +12,6 @@ PositionManager_Down::PositionManager_Down(int finalY, int boardMinX, int boardM
 
 vector<Position> PositionManager_Down::getFuturePositions(Position position)
 {
-    cout << "PM_Down: " << _endY << ", " << _boardMinX << ", " << _boardMaxX << ", " << _boardMinY << ", " << _boardMaxY << endl; 
     Position curPosition = position;
 
     vector<Position> newPositions{};

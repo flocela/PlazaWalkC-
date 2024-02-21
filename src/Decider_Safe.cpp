@@ -7,11 +7,9 @@ Position Decider_Safe::getNextPosition(
     const Board& board
     )
 {
-    cout << "Decider possiblePositions.size(): " << possiblePositions.size() << ", ";
     // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {
-        cout << "Decider_Safe position: " << position << endl;
         // BoardNote at position will tell us what box (if any) is currently at that postion. 
         BoardNote boardNote = board.getNoteAt(position);
 
@@ -22,8 +20,6 @@ Position Decider_Safe::getNextPosition(
         }       
     }
 
-    cout << "Decider says not to move." << endl;
-    
     return Position{-1, -1};
 } 
 

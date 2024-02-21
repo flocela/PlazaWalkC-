@@ -62,7 +62,6 @@ bool Spot::tagNote(BoardNote note)
         }
         else 
         {
-            //cout << errorString(note) << endl;
             throw invalid_argument(errorString(note));
         } 
     }

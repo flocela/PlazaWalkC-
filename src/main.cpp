@@ -44,7 +44,6 @@ void funcMoveBox(
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
     mover->addBox(curPosition);
-    cout << "curPositon: " << curPosition << endl;
     while (!posManager->atEnd(curPosition))
     {
         Position nextPosition = decider->getNextPosition(
@@ -53,7 +52,6 @@ void funcMoveBox(
 
         if (nextPosition != Position{-1, -1})
         {
-            cout << "main.cpp: mover movesBox from " << curPosition << " to " << nextPosition << endl;
             if (mover->moveBox(curPosition, nextPosition))
             {
                 curPosition = nextPosition;
@@ -137,7 +135,7 @@ int main(int argc, char* argv[])
             vector<unique_ptr<Box>> boxes{};
             for (int ii=0; ii<4; ++ii)
             {
-                boxes.push_back(make_unique<Box>(0, 3, 3));
+                boxes.push_back(make_unique<Box>(ii, 3, 3));
             }
 
             // Create movers 
@@ -154,13 +152,14 @@ int main(int argc, char* argv[])
                 // TODO change Position's attribute types to be uint32_t
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 10}, &board, &(dPositionManager), &decider, movers[boxIdx].get()));
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 30}, &board, &(dPositionManager), &decider, movers[boxIdx].get()));
                 }
                 ++boxIdx; 
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 100}, &board, &(uPositionManager), &decider, movers[boxIdx].get()));
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 70}, &board, &(uPositionManager), &decider, movers[boxIdx].get()));
                 } 
+                ++boxIdx;
             }                                
             
 
