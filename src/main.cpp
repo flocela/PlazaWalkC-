@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
-            for (int ii=0; ii<4; ++ii)
+            for (int ii=0; ii<360; ++ii)
             {
                 boxes.push_back(make_unique<Box>(ii, 3, 3));
             }
