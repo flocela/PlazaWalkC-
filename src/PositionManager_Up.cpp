@@ -23,8 +23,8 @@ vector<Position> PositionManager_Up::getFuturePositions(Position position)
           
     vector<Position> tempPositions{
         Position{curPosition.getX(), curPosition.getY()-1},
-        Position{curPosition.getX()+5, curPosition.getY()},
-        Position{curPosition.getX()-5, curPosition.getY()}
+        Position{curPosition.getX()+1, curPosition.getY()},
+        Position{curPosition.getX()-1, curPosition.getY()}
     };
 
     for (Position pos : tempPositions)

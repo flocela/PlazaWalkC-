@@ -22,6 +22,7 @@ Board::Board(int width, int height)
         _dropBoard1.push_back(rowOfDrops1);
         _dropBoard2.push_back(rowOfDrops2);
     }
+    _curDropBoard = &_dropBoard1;
 }
 
 int Board::getWidth() const
@@ -43,11 +44,9 @@ bool Board::addNote(Position position, BoardNote boardNote)
     // if success == true, then type at this position definitely changed. (Maybe changed to -1. Still needs to be recorded.)
     if (success)
     {
-        std::vector<std::vector<Drop>>* curDropBoard = (_curDropBoard == 1) ? &_dropBoard1 : &_dropBoard2;
-
-        (*curDropBoard)[position.getY()][position.getX()]._boxId = _spots[position.getY()][position.getX()].getBoxId();
-        (*curDropBoard)[position.getY()][position.getX()]._type = _spots[position.getY()][position.getX()].getType();
-        (*curDropBoard)[position.getY()][position.getX()]._changed = true;
+        (*_curDropBoard)[position.getY()][position.getX()]._boxId = _spots[position.getY()][position.getX()].getBoxId();
+        (*_curDropBoard)[position.getY()][position.getX()]._type = _spots[position.getY()][position.getX()].getType();
+        (*_curDropBoard)[position.getY()][position.getX()]._changed = true;
 
         if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
         {
@@ -63,15 +62,16 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
     _boardCallbacksPerPos.insert({pos, callBack});
 }
 
+// sendChanges() should only be called by one thread at a time.
 void Board::sendChanges()
 {
     // I will be returning the changes inside changedBoard. 
-    vector<vector<Drop>>* changedBoard = (_curDropBoard == 1) ? &_dropBoard1 : &_dropBoard2;
+    vector<vector<Drop>>* changedBoard = _curDropBoard;
 
-    // While I'm collecting and sending the changes addNote() will be modifying the other dropboard.   
+    // While I'm collecting and sending the changes, addNote() will be modifying the other dropboard.   
     {
         unique_lock<shared_mutex> lockUq(_mux);    
-        _curDropBoard = (_curDropBoard == 1) ? 2 : 1;
+        _curDropBoard = (_curDropBoard == &_dropBoard1) ? (&_dropBoard2) : (&_dropBoard1);
     }
    
     // Collect changes in setsOfDropsPerType  
@@ -93,7 +93,6 @@ void Board::sendChanges()
             }
         }
     }
-    //cout << "Board: will send these many Changes: " << count << endl; 
     
     for(BoardListener* listener : _listeners)
     {   
