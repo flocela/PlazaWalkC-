@@ -37,14 +37,15 @@ void funcMoveBox(
         Board* board,
         PositionManager* posManager,
         Decider* decider,
-        Mover* mover
+        Mover* mover,
+        bool* breaker
         )
 {
     //cout << "funcMoveBox: " << endl;
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
     mover->addBox(curPosition);
-    while (!posManager->atEnd(curPosition))
+    while (!posManager->atEnd(curPosition) && *breaker)
     {
         Position nextPosition = decider->getNextPosition(
                                             posManager->getFuturePositions(curPosition),
@@ -133,7 +134,7 @@ int main(int argc, char* argv[])
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
-            for (int ii=0; ii<360; ++ii)
+            for (int ii=0; ii<720; ++ii)
             {
                 boxes.push_back(make_unique<Box>(ii, 3, 3));
             }
@@ -144,7 +145,10 @@ int main(int argc, char* argv[])
             {
                 movers.push_back(make_unique<Mover_Reg>(*(boxes[ii].get()), board));
             }  
-
+            
+            // Event loop exit flag
+            bool running  = true;
+            
             vector<unique_ptr<thread>> threads{};
             uint32_t boxIdx = 0;
             for (uint32_t ii=0; ii<360; ii+= 3)
@@ -152,21 +156,16 @@ int main(int argc, char* argv[])
                 // TODO change Position's attribute types to be uint32_t
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 30}, &board, &(dPositionManager), &decider, movers[boxIdx].get()));
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 30}, &board, &(dPositionManager), &decider, movers[boxIdx].get(), &running));
                 }
                 ++boxIdx; 
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 70}, &board, &(uPositionManager), &decider, movers[boxIdx].get()));
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 70}, &board, &(uPositionManager), &decider, movers[boxIdx].get(), &running));
                 } 
                 ++boxIdx;
-            }                                
-            
+            }
 
-            // Event loop exit flag
-            bool running  = true;
-
-            
             //clock_t start, end;     
 
             // Event loop
@@ -190,7 +189,7 @@ int main(int argc, char* argv[])
                 //cout << "sec" << endl;               
                 //SDL_Delay(20); 
             }
-            
+
             for(uint32_t ii=0; ii<threads.size(); ++ii)
             {
                 threads[ii]->join();
