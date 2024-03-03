@@ -6,6 +6,19 @@ using namespace std;
 Spot::Spot(Position pos):_position{pos}
 {}
 
+Spot::Spot(const Spot& o): _position{o._position}
+{
+    _boxId = o._boxId;
+    _type = o._type;
+}
+
+Spot::Spot(Spot&& o)noexcept:_position{o._position}
+{
+    _boxId = o._boxId;
+    _type = o._type;
+}
+    
+
 Position Spot::getPosition() const
 {
     return _position;
@@ -13,6 +26,7 @@ Position Spot::getPosition() const
 
 bool Spot::tagNote(BoardNote note)
 {
+    unique_lock<shared_mutex> lock(_mm);
     int noteBoxId = note.getBoxId();
     int noteType  = note.getType();
 
@@ -87,11 +101,13 @@ bool Spot::tagNote(BoardNote note)
 
 int Spot::getBoxId() const
 {
+    shared_lock<shared_mutex> lock(_mm);
     return _boxId;
 }
 
 int Spot::getType() const
 {
+    shared_lock<shared_mutex> lock(_mm);
     return _type;
 }
 

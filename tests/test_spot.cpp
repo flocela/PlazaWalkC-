@@ -4,6 +4,32 @@
 
 using namespace std;
 
+TEST_CASE("Spot:: Copy Constructor")
+{
+    Position pos{3, 4};
+    Spot spot{pos};
+    spot.tagNote(BoardNote{10, 2});
+
+    Spot spotCopy = spot;
+    
+    REQUIRE(spot.getPosition() == spotCopy.getPosition());
+    REQUIRE(spot.getBoxId() == spotCopy.getBoxId());
+    REQUIRE(spot.getType() == spotCopy.getType());
+}
+
+TEST_CASE("Spot:: Move Constructor")
+{
+    Position pos{3, 4};
+    Spot spot{pos};
+    spot.tagNote(BoardNote{10, 2});
+
+    Spot spot2(std::move(spot));
+ 
+    REQUIRE(spot2.getPosition() == spot.getPosition());
+    REQUIRE(spot2.getBoxId() == spot.getBoxId());
+    REQUIRE(spot2.getType() == spot.getType());
+}
+
 TEST_CASE("Spot:: Spot is constructed and should be in a default state.")
 {
     // Construct Spot.

@@ -13,8 +13,8 @@ class Spot
 public:
     Spot(Position pos);
     Spot() = delete;
-    Spot(const Spot& o) = default;
-    Spot(Spot&& o) noexcept = default;
+    Spot(const Spot& o);
+    Spot(Spot&& o) noexcept;
     Spot& operator=(const Spot& o) = delete;
     Spot& operator=(Spot&& o) = delete;
     ~Spot() = default;
@@ -27,11 +27,13 @@ public:
 
 
 private:
-    const Position _position;
+    Position _position;
     int _boxId = -1;
     int _type = -1;
     
     std::string errorString(BoardNote boardNote);
+
+    mutable std::shared_mutex _mm;
 
 };
 
