@@ -100,6 +100,7 @@ src/Drop.cpp
 src/Mover_Reg.cpp
 src/Position.cpp
 src/PositionManager_Down.cpp
+src/PositionManager_Straight.cpp
 src/PositionManager_Up.cpp
 src/HelloWorld.cpp
 src/Recorder.cpp
