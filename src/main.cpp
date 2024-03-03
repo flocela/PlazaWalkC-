@@ -127,13 +127,13 @@ int main(int argc, char* argv[])
             recorder.registerListener(&printer);
             
             // Create PositionManger
-            PositionManager_Down dPositionManager{100, 0, board.getWidth()-1, 0, board.getHeight()-1};
-            PositionManager_Up uPositionManager{0, 0, board.getWidth()-1, 0, board.getHeight()-1};
-            PositionManager_Straight sPositionManager{Position{360, 360}, Position{365, 390}, 0, board.getWidth()-1, 0, board.getHeight()-1};
+            PositionManager_Straight eastPositionManager{Position{360, 360}, Position{365, 390}, 0, board.getWidth()-1, 0, board.getHeight()-1};
+            PositionManager_Straight upPositionManager{Position{170, 0}, Position{190, 5}, 0, board.getWidth()-1, 0, board.getHeight()-1};
+            PositionManager_Straight westPositionManager{Position{0, 170}, Position{5, 190}, 0, board.getWidth()-1, 0, board.getHeight()-1};
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};
-            for (int ii=0; ii<20; ++ii)
+            for (int ii=0; ii<300; ++ii)
             {
                 boxes.push_back(make_unique<Box>(ii, 3, 3));
             }
@@ -162,9 +162,25 @@ int main(int argc, char* argv[])
                 // TODO change Position's attribute types to be uint32_t
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{1,(int)ii}, &board, &(sPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{1,(int)ii}, &board, &(eastPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
                 }
                 ++boxIdx; 
+                if (boxIdx < boxes.size())
+                {
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 358}, &board, &(upPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                }
+                ++boxIdx; 
+                if (boxIdx < boxes.size())
+                {
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{358,(int)ii}, &board, &(westPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                }
+                ++boxIdx; 
+                if (boxIdx < boxes.size())
+                {
+                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 1}, &board, &(westPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                }
+                ++boxIdx; 
+
             }
 
             //clock_t start, end;     
