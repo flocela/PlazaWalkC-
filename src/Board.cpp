@@ -37,8 +37,6 @@ int Board::getHeight() const
 
 bool Board::addNote(Position position, BoardNote boardNote)
 {
-    shared_lock<shared_mutex> lockShared(_mux);
-
     bool success = _spots[position.getY()][position.getX()].tagNote(boardNote);
    
     if (success)
@@ -110,7 +108,7 @@ void Board::registerListener(BoardListener* listener)
 // TODO check that this shouldn't be locked. Maybe it should be a shared lock
 BoardNote Board::getNoteAt(Position position) const
 {
-    unique_lock<shared_mutex> lock(_mux);
+    shared_lock<shared_mutex> lock(_mux);
     return BoardNote{_spots[position.getY()][position.getX()].getBoxId(),
                      _spots[position.getY()][position.getX()].getType()};
 }
