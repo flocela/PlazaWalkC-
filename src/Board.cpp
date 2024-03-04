@@ -107,7 +107,7 @@ void Board::registerListener(BoardListener* listener)
     _listeners.insert(listener);
 }
 
-// TODO check that this shouldn't be locked.
+// TODO check that this shouldn't be locked. Maybe it should be a shared lock
 BoardNote Board::getNoteAt(Position position) const
 {
     unique_lock<shared_mutex> lock(_mux);
