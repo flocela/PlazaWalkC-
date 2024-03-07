@@ -22,7 +22,7 @@ public:
     Position getPosition() const;
     BoardNote getBoardNote() const;
 
-    bool tagNote(BoardNote note);
+    bool changeNote(BoardNote note);
 
 
 private:

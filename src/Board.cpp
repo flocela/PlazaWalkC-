@@ -38,7 +38,7 @@ int Board::getHeight() const
 bool Board::addNote(Position position, BoardNote boardNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
-    bool success = _spots[position.getY()][position.getX()].tagNote(boardNote);
+    bool success = _spots[position.getY()][position.getX()].changeNote(boardNote);
    
     if (success)
     {

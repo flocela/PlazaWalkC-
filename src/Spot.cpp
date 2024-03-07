@@ -24,7 +24,7 @@ Position Spot::getPosition() const
     return _position;
 }
 
-bool Spot::tagNote(BoardNote note)
+bool Spot::changeNote(BoardNote note)
 {
     unique_lock<shared_mutex> lock(_mm);
     int noteBoxId = note.getBoxId();
