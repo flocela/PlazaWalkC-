@@ -19,10 +19,10 @@ Board::Board(int width, int height)
             rowOfDrops2.push_back(Drop{col, row});
         }
         _spots.push_back(rowOfSpots);
-        _dropBoard1.push_back(rowOfDrops1);
-        _dropBoard2.push_back(rowOfDrops2);
+        _dropsMatrix1.push_back(rowOfDrops1);
+        _dropsMatrix2.push_back(rowOfDrops2);
     }
-    _curDropBoard = &_dropBoard1;
+    _receivingMatrix = &_dropsMatrix1;
 }
 
 int Board::getWidth() const
@@ -35,6 +35,13 @@ int Board::getHeight() const
     return _height;
 }
 
+// Note many threads can be inside addNote() at the same time, it is protected by a shared_lock.
+
+// Although many threads can be inside addNote() at the same time (it is protected by a shared_lock), only one thread can change a particular spot at one time. Spot's changeNote() method is protected by a unique_lock.
+
+// The shared_lock protecting addNote() will not allow changes to any Spot or any Drop while the _receivingMatrix is being toggled.
+
+// A particular Spot and its corresponding Drop in _recevingMatrix should be changing in unison. Spot's changes are protected with locks inside Spot's changeNote() and getBoardNote() methods. Drop doesn't have any protections. However, threads (through their contained PositionManager) contain a particular boxId. Once a thread is successful in changing a Spot to "to arrive" with a particular boxId, then only that particular thread can change that Spot because only that particular thread has that boxId. At that point only that particular thread can change the corresponding Drop's attributes. Not until the particular thread changes the Spot's type to "left" and finishes the addNote() method can another thread change the particular Spot or its corresponding Drop.
 bool Board::addNote(Position position, BoardNote boardNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
@@ -42,11 +49,12 @@ bool Board::addNote(Position position, BoardNote boardNote)
    
     if (success)
     {
-        // Record change in boxId and/or type at position in _curDropBoard.
-        BoardNote bN = _spots[position.getY()][position.getX()].getBoardNote();
-        (*_curDropBoard)[position.getY()][position.getX()]._boxId = bN.getBoxId();
-        (*_curDropBoard)[position.getY()][position.getX()]._type = bN.getType();
-        (*_curDropBoard)[position.getY()][position.getX()]._changed = true;
+        // Record changed boxId and type at position in _receivingMatrix.
+        BoardNote currentBoardNote = _spots[position.getY()][position.getX()].getBoardNote();
+        Drop& drop = (*_receivingMatrix)[position.getY()][position.getX()];
+        drop._boxId = currentBoardNote.getBoxId();
+        drop._type = currentBoardNote.getType();
+        drop._changed = true;
 
         // Notify all BoardCallbacks. Should be zero as BoardCallbacks are only used in testing.
         if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
@@ -66,15 +74,17 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
 // TODO sendChanges() should only be called by one thread at a time.
 void Board::sendChanges()
 {
-    // changedBoard holds the current matrix where changes are being made. 
-    vector<vector<Drop>>* changedBoard = _curDropBoard;
+    vector<vector<Drop>>* changedBoard = nullptr;
 
-    // Toggle _curDropBoard to _dropBoard1 or dropBoard2.
-    // New changes from addNote() will be recorded in the newly selected board while changes are made to changedBoard.
     {
-        unique_lock<shared_mutex> lockUq(_mux);    
-        _curDropBoard = (_curDropBoard == &_dropBoard1) ? (&_dropBoard2) : (&_dropBoard1);
+    unique_lock<shared_mutex> lockUq(_mux);
+        changedBoard = _receivingMatrix;
+        _receivingMatrix = (_receivingMatrix == &_dropsMatrix1) ? (&_dropsMatrix2) : (&_dropsMatrix1);
     }
+
+    toggleReceivingMatrix();
+
+    // changedBoard holds the current matrix where changes are being made. 
   
     // TODO return setOfDropsPerPosition changing to per type should be done by the listener
     // Collect changes in setsOfDropsPerType  
@@ -111,4 +121,10 @@ BoardNote Board::getNoteAt(Position position) const
 {
     shared_lock<shared_mutex> lock(_mux);
     return _spots[position.getY()][position.getX()].getBoardNote();
+}
+
+void Board::toggleReceivingMatrix()
+{
+    unique_lock<shared_mutex> lockUq(_mux);    
+    _receivingMatrix = (_receivingMatrix == &_dropsMatrix1) ? (&_dropsMatrix2) : (&_dropsMatrix1);
 }

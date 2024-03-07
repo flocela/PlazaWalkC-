@@ -47,18 +47,20 @@ private:
     // _spots is the master board.
     std::vector<std::vector<Spot>> _spots;
 
-    // _dropBoard1 and _dropBoard2 boards keep track of the changes to the board that have not been sent out.
-    std::vector<std::vector<Drop>> _dropBoard1;
-    std::vector<std::vector<Drop>> _dropBoard2;
+    // _dropMatrix1 and _dropMatrix2 boards keep track of the changes to the board that have not been sent out.
+    std::vector<std::vector<Drop>> _dropsMatrix1;
+    std::vector<std::vector<Drop>> _dropsMatrix2;
     
-    // Where changes reside is toggled between _dropBoard1 and _dropBoard2 by changing which one _curDropBoard points to.
-    std::vector<std::vector<Drop>>* _curDropBoard = nullptr;
+    // _receivingMatrix points to either _dropsMatrix1 or _dropsMatrix2. Changes are recorded in the matrix that _receivingMatrix currenlty points to. When sendChanges() is called, the matrix _receivingMatrix points to is toggled.
+    std::vector<std::vector<Drop>>* _receivingMatrix = nullptr;
 
     // TODO these callbacks should be const
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
     std::unordered_set<BoardListener*> _listeners;
     
     mutable std::shared_mutex _mux;
+
+    void toggleReceivingMatrix();
      
 };
 
