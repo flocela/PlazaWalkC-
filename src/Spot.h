@@ -4,8 +4,10 @@
 #include <mutex>
 #include <shared_mutex>
 #include <unordered_map>
+#include <vector>
 #include "BoardNote.h"
 #include "Position.h"
+#include "SpotListener.h"
 
 class Spot
 {
@@ -24,15 +26,25 @@ public:
 
     bool changeNote(BoardNote note);
 
+    void registerListener(SpotListener* listener);
+    
+
 
 private:
     Position _position;
     int _boxId = -1;
     int _type = -1;
+    std::string _combined = "-1,-1";
     
     std::string errorString(BoardNote boardNote);
 
     mutable std::shared_mutex _mm;
+
+    std::vector<SpotListener*> _listeners{};
+
+    void updateCombinedString();
+
+    void notifyListeners();
 
 };
 

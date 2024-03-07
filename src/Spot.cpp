@@ -40,6 +40,8 @@ bool Spot::changeNote(BoardNote note)
         {
             _boxId = noteBoxId;
             _type = noteType;
+            updateCombinedString();
+            notifyListeners();
             return true;
         }
     }
@@ -55,6 +57,8 @@ bool Spot::changeNote(BoardNote note)
             {
                 _type = -1;
                 _boxId = -1;
+                updateCombinedString();
+                notifyListeners();
             }
             else
             {
@@ -73,9 +77,12 @@ bool Spot::changeNote(BoardNote note)
         {   
             _boxId = noteBoxId;
             _type = noteType;
+            updateCombinedString();
+            notifyListeners();
         }
         else 
         {
+            //cout << errorString(note) << endl;
             throw invalid_argument(errorString(note));
         } 
     }
@@ -89,6 +96,8 @@ bool Spot::changeNote(BoardNote note)
         {
             _boxId = noteBoxId;
             _type = noteType;
+            updateCombinedString();
+            notifyListeners();
         }
         else
         {
@@ -105,7 +114,28 @@ BoardNote Spot::getBoardNote() const
     return BoardNote{_boxId, _type};
 }
 
+void Spot::updateCombinedString()
+{
+        _combined = "B";
+        _combined.append(to_string(_boxId));
+        _combined.append(",T");
+        _combined.append(to_string(_type));
+}
+
+void Spot::registerListener(SpotListener* listener)
+{
+    _listeners.push_back(listener);
+}
+
+void Spot::notifyListeners()
+{
+    for(SpotListener* listener: _listeners)
+    {
+        listener->receiveCombinedString(_combined);
+    }
+}
+
 string Spot::errorString(BoardNote boardNote)
 { return "At {" + to_string(_position.getX()) + ", " + to_string(_position.getY()) + "} "  + " can not accept the received BoardNote with boxId of " + to_string(boardNote.getBoxId()) + " and type of "  + to_string(boardNote.getType()) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".";
 }
-    
+

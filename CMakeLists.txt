@@ -105,6 +105,7 @@ src/PositionManager_Up.cpp
 src/HelloWorld.cpp
 src/Recorder.cpp
 src/Spot.cpp
+src/SpotListener.cpp
 )
 
 add_executable(RunTests ${test_SRCS})

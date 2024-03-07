@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include <iostream>
 #include "../src/Spot.h"
+#include <thread>
 
 using namespace std;
 
@@ -412,5 +413,64 @@ TEST_CASE("Spot:: Spot originally has the type 'Arrived'")
 
     }
 }
+
+void funcChangeSpot(Spot& spot, int boxId)
+{
+    for (int ii=0; ii<1000; ++ii)
+    {
+        bool successful = false;
+
+        try{
+            successful =  spot.changeNote(BoardNote{boxId, 2});
+        }
+        catch(...)
+        {
+        }
+        if (successful)
+        {
+            try{
+                spot.changeNote(BoardNote{boxId, 4});
+                spot.changeNote(BoardNote{boxId, 1});
+                spot.changeNote(BoardNote{boxId, 3});
+            }
+            catch(...)
+            {
+            }
+        }
+    }
+}
+
+TEST_CASE("two threads constantly try to change Spot's Note, but because of Spot's unique_lock on changeNote(), an exception is never thrown.")
+{
+    Spot spot{Position{8, 8}};
+    SpotListener listener{};
+    spot.registerListener(&listener);
+    std::thread t1(funcChangeSpot, std::ref(spot), 100);
+    std::thread t2(funcChangeSpot, std::ref(spot), 200);
+
+    t1.join();
+    t2.join();
+
+    for (string str : listener.getCombinedStrings())
+    {
+        if (str.size() != 7 && str.size() != 5)
+        {
+            cout << "combined not 5 or 7: " << str << endl;
+        }
+        REQUIRE((
+            (str.size() == 7) || (str.size() == 5)
+        ));
+    }
+    
+
+}
+            
+
+
+
+
+
+
+    
 
 
