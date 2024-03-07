@@ -99,16 +99,10 @@ bool Spot::tagNote(BoardNote note)
     return true;
 }
 
-int Spot::getBoxId() const
+BoardNote Spot::getBoardNote() const
 {
     shared_lock<shared_mutex> lock(_mm);
-    return _boxId;
-}
-
-int Spot::getType() const
-{
-    shared_lock<shared_mutex> lock(_mm);
-    return _type;
+    return BoardNote{_boxId, _type};
 }
 
 string Spot::errorString(BoardNote boardNote)

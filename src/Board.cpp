@@ -43,9 +43,9 @@ bool Board::addNote(Position position, BoardNote boardNote)
     if (success)
     {
         // Record change in boxId and/or type at position in _curDropBoard.
-
-        (*_curDropBoard)[position.getY()][position.getX()]._boxId = _spots[position.getY()][position.getX()].getBoxId();
-        (*_curDropBoard)[position.getY()][position.getX()]._type = _spots[position.getY()][position.getX()].getType();
+        BoardNote bN = _spots[position.getY()][position.getX()].getBoardNote();
+        (*_curDropBoard)[position.getY()][position.getX()]._boxId = bN.getBoxId();
+        (*_curDropBoard)[position.getY()][position.getX()]._type = bN.getType();
         (*_curDropBoard)[position.getY()][position.getX()]._changed = true;
 
         // Notify all BoardCallbacks. Should be zero as BoardCallbacks are only used in testing.
@@ -110,6 +110,5 @@ void Board::registerListener(BoardListener* listener)
 BoardNote Board::getNoteAt(Position position) const
 {
     shared_lock<shared_mutex> lock(_mux);
-    return BoardNote{_spots[position.getY()][position.getX()].getBoxId(),
-                     _spots[position.getY()][position.getX()].getType()};
+    return _spots[position.getY()][position.getX()].getBoardNote();
 }

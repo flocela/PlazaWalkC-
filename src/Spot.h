@@ -20,8 +20,7 @@ public:
     ~Spot() = default;
 
     Position getPosition() const;
-    int getBoxId() const;
-    int getType() const;
+    BoardNote getBoardNote() const;
 
     bool tagNote(BoardNote note);
 
