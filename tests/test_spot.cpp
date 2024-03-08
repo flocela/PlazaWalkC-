@@ -416,12 +416,12 @@ TEST_CASE("Spot:: Spot originally has the type 'Arrived'")
 
 void funcChangeSpot(Spot& spot, int boxId)
 {
-    for (int ii=0; ii<1000; ++ii)
+    for (int ii=0; ii<10000; ++ii)
     {
         bool successful = false;
 
         try{
-            successful =  spot.changeNote(BoardNote{boxId, 2});
+           successful =  spot.changeNote(BoardNote{boxId, 2});
         }
         catch(...)
         {
@@ -430,7 +430,17 @@ void funcChangeSpot(Spot& spot, int boxId)
         {
             try{
                 spot.changeNote(BoardNote{boxId, 4});
+            }
+            catch(...)
+            {
+            }
+            try{
                 spot.changeNote(BoardNote{boxId, 1});
+            }
+            catch(...)
+            {
+            }
+            try{
                 spot.changeNote(BoardNote{boxId, 3});
             }
             catch(...)
@@ -440,8 +450,26 @@ void funcChangeSpot(Spot& spot, int boxId)
     }
 }
 
-TEST_CASE("two threads constantly try to change Spot's Note, but because of Spot's unique_lock on changeNote(), an exception is never thrown.")
+void funcReadSpot(Spot& spot)
 {
+    for (int ii=0; ii<10000; ++ii)
+    {
+        BoardNote note = spot.getBoardNote();
+        if (note.getType() == -1)
+        {
+            REQUIRE( note.getBoxId() == -1 );
+        }
+        if (note.getBoxId() == -1)
+        {
+            REQUIRE( note.getType() == -1 );
+        }
+    }
+}
+
+// Remove changeNotes() unique_lock to make this test fail.
+TEST_CASE("two threads repeatedly try to change Spot's Note, but because of Spot's unique_lock on changeNote(), one thread always waits for the other thread to finish.")
+{
+    // If two threads are in the changeNote() method at the same time, one will be updating the _combinedString, while the other is returning what it believes to be the completed _combinedString.
     Spot spot{Position{8, 8}};
     SpotListener listener{};
     spot.registerListener(&listener);
@@ -453,24 +481,25 @@ TEST_CASE("two threads constantly try to change Spot's Note, but because of Spot
 
     for (string str : listener.getCombinedStrings())
     {
-        if (str.size() != 7 && str.size() != 5)
-        {
-            cout << "combined not 5 or 7: " << str << endl;
-        }
         REQUIRE((
             (str.size() == 7) || (str.size() == 5)
         ));
     }
-    
-
 }
             
+// Remove getBoardNote()'s shared_lock to make this test fail.
+// It still may not fail, so in changeNote() add this_thread::sleep_for(10ms) for the case when _type is -1 and a "to arrive" note is received. This will make it evident that getBoard() is running at the same time as changeNote() because changeNote() will change the _boxId, then wait 10ms before changing the _type. This gives enough time for the getBoardNote() to run and return a noticeably invalid state (a _type of -1, with a boxId that is not -1).
+TEST_CASE("One thread repeatedly calls getBoardNote(), the other repeatedly calls changeNote(). Because changeNote() has a unique_lock and getBoardNote() has a shared_lock, getBoardNote() will never return a BoardNote that is half way done.")
+{
+    // If one thread is in changeNote() and the other thread is in getBoardNote(), then at some point getBoardNote() will return a BoardNote of {100, -1}. This means the BoardNote was in the middle of being updated, when it was returned by getBoardNote(). If the BoardNote's type is -1, then the completed stat doesn't have a boxId, so boxId should also be -1."
 
-
-
-
-
-
+    Spot spot{Position{8, 8}};
     
+    std::thread t1(funcReadSpot, std::ref(spot));
+    std::thread t2(funcChangeSpot, std::ref(spot), 100);
 
+    t2.join();
+    t1.join();
+
+}
 

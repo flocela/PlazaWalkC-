@@ -1,5 +1,7 @@
 #include "Spot.h"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -29,20 +31,19 @@ bool Spot::changeNote(BoardNote note)
     unique_lock<shared_mutex> lock(_mm);
     int noteBoxId = note.getBoxId();
     int noteType  = note.getType();
-
+    
     if (_type == -1)
     { 
         if (noteType != 2)
-        {   //cout << errorString(note) << endl;
+        {   
+            //cout << errorString(note) << endl;
             throw invalid_argument(errorString(note));
         }
         else
         {
             _boxId = noteBoxId;
+            //this_thread::sleep_for(10ms);
             _type = noteType;
-            updateCombinedString();
-            notifyListeners();
-            return true;
         }
     }
     else if (_type == 1)
@@ -57,8 +58,6 @@ bool Spot::changeNote(BoardNote note)
             {
                 _type = -1;
                 _boxId = -1;
-                updateCombinedString();
-                notifyListeners();
             }
             else
             {
@@ -77,8 +76,6 @@ bool Spot::changeNote(BoardNote note)
         {   
             _boxId = noteBoxId;
             _type = noteType;
-            updateCombinedString();
-            notifyListeners();
         }
         else 
         {
@@ -96,8 +93,6 @@ bool Spot::changeNote(BoardNote note)
         {
             _boxId = noteBoxId;
             _type = noteType;
-            updateCombinedString();
-            notifyListeners();
         }
         else
         {
@@ -105,6 +100,8 @@ bool Spot::changeNote(BoardNote note)
             throw invalid_argument(errorString(note));
         } 
     }
+    
+    notifyListeners();
     return true;
 }
 
@@ -131,6 +128,7 @@ void Spot::notifyListeners()
 {
     for(SpotListener* listener: _listeners)
     {
+        updateCombinedString();
         listener->receiveCombinedString(_combined);
     }
 }
