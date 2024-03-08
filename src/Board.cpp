@@ -1,5 +1,7 @@
 #include "Board.h"
 #include "BoardListener.h"
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -19,10 +21,10 @@ Board::Board(int width, int height)
             rowOfDrops2.push_back(Drop{col, row});
         }
         _spots.push_back(rowOfSpots);
-        _dropsMatrix1.push_back(rowOfDrops1);
-        _dropsMatrix2.push_back(rowOfDrops2);
+        _dropMatrix1.push_back(rowOfDrops1);
+        _dropMatrix2.push_back(rowOfDrops2);
     }
-    _receivingMatrix = &_dropsMatrix1;
+    _receivingMatrix = &_dropMatrix1;
 }
 
 int Board::getWidth() const
@@ -36,12 +38,11 @@ int Board::getHeight() const
 }
 
 // Note many threads can be inside addNote() at the same time, it is protected by a shared_lock.
-
-// Although many threads can be inside addNote() at the same time (it is protected by a shared_lock), only one thread can change a particular spot at one time. Spot's changeNote() method is protected by a unique_lock.
+// Although many threads can be inside addNote() at the same time, only one thread can change a particular spot at one time. Spot's changeNote() method is protected by a unique_lock.
 
 // The shared_lock protecting addNote() will not allow changes to any Spot or any Drop while the _receivingMatrix is being toggled.
 
-// A particular Spot and its corresponding Drop in _recevingMatrix should be changing in unison. Spot's changes are protected with locks inside Spot's changeNote() and getBoardNote() methods. Drop doesn't have any protections. However, threads (through their contained PositionManager) contain a particular boxId. Once a thread is successful in changing a Spot to "to arrive" with a particular boxId, then only that particular thread can change that Spot because only that particular thread has that boxId. At that point only that particular thread can change the corresponding Drop's attributes. Not until the particular thread changes the Spot's type to "left" and finishes the addNote() method can another thread change the particular Spot or its corresponding Drop.
+// A particular Spot and its corresponding Drop in _recevingMatrix should be changing in unison. Spot's changes are protected with locks inside Spot's methods. Drop doesn't have any protections. However, threads (through their contained PositionManager) contain a particular boxId. Once a thread has successfully changed a Spot with the "to arrive" type and a particular boxId, the Spot is essentially stamped with that particular boxId. Only that particular thread can change that Spot because only that particular thread has that boxId. At that point only that particular thread changes the corresponding Drop's attributes. Not until that particular thread changes the Spot's type to "left" and finishes the addNote() method can another thread change that particular Spot or its corresponding Drop.
 bool Board::addNote(Position position, BoardNote boardNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
@@ -52,9 +53,10 @@ bool Board::addNote(Position position, BoardNote boardNote)
         // Record changed boxId and type at position in _receivingMatrix.
         BoardNote currentBoardNote = _spots[position.getY()][position.getX()].getBoardNote();
         Drop& drop = (*_receivingMatrix)[position.getY()][position.getX()];
-        drop._boxId = currentBoardNote.getBoxId();
-        drop._type = currentBoardNote.getType();
         drop._changed = true;
+        drop._boxId = currentBoardNote.getBoxId();
+        //std::this_thread::sleep_for(1ms);
+        drop._type = currentBoardNote.getType();
 
         // Notify all BoardCallbacks. Should be zero as BoardCallbacks are only used in testing.
         if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
@@ -77,12 +79,10 @@ void Board::sendChanges()
     vector<vector<Drop>>* changedBoard = nullptr;
 
     {
-    unique_lock<shared_mutex> lockUq(_mux);
+        unique_lock<shared_mutex> lockUq(_mux);
         changedBoard = _receivingMatrix;
-        _receivingMatrix = (_receivingMatrix == &_dropsMatrix1) ? (&_dropsMatrix2) : (&_dropsMatrix1);
+        _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
     }
-
-    toggleReceivingMatrix();
 
     // changedBoard holds the current matrix where changes are being made. 
   
@@ -126,5 +126,5 @@ BoardNote Board::getNoteAt(Position position) const
 void Board::toggleReceivingMatrix()
 {
     unique_lock<shared_mutex> lockUq(_mux);    
-    _receivingMatrix = (_receivingMatrix == &_dropsMatrix1) ? (&_dropsMatrix2) : (&_dropsMatrix1);
+    _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
 }

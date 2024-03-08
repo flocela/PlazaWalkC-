@@ -48,10 +48,10 @@ private:
     std::vector<std::vector<Spot>> _spots;
 
     // _dropMatrix1 and _dropMatrix2 boards keep track of the changes to the board that have not been sent out.
-    std::vector<std::vector<Drop>> _dropsMatrix1;
-    std::vector<std::vector<Drop>> _dropsMatrix2;
+    std::vector<std::vector<Drop>> _dropMatrix1;
+    std::vector<std::vector<Drop>> _dropMatrix2;
     
-    // _receivingMatrix points to either _dropsMatrix1 or _dropsMatrix2. Changes are recorded in the matrix that _receivingMatrix currenlty points to. When sendChanges() is called, the matrix _receivingMatrix points to is toggled.
+    // _receivingMatrix points to either _dropMatrix1 or _dropMatrix2. Changes are recorded in the matrix that _receivingMatrix currenlty points to. When sendChanges() is called, the matrix _receivingMatrix points to is toggled.
     std::vector<std::vector<Drop>>* _receivingMatrix = nullptr;
 
     // TODO these callbacks should be const

@@ -15,8 +15,8 @@ public:
     ~Drop() noexcept = default;
 
     Position _position;
-    int _boxId;
-    int _type;
+    int _boxId = -1;
+    int _type = -1;
     bool _changed = false;
 
     bool operator== (const Drop& o) const;
