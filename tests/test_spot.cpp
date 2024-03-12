@@ -465,7 +465,7 @@ void funcReadSpot(Spot& spot)
         }
     }
 }
-/*
+
 // Remove changeNotes() unique_lock to make this test fail.
 TEST_CASE("two threads repeatedly try to change Spot's Note, but because of Spot's unique_lock on changeNote(), one thread always waits for the other thread to finish.")
 {
@@ -502,4 +502,4 @@ TEST_CASE("One thread repeatedly calls getBoardNote(), the other repeatedly call
     t1.join();
 
 }
-*/
+

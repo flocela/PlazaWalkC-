@@ -105,6 +105,7 @@ src/PositionManager_Up.cpp
 src/HelloWorld.cpp
 src/Recorder.cpp
 src/Spot.cpp
+src/SpotType.cpp
 src/SpotListener.cpp
 )
 
