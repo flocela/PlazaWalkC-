@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-enum class SpotType{to_arrive, arrive, to_leave, left};
+enum class SpotType{to_arrive=1, arrive=2, to_leave=3, left=4};
 
 std::ostream& operator<<(std::ostream& os, SpotType const& obj);
 

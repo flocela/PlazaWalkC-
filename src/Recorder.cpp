@@ -6,13 +6,13 @@ using namespace std;
 
 Recorder::Recorder()
 {
-    for (int ii=1; ii<=4; ++ii)
-    {
-        _dropSetsPerType.insert({ii, unordered_set<Drop>{}});
-    }        
+    _dropSetsPerType.insert({SpotType::to_arrive, unordered_set<Drop>{}});
+    _dropSetsPerType.insert({SpotType::arrive, unordered_set<Drop>{}});
+    _dropSetsPerType.insert({SpotType::to_leave, unordered_set<Drop>{}});
+    _dropSetsPerType.insert({SpotType::left, unordered_set<Drop>{}});
 }
 
-void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> changedSetsOfDropsPerType)
+void Recorder::receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> changedSetsOfDropsPerType)
 { 
     // _positionSetsPerType is a map of postion sets per type.
     // It may be that position needs to be moved from one type's set to another type's set.
@@ -23,7 +23,7 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
     for (const auto& changedSetPerType : changedSetsOfDropsPerType)
     {
         
-        int newType = changedSetPerType.first;
+        SpotType newType = changedSetPerType.first;
 
         for (const auto& drop : changedSetPerType.second)
         {   // TODO make is so this never happens, shouldn't have to check.
@@ -35,7 +35,7 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
             // for each set in _positionsetsPerType 
             for (const auto& dropSetPerType : _dropSetsPerType)
             {
-                int curType = dropSetPerType.first;
+                SpotType curType = dropSetPerType.first;
 
                 if (_dropSetsPerType.at(curType).find(drop) != _dropSetsPerType.at(curType).end())
                 {
@@ -44,7 +44,7 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
                 }
             }
 
-            if (newType != -1)
+            if (newType != SpotType::left)
             {
                 _dropSetsPerType[newType].insert(drop);
             }
@@ -57,7 +57,7 @@ void Recorder::receiveChanges(std::unordered_map<int, unordered_set<Drop>> chang
     }
 }
 
-unordered_map<int, unordered_set<Drop>> Recorder::getDrops()
+unordered_map<SpotType, unordered_set<Drop>> Recorder::getDrops()
 {
     return _dropSetsPerType;
 }
@@ -66,9 +66,4 @@ void Recorder::registerListener(RecorderListener* listener)
 {
     _listeners.push_back(listener);
 }
-
-        
-            
-        
-
         

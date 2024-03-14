@@ -5,12 +5,12 @@ using namespace std;
 
 Printer_OneColor::Printer_OneColor(SDL_Renderer* renderer): _renderer{renderer} {}
 
-void Printer_OneColor::receiveAllDrops(std::unordered_map<int, std::unordered_set<Drop>> setOfDropsPerType)
+void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType)
 {
     print(setOfDropsPerType);
 }
 
-void Printer_OneColor::print(unordered_map<int, unordered_set<Drop>> dropsPerType)
+void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType)
 {
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);

@@ -8,6 +8,7 @@
 #include "BoardNote.h"
 #include "Position.h"
 #include "SpotListener.h"
+#include "SpotType.h"
 
 class Spot
 {
@@ -33,8 +34,8 @@ public:
 private:
     Position _position;
     int _boxId = -1;
-    int _type = -1;
-    std::string _combined = "-1,-1";
+    SpotType _type = SpotType::left;
+    std::string _combined = "-1, 4";
     
     std::string errorString(BoardNote boardNote);
 

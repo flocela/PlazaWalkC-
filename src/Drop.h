@@ -2,6 +2,7 @@
 #define DROP__H
 
 #include "Position.h"
+#include "SpotType.h"
 
 class Drop
 {
@@ -16,7 +17,7 @@ public:
 
     Position _position;
     int _boxId = -1;
-    int _type = -1;
+    SpotType _type = SpotType::left;
     bool _changed = false;
 
     bool operator== (const Drop& o) const;

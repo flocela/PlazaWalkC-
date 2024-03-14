@@ -9,12 +9,12 @@ Mover_Reg::Mover_Reg(Box& box, Board& board): _box{box}, _board{board} {}
 bool Mover_Reg::addBox(Position position)
 {
     int boxId = _box.getId();
-    bool success = _board.addNote(position, BoardNote{boxId, 2});
+    bool success = _board.addNote(position, BoardNote{boxId, SpotType::to_arrive});
 
     if (success)
     {
         this_thread::sleep_for(5ms);
-        _board.addNote(position, BoardNote{boxId, 4});
+        _board.addNote(position, BoardNote{boxId, SpotType::arrive});
     }
    
     return success;
@@ -24,20 +24,16 @@ bool Mover_Reg::addBox(Position position)
 bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
 {
     int boxId = _box.getId();
-    if (boxId == 0)
-    {
-        cout << "Mover_Reg: box 0 moving to " << newPosition << endl;
-    }
        
-    bool success = _board.addNote(newPosition, BoardNote{boxId, 2});
+    bool success = _board.addNote(newPosition, BoardNote{boxId, SpotType::to_arrive});
     if (success)
     {
-        _board.addNote(oldPosition, BoardNote{boxId, 1});
+        _board.addNote(oldPosition, BoardNote{boxId, SpotType::to_leave});
         
         this_thread::sleep_for(5ms);
 
-        _board.addNote(newPosition, BoardNote{boxId, 4});
-        _board.addNote(oldPosition, BoardNote{boxId, 3});
+        _board.addNote(newPosition, BoardNote{boxId, SpotType::arrive});
+        _board.addNote(oldPosition, BoardNote{boxId, SpotType::left});
     
     }
    

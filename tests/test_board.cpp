@@ -17,17 +17,17 @@ TEST_CASE("Add BoardNotes with different types to Position{5, 5}. The retrieved 
     Board board{20, 10};
     
     // BoardNote(int type, int boxId)
-    board.addNote(Position{5, 5}, BoardNote{boxId, 2});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, 2});
+    board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::to_arrive});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::to_arrive});
 
-    board.addNote(Position{5, 5}, BoardNote{boxId, 4});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, 4});
+    board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::arrive});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::arrive});
 
-    board.addNote(Position{5, 5}, BoardNote{boxId, 1});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, 1});
+    board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::to_leave});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::to_leave});
 
-    board.addNote(Position{5, 5}, BoardNote{boxId, 3});
-    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{-1, -1});
+    board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::left});
+    REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{-1, SpotType::left});
 
 }
 
@@ -37,11 +37,11 @@ TEST_CASE("Sends changes to registered Agents")
     {
     public: 
 
-        void receiveChanges(std::unordered_map<int, unordered_set<Drop>> setsOfDropsPerType) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {
-                int type = setOfDropsPerType.first;
+                SpotType type = setOfDropsPerType.first;
 
                 for (auto& drop : setOfDropsPerType.second)
                 {
@@ -58,30 +58,30 @@ TEST_CASE("Sends changes to registered Agents")
 
     board.registerListener(&listener);
 
-    board.addNote(Position{5, 5}, BoardNote{0, 2});
-    board.addNote(Position{6, 6}, BoardNote{0, 2});
+    board.addNote(Position{5, 5}, BoardNote{0, SpotType::to_arrive});
+    board.addNote(Position{6, 6}, BoardNote{0, SpotType::to_arrive});
 
     board.sendChanges();
     REQUIRE(listener._dropsPerPosition.size() == 2);
-    REQUIRE(2 == listener._dropsPerPosition.at(Position{5, 5})._type);
-    REQUIRE(2 == listener._dropsPerPosition.at(Position{6, 6})._type);
+    REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{5, 5})._type);
+    REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{6, 6})._type);
 
     listener._dropsPerPosition.clear();
 
-    board.addNote(Position{5, 5}, BoardNote{0, 4});
-    board.addNote(Position{7, 7}, BoardNote{0, 2}); 
+    board.addNote(Position{5, 5}, BoardNote{0, SpotType::arrive});
+    board.addNote(Position{7, 7}, BoardNote{0, SpotType::to_arrive}); 
     board.sendChanges();
     
     REQUIRE(listener._dropsPerPosition.size() == 2);
-    REQUIRE(4 == listener._dropsPerPosition.at(Position{5, 5})._type);
-    REQUIRE(2 == listener._dropsPerPosition.at(Position{7, 7})._type);
+    REQUIRE(SpotType::arrive == listener._dropsPerPosition.at(Position{5, 5})._type);
+    REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{7, 7})._type);
 }
 
 void funcMoveBox(Board& board)
 {
     for (int ii=0; ii<1000; ++ii)
     {
-         board.addNote(Position{ii, 0}, BoardNote{ii*1000, 2});
+         board.addNote(Position{ii, 0}, BoardNote{ii*1000, SpotType::to_arrive});
     }
 }
 
@@ -102,19 +102,19 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
     {
     public: 
 
-        void receiveChanges(std::unordered_map<int, unordered_set<Drop>> setsOfDropsPerType) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {
-                int type = setOfDropsPerType.first;
+                SpotType type = setOfDropsPerType.first;
 
                 for (auto& drop : setOfDropsPerType.second)
                 {
-                    if (type == -1)
+                    if (type == SpotType::left)
                     {
                             REQUIRE(drop._boxId == -1);
                     } 
-                    if (type != -1)
+                    if (type != SpotType::left)
                     {
                             REQUIRE(drop._boxId != -1);
                     }

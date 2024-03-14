@@ -1,5 +1,7 @@
 #include "Decider_Safe.h"
 
+#include "SpotType.h"
+
 using namespace std;
 
 Position Decider_Safe::getNextPosition(
@@ -14,7 +16,7 @@ Position Decider_Safe::getNextPosition(
         BoardNote boardNote = board.getNoteAt(position);
 
         // if the BoardNote's type is empty, then return current position. 
-        if (boardNote.getType() == -1)
+        if (boardNote.getType() == SpotType::left)
         {
             return position;
         }       

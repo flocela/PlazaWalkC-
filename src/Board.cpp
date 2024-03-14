@@ -88,7 +88,7 @@ void Board::sendChanges()
   
     // TODO return setOfDropsPerPosition changing to per type should be done by the listener
     // Collect changes in setsOfDropsPerType  
-    unordered_map<int, unordered_set<Drop>> setsOfDropsPerType;
+    unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType;
 
     for (int row=0; row<_height; ++row)
     {
@@ -99,7 +99,7 @@ void Board::sendChanges()
             {
                 setsOfDropsPerType[curDrop._type].insert(curDrop);
                 (*changedBoard)[row][col]._boxId = -1;
-                (*changedBoard)[row][col]._type = -1;
+                (*changedBoard)[row][col]._type = SpotType::left;
                 (*changedBoard)[row][col]._changed = false;
             }
         }

@@ -12,8 +12,8 @@ TEST_CASE("BoardCallback_Accountant:: Adding a BoardNote to the board, should re
     BoardCallback_Accountant callbackObject{};
     board.registerCallback(pos0, callbackObject);
 
-    BoardNote noteBox0Type2{0, 2}; // box 0 is about to arrive
-    BoardNote noteBox0Type4{0, 4}; // box 0 arrives
+    BoardNote noteBox0Type2{0, SpotType::to_arrive}; // box 0 is about to arrive
+    BoardNote noteBox0Type4{0, SpotType::arrive}; // box 0 arrives
     
     board.addNote(pos0, noteBox0Type2);
     board.addNote(pos0, noteBox0Type4);

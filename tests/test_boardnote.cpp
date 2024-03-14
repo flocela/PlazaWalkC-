@@ -6,33 +6,33 @@ using namespace std;
 
 TEST_CASE("BoardNote returns type")
 {
-    BoardNote note{22, 1};
-    REQUIRE(1 == note.getType());
+    BoardNote note{22, SpotType::to_leave};
+    REQUIRE(SpotType::to_leave == note.getType());
 }
 
 TEST_CASE("BoardNote returns boxId")
 {
-    BoardNote note{22, 4};
+    BoardNote note{22, SpotType::arrive};
     REQUIRE(22 == note.getBoxId());
 }
 
 TEST_CASE("BoardNote == operator returns true")
 {
-    BoardNote note1{22, 1};
-    BoardNote note2{22, 1}; 
+    BoardNote note1{22, SpotType::left};
+    BoardNote note2{22, SpotType::left}; 
     REQUIRE(note1 == note2);
 }
 
 TEST_CASE("BoardNote == operator returns false if boxId's are different")
 {
-    BoardNote note1{22, 1};
-    BoardNote note2{24, 1}; 
+    BoardNote note1{22, SpotType::left};
+    BoardNote note2{24, SpotType::left}; 
     REQUIRE_FALSE(note1 == note2);
 }
 
 TEST_CASE("BoardNote == operator returns false if type's are different")
 {
-    BoardNote note1{22, 1};
-    BoardNote note2{22, 2}; 
+    BoardNote note1{22, SpotType::left};
+    BoardNote note2{22, SpotType::to_arrive}; 
     REQUIRE_FALSE(note1 == note2);
 }

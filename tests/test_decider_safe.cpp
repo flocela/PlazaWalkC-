@@ -9,8 +9,8 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. D
     Position positionA{5, 5};
 
     // Box1 arrives at positionA. 
-    BoardNote boardNoteToArrive{1, 2};
-    BoardNote boardNoteArrived{1, 4};
+    BoardNote boardNoteToArrive{1, SpotType::to_arrive};
+    BoardNote boardNoteArrived{1, SpotType::arrive};
     board.addNote(positionA, boardNoteToArrive);
     board.addNote(positionA, boardNoteArrived);
 
@@ -30,8 +30,8 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. T
     Position positionA{5, 5};
 
     // Box1 arrives at positionA. 
-    BoardNote boardNoteToArrive{1, 2};
-    BoardNote boardNoteArrived{1, 4};
+    BoardNote boardNoteToArrive{1, SpotType::to_arrive};
+    BoardNote boardNoteArrived{1, SpotType::arrive};
     board.addNote(positionA, boardNoteToArrive);
     board.addNote(positionA, boardNoteArrived);
 
@@ -50,7 +50,7 @@ TEST_CASE("Box0 is deciding to move to postionA. Box1 has sent a note to Board t
     Position positionA{5, 5};
 
     // BoardNote{boxId, type}. Box1 signals that it will arrive.
-    BoardNote boardNoteToArrive{1, 2};
+    BoardNote boardNoteToArrive{1, SpotType::to_arrive};
     board.addNote(positionA, boardNoteToArrive);
 
     Decider_Safe decider{};
@@ -68,9 +68,9 @@ TEST_CASE("Box0 is deciding to move to postionA. Box1 occupies positionA, but ha
     Position positionA{5, 5};
 
     // BoardNote{boxId, type}. Box1 arrives, but is about to leave.
-    BoardNote boardNoteToArrive{1, 2};
-    BoardNote boardNoteArrived{1, 4};
-    BoardNote boardNoteAboutToLeave{1, 1};
+    BoardNote boardNoteToArrive{1, SpotType::to_arrive};
+    BoardNote boardNoteArrived{1, SpotType::arrive};
+    BoardNote boardNoteAboutToLeave{1, SpotType::to_leave};
     board.addNote(positionA, boardNoteToArrive);
     board.addNote(positionA, boardNoteArrived);
     board.addNote(positionA, boardNoteAboutToLeave);

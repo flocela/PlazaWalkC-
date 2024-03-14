@@ -30,11 +30,11 @@ bool Spot::changeNote(BoardNote note)
 {
     unique_lock<shared_mutex> lock(_mm);
     int noteBoxId = note.getBoxId();
-    int noteType  = note.getType();
+    SpotType noteType  = note.getType();
     
-    if (_type == -1)
+    if (_type == SpotType::left)
     { 
-        if (noteType != 2)
+        if (noteType != SpotType::to_arrive)
         {   
             //cout << errorString(note) << endl;
             throw invalid_argument(errorString(note));
@@ -46,17 +46,17 @@ bool Spot::changeNote(BoardNote note)
             _type = noteType;
         }
     }
-    else if (_type == 1)
+    else if (_type == SpotType::to_leave)
     {  
-        if (noteType == 2 && noteBoxId != _boxId)
+        if (noteType == SpotType::to_arrive && noteBoxId != _boxId)
         {
             return false;
         }
         else
         {
-            if (_boxId == noteBoxId && noteType == 3)
+            if (_boxId == noteBoxId && noteType == SpotType::left)
             {
-                _type = -1;
+                _type = SpotType::left;
                 _boxId = -1;
             }
             else
@@ -66,13 +66,13 @@ bool Spot::changeNote(BoardNote note)
             }
         } 
     }
-    else if (_type == 2)
+    else if (_type == SpotType::to_arrive)
     {  
-        if (noteType == 2 && noteBoxId != _boxId)
+        if (noteType == SpotType::to_arrive && noteBoxId != _boxId)
         {  
             return false;
         }
-        else if (_boxId == noteBoxId && noteType == 4)
+        else if (_boxId == noteBoxId && noteType == SpotType::arrive)
         {   
             _boxId = noteBoxId;
             _type = noteType;
@@ -83,13 +83,13 @@ bool Spot::changeNote(BoardNote note)
             throw invalid_argument(errorString(note));
         } 
     }
-    else if (_type == 4)
+    else if (_type == SpotType::arrive)
     {   
-        if (noteType == 2 && noteBoxId != _boxId)
+        if (noteType == SpotType::to_arrive && noteBoxId != _boxId)
         {
             return false;
         }
-        else if (_boxId == noteBoxId && noteType == 1)
+        else if (_boxId == noteBoxId && noteType == SpotType::to_leave)
         {
             _boxId = noteBoxId;
             _type = noteType;
@@ -116,7 +116,7 @@ void Spot::updateCombinedString()
         _combined = "B";
         _combined.append(to_string(_boxId));
         _combined.append(",T");
-        _combined.append(to_string(_type));
+        _combined.append(to_string((int)(_type)));
 }
 
 void Spot::registerListener(SpotListener* listener)
@@ -134,6 +134,6 @@ void Spot::notifyListeners()
 }
 
 string Spot::errorString(BoardNote boardNote)
-{ return "At {" + to_string(_position.getX()) + ", " + to_string(_position.getY()) + "} "  + " can not accept the received BoardNote with boxId of " + to_string(boardNote.getBoxId()) + " and type of "  + to_string(boardNote.getType()) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(_type) + ".";
+{ return "At {" + to_string(_position.getX()) + ", " + to_string(_position.getY()) + "} "  + " can not accept the received BoardNote with boxId of " + to_string(boardNote.getBoxId()) + " and type of "  + to_string(static_cast<int>(boardNote.getType())) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(static_cast<int>(_type)) + ".";
 }
 

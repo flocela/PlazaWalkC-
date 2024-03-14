@@ -21,15 +21,15 @@ public:
 
     // Need for typePerPosition memory to not be deleted until call is finished. 
     // Has a cumulative set of drops per type. But only keeps types 1, 2, and 4.
-    void receiveChanges(std::unordered_map<int, std::unordered_set<Drop>> setsOfDropsPerType);
+    void receiveChanges(std::unordered_map<SpotType, std::unordered_set<Drop>> setsOfDropsPerType);
 
-    std::unordered_map<int, std::unordered_set<Drop>> getDrops();
+    std::unordered_map<SpotType, std::unordered_set<Drop>> getDrops();
 
     void registerListener(RecorderListener* listener);
 
 private:
    
-    std::unordered_map<int, std::unordered_set<Drop>> _dropSetsPerType{}; 
+    std::unordered_map<SpotType, std::unordered_set<Drop>> _dropSetsPerType{}; 
     std::vector<RecorderListener*> _listeners;
 
 };

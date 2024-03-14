@@ -37,16 +37,16 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
 
     REQUIRE(4 == callbackNotesPosA.size());
 
-    REQUIRE(BoardNote{1,2} == callbackNotesPosA[0].second); // At PositionA Imminent Arrival
-    REQUIRE(BoardNote{1,4} == callbackNotesPosA[1].second); // At PositionA Arrival
+    REQUIRE(BoardNote{1,SpotType::to_arrive} == callbackNotesPosA[0].second); // At PositionA Imminent Arrival
+    REQUIRE(BoardNote{1,SpotType::arrive} == callbackNotesPosA[1].second); // At PositionA Arrival
 
-    REQUIRE(BoardNote{1,2} == callbackNotesPosB[0].second); // At PostionB Imminent Arrival
+    REQUIRE(BoardNote{1, SpotType::to_arrive} == callbackNotesPosB[0].second); // At PostionB Imminent Arrival
 
-    REQUIRE(BoardNote{1,1} == callbackNotesPosA[2].second); // At PositionA Imminent Departure
+    REQUIRE(BoardNote{1, SpotType::to_leave} == callbackNotesPosA[2].second); // At PositionA Imminent Departure
 
-    REQUIRE(BoardNote{1,4} == callbackNotesPosB[1].second); // At PositionB Arrival
+    REQUIRE(BoardNote{1, SpotType::arrive} == callbackNotesPosB[1].second); // At PositionB Arrival
 
-    REQUIRE(BoardNote{1,3} == callbackNotesPosA[3].second); // At PositionA Departure
+    REQUIRE(BoardNote{1, SpotType::left} == callbackNotesPosA[3].second); // At PositionA Departure
     
     // The BoardNotes should be in order.
     REQUIRE(callbackNotesPosA[1].first - callbackNotesPosA[0].first > std::chrono::milliseconds(0) );
