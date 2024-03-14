@@ -510,7 +510,7 @@ TEST_CASE("two threads repeatedly try to change Spot's Note, but because of Spot
 
 TEST_CASE("One thread repeatedly calls getBoardNote(), the other repeatedly calls changeNote(). Because changeNote() has a unique_lock and getBoardNote() has a shared_lock, getBoardNote() will never return a BoardNote that is half way done.")
 {
-    // If one thread is in changeNote() and the other thread is in getBoardNote(), then at some point getBoardNote() will return a BoardNote of {100, SpotType::left}. This means the BoardNote was in the middle of being updated, when it was returned by getBoardNote(). If the BoardNote's type is Spot::left, then the completed state doesn't have a boxId, so boxId should be Spot::left."
+    // If one thread is in changeNote() and the other thread is in getBoardNote(), then at some point getBoardNote() will return a BoardNote of {100, SpotType::left}. This means the BoardNote was in the middle of being updated, when it was returned by getBoardNote(). If the BoardNote's type is Spot::left, then the complete state doesn't have a boxId, so boxId should be -1."
 
     Spot spot{Position{8, 8}};
     
