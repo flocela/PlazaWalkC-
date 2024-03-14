@@ -15,11 +15,14 @@ public:
     Printer_OneColor& operator=(Printer_OneColor&& o) noexcept = delete;
     ~Printer_OneColor() noexcept = default;
 
+    void addEndPoint(Position topLeft, Position bottomRight);
+
     void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType) override;
 
 private:
     SDL_Renderer* _renderer;
     void print(std::unordered_map<SpotType, std::unordered_set<Drop>> dropsPerType);
+    std::vector<std::pair<Position, Position>> _endPoints{};
 };
 
 #endif

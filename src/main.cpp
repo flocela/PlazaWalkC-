@@ -118,18 +118,26 @@ int main(int argc, char* argv[])
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
             SDL_RenderPresent(renderer);
             
+            // End points
+            pair<Position, Position> eastEndPoint{Position{360, 360}, Position{365, 390}};
+            pair<Position, Position> upEndPoint{Position{170, 0}, Position{190, 5}};
+            pair<Position, Position> westEndPoint{Position{0, 170}, Position{5, 190}};
+            
             // Create Board
             Board board{800, 800};
             BoardAgent boardAgent(&board);
             Recorder recorder{};
             board.registerListener(&recorder);
             Printer_OneColor printer(renderer);
+            printer.addEndPoint(eastEndPoint.first, eastEndPoint.second);
+            printer.addEndPoint(upEndPoint.first, upEndPoint.second);
+            printer.addEndPoint(westEndPoint.first, westEndPoint.second);
             recorder.registerListener(&printer);
-            
+
             // Create PositionManger
-            PositionManager_Straight eastPositionManager{Position{360, 360}, Position{365, 390}, 0, board.getWidth()-1, 0, board.getHeight()-1};
-            PositionManager_Straight upPositionManager{Position{170, 0}, Position{190, 5}, 0, board.getWidth()-1, 0, board.getHeight()-1};
-            PositionManager_Straight westPositionManager{Position{0, 170}, Position{5, 190}, 0, board.getWidth()-1, 0, board.getHeight()-1};
+            PositionManager_Straight eastPositionManager{eastEndPoint.first, eastEndPoint.second, 0, board.getWidth()-1, 0, board.getHeight()-1};
+            PositionManager_Straight upPositionManager{upEndPoint.first, upEndPoint.second, 0, board.getWidth()-1, 0, board.getHeight()-1};
+            PositionManager_Straight westPositionManager{westEndPoint.first, westEndPoint.second, 0, board.getWidth()-1, 0, board.getHeight()-1};
 
             // Create Boxes
             vector<unique_ptr<Box>> boxes{};

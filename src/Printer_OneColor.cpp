@@ -11,10 +11,10 @@ void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unorder
 }
 
 void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType)
-{
+{   
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);
-     
+    
     for (auto& setPerType : dropsPerType)
     {
         // TODO should this be a reference?
@@ -33,5 +33,25 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             SDL_RenderFillRect(_renderer, &squareRect);
         }
     }
+
+    for(const pair<Position, Position>& endPoint : _endPoints)
+    {
+        Position topLeft = endPoint.first;
+        Position bottomRight = endPoint.second;
+        
+        SDL_Rect endRect;
+        endRect.x = topLeft.getX();
+        endRect.y = topLeft.getY();
+        endRect.w = bottomRight.getX() - topLeft.getX();
+        endRect.h = bottomRight.getY() - topLeft.getY();
+        SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0xFF);
+        SDL_RenderFillRect(_renderer, &endRect);
+    }
+
     SDL_RenderPresent(_renderer);
+}
+
+void Printer_OneColor::addEndPoint(Position topLeft, Position bottomRight)
+{
+    _endPoints.push_back({topLeft, bottomRight});
 }
