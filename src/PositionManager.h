@@ -20,6 +20,7 @@ public:
 
     virtual bool atEnd(Position position) = 0;    
     virtual std::vector<Position> getFuturePositions(Position position) = 0;
+    virtual std::pair<Position, Position> getEndPoint() const = 0;
 };
 
 #endif

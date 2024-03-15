@@ -11,7 +11,7 @@ PositionManager_Straight::PositionManager_Straight(
     int boardMaxY)
   : _topLeftX{topLeft.getX()},
     _topLeftY{topLeft.getY()},
-    _botRightX{botRight.getY()},
+    _botRightX{botRight.getX()},
     _botRightY{botRight.getY()},
     _targetX{(_topLeftX + _botRightX)/2},
     _targetY{(_topLeftY + _botRightY)/2},
@@ -75,4 +75,10 @@ vector<Position> PositionManager_Straight::getFuturePositions(Position position)
 
     return netPositions;
     
+}
+
+// TODO needs a test
+std::pair<Position, Position> PositionManager_Straight::getEndPoint() const
+{
+    return pair<Position, Position>{Position{_topLeftX, _topLeftY}, Position{_botRightX, _botRightY}};
 }

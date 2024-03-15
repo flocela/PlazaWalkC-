@@ -146,6 +146,36 @@ int main(int argc, char* argv[])
                 boxes.push_back(make_unique<Box>(ii, 3, 3));
             }
 
+            // CreatePositionManagers
+            vector<unique_ptr<PositionManager_Straight>> eastPMs{};
+            vector<unique_ptr<PositionManager_Straight>> upPMs{};
+            vector<unique_ptr<PositionManager_Straight>> westPMs{};
+
+            for(int ii=0; ii<300; ++ii)
+            {
+                eastPMs.push_back(make_unique<PositionManager_Straight>(
+                    eastEndPoint.first,
+                    eastEndPoint.second,
+                    0,
+                    board.getWidth()-1,
+                    0,
+                    board.getHeight()-1));
+                upPMs.push_back(make_unique<PositionManager_Straight>(
+                    upEndPoint.first,
+                    upEndPoint.second,
+                    0,
+                    board.getWidth()-1,
+                    0,
+                    board.getHeight()-1));
+                westPMs.push_back(make_unique<PositionManager_Straight>(
+                    westEndPoint.first,
+                    westEndPoint.second,
+                    0,
+                    board.getWidth()-1,
+                    0,
+                    board.getHeight()-1));
+            }
+
             // Create decider
             vector<unique_ptr<Decider_Safe>> deciders{};
             for(uint32_t ii=0; ii<boxes.size(); ++ii)
@@ -170,22 +200,50 @@ int main(int argc, char* argv[])
                 // TODO change Position's attribute types to be uint32_t
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{1,(int)ii}, &board, &(eastPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                    threads.push_back(make_unique<thread>(
+                        funcMoveBox,
+                        Position{1,(int)ii},
+                        &board,
+                        eastPMs[boxIdx].get(),
+                        deciders[boxIdx].get(),
+                        movers[boxIdx].get(),
+                        &running));
                 }
                 ++boxIdx; 
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 358}, &board, &(upPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                    threads.push_back(make_unique<thread>(
+                        funcMoveBox,
+                        Position{(int)ii, 358},
+                        &board,
+                        upPMs[boxIdx].get(),
+                        deciders[boxIdx].get(),
+                        movers[boxIdx].get(),
+                        &running));
                 }
                 ++boxIdx; 
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{358,(int)ii}, &board, &(westPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                    threads.push_back(make_unique<thread>(
+                        funcMoveBox,
+                        Position{358,(int)ii},
+                        &board,
+                        westPMs[boxIdx].get(),
+                        deciders[boxIdx].get(),
+                        movers[boxIdx].get(),
+                        &running));
                 }
                 ++boxIdx; 
                 if (boxIdx < boxes.size())
                 {
-                    threads.push_back(make_unique<thread>(funcMoveBox, Position{(int)ii, 1}, &board, &(westPositionManager), deciders[boxIdx].get(), movers[boxIdx].get(), &running));
+                    threads.push_back(make_unique<thread>(
+                        funcMoveBox,
+                        Position{(int)ii, 1},
+                        &board,
+                        westPMs[boxIdx].get(),
+                        deciders[boxIdx].get(),
+                        movers[boxIdx].get(),
+                        &running));
                 }
                 ++boxIdx; 
 

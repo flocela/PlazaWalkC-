@@ -47,4 +47,8 @@ bool PositionManager_Up::atEnd(Position position)
     return position.getY() <= _endY;
 }
     
-    
+// TODO fill this in later    
+std::pair<Position, Position> PositionManager_Up::getEndPoint() const
+{
+    return pair<Position, Position>{Position{0,0}, Position{0,0}};
+}

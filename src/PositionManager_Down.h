@@ -17,6 +17,7 @@ public:
 
     std::vector<Position> getFuturePositions(Position position) override;
     bool atEnd(Position position) override;
+    std::pair<Position, Position> getEndPoint() const override;
 
 private:
     int _endY;
