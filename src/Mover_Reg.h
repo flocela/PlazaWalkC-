@@ -17,6 +17,7 @@ public:
     Mover_Reg& operator=(Mover_Reg&& o) noexcept = delete;
     ~Mover_Reg() noexcept = default;
 
+    bool removeBox(Position position) override;
     bool addBox(Position position) override;
     bool moveBox(Position oldPosition, Position newPosition) override;
 

@@ -55,3 +55,27 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
     REQUIRE(callbackNotesPosB[1].first - callbackNotesPosA[2].first > std::chrono::milliseconds(0) );
     REQUIRE(callbackNotesPosA[3].first - callbackNotesPosB[1].first > std::chrono::milliseconds(0) );
 }
+
+TEST_CASE("Mover_Reg removes box from board.")
+{
+    // Set up Board, Box, and Mover_Reg.
+    Board board{10, 10};
+    Box box{1, 10, 10};
+    Mover_Reg mover{box, board};
+
+    // Register a BoardCallback_Accountant to receive changes from Board's PositionA.
+    Position positionA = {5, 5};
+    BoardCallback_Accountant accountantForPosA{};
+
+    // Add box to positionA
+    REQUIRE(true == mover.addBox(positionA));
+    REQUIRE(BoardNote{1, SpotType::arrive} ==  board.getNoteAt(positionA));
+
+    // Remove box from positionA
+    REQUIRE(true == mover.removeBox(positionA));
+    REQUIRE(BoardNote{-1, SpotType::left} ==  board.getNoteAt(positionA));
+} 
+
+    
+    
+    

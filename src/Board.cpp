@@ -58,7 +58,7 @@ bool Board::addNote(Position position, BoardNote boardNote)
         //std::this_thread::sleep_for(1ms);
         drop._type = currentBoardNote.getType();
 
-        // Notify all BoardCallbacks. Should be zero as BoardCallbacks are only used in testing.
+        // Notify all BoardCallbacks. Should be none as BoardCallbacks are only used in testing.
         if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
         {
             _boardCallbacksPerPos.at(position).callback(boardNote, position);

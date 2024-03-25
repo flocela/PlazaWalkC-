@@ -61,6 +61,12 @@ void funcMoveBox(
         }
         this_thread::sleep_for(10ms);
     }
+
+    // if box has reached its destination then it disapears from the board.
+    if (posManager->atEnd(curPosition))
+    {
+        mover->removeBox(curPosition);
+    }
 }
 
 int main(int argc, char* argv[])

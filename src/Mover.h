@@ -16,6 +16,7 @@ protected:
 public:
 
     virtual bool addBox(Position position) = 0;
+    virtual bool removeBox(Position position) = 0;
     virtual bool moveBox(Position oldPosition, Position newPosition) = 0;
     virtual ~Mover () noexcept = default;
 };
