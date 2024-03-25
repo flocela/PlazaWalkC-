@@ -16,7 +16,7 @@ TEST_CASE("atEnd() return false if position is outside ending box")
     REQUIRE(false == pm.atEnd(Position{69, 70}));
 }
 
-TEST_CASE("atEnd() return false if position is inside ending box")
+TEST_CASE("atEnd() return true if position is inside ending box")
 {
     PositionManager_Straight pm{
         Position{70, 50},
