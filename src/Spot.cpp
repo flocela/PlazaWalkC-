@@ -33,6 +33,8 @@ pair<int, bool> Spot::changeNote(BoardNote note)
     int noteBoxId = note.getBoxId();
     SpotType noteType  = note.getType();
     
+    int origBoxId = _boxId;
+    
     if (_type == SpotType::left)
     { 
         if (noteType != SpotType::to_arrive)
@@ -103,7 +105,7 @@ pair<int, bool> Spot::changeNote(BoardNote note)
     }
     
     notifyListeners();
-    return {-1,true};
+    return {origBoxId,true};
 }
 
 BoardNote Spot::getBoardNote() const

@@ -59,8 +59,10 @@ TEST_CASE("Spot:: Spot originally does not hold a box)")
         BoardNote imminentArrivalNote{10, SpotType::to_arrive};
 
         Spot spot{Position{8, 9}};
-        spot.changeNote(imminentArrivalNote);
-        
+        pair<int, bool> successPair = spot.changeNote(imminentArrivalNote);
+       
+        REQUIRE(-1 == successPair.first);
+        REQUIRE(true == successPair.second); 
         REQUIRE(10 == spot.getBoardNote().getBoxId());
         REQUIRE(SpotType::to_arrive == spot.getBoardNote().getType());
     }
@@ -139,8 +141,10 @@ TEST_CASE("Spot:: Spot originally has the type 'Imminent Departure'")
             // Box with boxId 10 leaves.
             // 'Departure' type is 3.
             BoardNote departureNote{10, SpotType::left};
+            pair<int, bool> successPair = spot.changeNote(departureNote);
 
-            REQUIRE(true == spot.changeNote(departureNote).second);
+            REQUIRE(10 == successPair.first);
+            REQUIRE(true == successPair.second); 
             REQUIRE(-1 == spot.getBoardNote().getBoxId());
             REQUIRE(SpotType::left == spot.getBoardNote().getType());
         }
@@ -175,8 +179,11 @@ TEST_CASE("Spot:: Spot originally has the type 'Imminent Departure'")
             // Box with boxId 99 is about to arrive.
             // 'Imminent Arrival' type is 2.
             BoardNote imminentArrivalNote{99, SpotType::to_arrive};
+            pair<int, bool> successPair = spot.changeNote(imminentArrivalNote);
 
-            REQUIRE_FALSE(spot.changeNote(imminentArrivalNote).second);
+            REQUIRE(10 == successPair.first);
+            REQUIRE(false == successPair.second); 
+
             REQUIRE(10 == spot.getBoardNote().getBoxId());
             REQUIRE(SpotType::to_leave == spot.getBoardNote().getType());
         }
@@ -254,8 +261,10 @@ TEST_CASE("Spot:: Spot originally has the type 'Imminent Arrival'")
             // Box with boxId 10 arrives.
             // 'Arrives' type is 4.
             BoardNote arrivalNote{10, SpotType::arrive};
-
-            REQUIRE(true == spot.changeNote(arrivalNote).second);
+            pair<int, bool> successPair = spot.changeNote(arrivalNote);
+            
+            REQUIRE(10 == successPair.first);
+            REQUIRE(true == successPair.second);
             REQUIRE(10 == spot.getBoardNote().getBoxId());
             REQUIRE(SpotType::arrive == spot.getBoardNote().getType());
         }
@@ -280,8 +289,10 @@ TEST_CASE("Spot:: Spot originally has the type 'Imminent Arrival'")
             // Box with boxId 99 is about to arrive.
             // 'Imminent Arrival' type is 2.
             BoardNote imminentArrivalNote{99, SpotType::to_arrive};
+            pair<int, bool> successPair = spot.changeNote(imminentArrivalNote);
 
-            REQUIRE_FALSE(spot.changeNote(imminentArrivalNote).second);
+            REQUIRE(10 == successPair.first);
+            REQUIRE(false == successPair.second);
             REQUIRE(10 == spot.getBoardNote().getBoxId());
             REQUIRE(SpotType::to_arrive == spot.getBoardNote().getType());
         }
@@ -327,8 +338,10 @@ TEST_CASE("Spot:: Spot originally has the type 'Arrived'")
             // Box with boxId 10 is about to leave.
             // 'Imminent Departure' type is 1.
             BoardNote imminentDepartureNote{10, SpotType::to_leave};
+            pair<int, bool> successPair = spot.changeNote(imminentDepartureNote);
 
-            REQUIRE(true == spot.changeNote(imminentDepartureNote).second);
+            REQUIRE(10 == successPair.first);
+            REQUIRE(true == successPair.second);
             REQUIRE(10 == spot.getBoardNote().getBoxId());
             REQUIRE(SpotType::to_leave == spot.getBoardNote().getType());
         }
@@ -385,6 +398,10 @@ TEST_CASE("Spot:: Spot originally has the type 'Arrived'")
             // Box with boxId 99 is about to arrive.
             // 'Imminent Arrival' type is 2.
             BoardNote imminentArrivalNote{99, SpotType::to_arrive};
+            pair<int, bool> successPair = spot.changeNote(imminentArrivalNote);
+
+            REQUIRE(10 == successPair.first);
+            REQUIRE(false == successPair.second);
 
             REQUIRE_FALSE(spot.changeNote(imminentArrivalNote).second);
             REQUIRE(10 == spot.getBoardNote().getBoxId());
