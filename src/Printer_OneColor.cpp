@@ -5,13 +5,14 @@ using namespace std;
 
 Printer_OneColor::Printer_OneColor(SDL_Renderer* renderer): _renderer{renderer} {}
 
-void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType)
+void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, unordered_map<int, Box> boxesPerBoxId)
 {
-    print(setOfDropsPerType);
+    print(setOfDropsPerType, boxesPerBoxId);
 }
 
-void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType)
-{   
+void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, unordered_map<int, Box> boxesPerBoxId)
+{  
+    (void)boxesPerBoxId; 
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);
     
@@ -24,12 +25,12 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
         {
             // TODO Can I initialize a SDL_Rect in the constructor, instead of 4 lines?
             SDL_Rect squareRect;
-            squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
-            squareRect.h = 3;
+            squareRect.w = 1;// TODO width and height is taken from box width and height not hardcoded
+            squareRect.h = 1;
             squareRect.x = drop._position.getX();
             squareRect.y = drop._position.getY();
 
-            SDL_SetRenderDrawColor(_renderer, 0xFF, 0x00, 0x00, 0xFF);
+            SDL_SetRenderDrawColor(_renderer, 0xFF, 0x00, 0x00, 0xAA);
             SDL_RenderFillRect(_renderer, &squareRect);
         }
     }

@@ -17,11 +17,11 @@ public:
 
     void addEndPoint(Position topLeft, Position bottomRight);
 
-    void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType) override;
+    void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, Box> boxesPerBoxId) override;
 
 private:
     SDL_Renderer* _renderer;
-    void print(std::unordered_map<SpotType, std::unordered_set<Drop>> dropsPerType);
+    void print(std::unordered_map<SpotType, std::unordered_set<Drop>> dropsPerType, std::unordered_map<int, Box> boxesPerBoxId);
     std::vector<std::pair<Position, Position>> _endPoints{};
 };
 

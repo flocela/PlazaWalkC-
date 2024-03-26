@@ -26,9 +26,10 @@ Position Spot::getPosition() const
     return _position;
 }
 
-bool Spot::changeNote(BoardNote note)
+pair<int, bool> Spot::changeNote(BoardNote note)
 {
     unique_lock<shared_mutex> lock(_mm);
+
     int noteBoxId = note.getBoxId();
     SpotType noteType  = note.getType();
     
@@ -50,7 +51,7 @@ bool Spot::changeNote(BoardNote note)
     {  
         if (noteType == SpotType::to_arrive && noteBoxId != _boxId)
         {
-            return false;
+            return {_boxId, false};
         }
         else
         {
@@ -70,7 +71,7 @@ bool Spot::changeNote(BoardNote note)
     {  
         if (noteType == SpotType::to_arrive && noteBoxId != _boxId)
         {  
-            return false;
+            return {_boxId, false};
         }
         else if (_boxId == noteBoxId && noteType == SpotType::arrive)
         {   
@@ -87,7 +88,7 @@ bool Spot::changeNote(BoardNote note)
     {   
         if (noteType == SpotType::to_arrive && noteBoxId != _boxId)
         {
-            return false;
+            return {_boxId, false};
         }
         else if (_boxId == noteBoxId && noteType == SpotType::to_leave)
         {
@@ -102,7 +103,7 @@ bool Spot::changeNote(BoardNote note)
     }
     
     notifyListeners();
-    return true;
+    return {-1,true};
 }
 
 BoardNote Spot::getBoardNote() const

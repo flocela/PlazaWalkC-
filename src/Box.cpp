@@ -30,3 +30,7 @@ int Box::getWidth() const
     return _width;
 }
 
+void Box::upLevel()
+{
+    ++_level;
+}

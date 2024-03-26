@@ -46,9 +46,15 @@ int Board::getHeight() const
 bool Board::addNote(Position position, BoardNote boardNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
-    bool success = _spots[position.getY()][position.getX()].changeNote(boardNote);
-   
-    if (success)
+    pair<int, bool> success = _spots[position.getY()][position.getX()].changeNote(boardNote);
+
+    if (!success.second)
+    {
+        _boxesPerBoxId.at(success.first).upLevel();
+        _boxesPerBoxId.at(boardNote.getBoxId()).upLevel();
+        return false; 
+    }
+    else 
     {
         // Record changed boxId and type at position in _receivingMatrix.
         BoardNote currentBoardNote = _spots[position.getY()][position.getX()].getBoardNote();
@@ -63,9 +69,8 @@ bool Board::addNote(Position position, BoardNote boardNote)
         {
             _boardCallbacksPerPos.at(position).callback(boardNote, position);
         }
+        return true;
     }
-
-    return success;
 }
 
 void Board::registerCallback(Position pos, BoardCallback& callBack)
@@ -107,7 +112,7 @@ void Board::sendChanges()
     
     for(BoardListener* listener : _listeners)
     {   
-        listener->receiveChanges(setsOfDropsPerType);
+        listener->receiveChanges(setsOfDropsPerType, _boxesPerBoxId);
     }
 }
 

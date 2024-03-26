@@ -13,11 +13,13 @@ class Box{
 public:
     Box(int id, int width, int height);
     Box() = delete;
-    Box(const Box& o) = delete;
-    Box(Box&& o) noexcept = delete;
-    Box& operator= (const Box& o) = delete;
-    Box& operator= (Box&& o) noexcept = delete;
+    Box(const Box& o) = default;
+    Box(Box&& o) noexcept = default;
+    Box& operator= (const Box& o) = default;
+    Box& operator= (Box&& o) noexcept = default;
     ~Box() noexcept = default;
+
+    void upLevel();
 
     int getId() const;    
     int getWidth() const;
@@ -26,8 +28,9 @@ public:
     bool operator== (const Box& o) const;
 
 private:
-    int _id     = 0;
-    int _width  = 0; // make this const
+    int _id    = 0;
+    int _level = 0;
+    int _width = 0; // make this const
     int _height = 0; // make this const
 };
 

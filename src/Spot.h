@@ -25,7 +25,7 @@ public:
     Position getPosition() const;
     BoardNote getBoardNote() const;
 
-    bool changeNote(BoardNote note);
+    std::pair<int, bool> changeNote(BoardNote note);
 
     void registerListener(SpotListener* listener);
     
