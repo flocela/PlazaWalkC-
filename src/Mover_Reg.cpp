@@ -19,7 +19,7 @@ bool Mover_Reg::addBox(Position position)
    
     return success;
 }
-
+// TODO test exceptions
 bool Mover_Reg::removeBox(Position position)
 {
     BoardNote fromBoard = _board.getNoteAt(position);
@@ -76,8 +76,17 @@ bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
     if (success)
     {
         _board.addNote(oldPosition, BoardNote{boxId, SpotType::to_leave});
-        
-        this_thread::sleep_for(5ms);
+
+        int deltaX = oldPosition.getX() - newPosition.getX();
+        int deltaY = oldPosition.getY() - newPosition.getY(); 
+        if( ( (deltaX * deltaX) + (deltaY * deltaY)) == 2 )
+        {
+            this_thread::sleep_for(14ms);
+        }
+        else
+        {
+            this_thread::sleep_for(10ms);
+        }
 
         _board.addNote(newPosition, BoardNote{boxId, SpotType::arrive});
         _board.addNote(oldPosition, BoardNote{boxId, SpotType::left});

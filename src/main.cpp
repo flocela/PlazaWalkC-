@@ -15,6 +15,7 @@
 #include "Box.h"
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
+#include "PositionManager_Diagonal.h"
 #include "PositionManager_Down.h"
 #include "PositionManager_Straight.h"
 #include "PositionManager_Up.h"
@@ -153,27 +154,27 @@ int main(int argc, char* argv[])
             }
 
             // CreatePositionManagers
-            vector<unique_ptr<PositionManager_Straight>> eastPMs{};
-            vector<unique_ptr<PositionManager_Straight>> upPMs{};
-            vector<unique_ptr<PositionManager_Straight>> westPMs{};
+            vector<unique_ptr<PositionManager_Diagonal>> eastPMs{};
+            vector<unique_ptr<PositionManager_Diagonal>> upPMs{};
+            vector<unique_ptr<PositionManager_Diagonal>> westPMs{};
 
             for(int ii=0; ii<300; ++ii)
             {
-                eastPMs.push_back(make_unique<PositionManager_Straight>(
+                eastPMs.push_back(make_unique<PositionManager_Diagonal>(
                     eastEndPoint.first,
                     eastEndPoint.second,
                     0,
                     board.getWidth()-1,
                     0,
                     board.getHeight()-1));
-                upPMs.push_back(make_unique<PositionManager_Straight>(
+                upPMs.push_back(make_unique<PositionManager_Diagonal>(
                     upEndPoint.first,
                     upEndPoint.second,
                     0,
                     board.getWidth()-1,
                     0,
                     board.getHeight()-1));
-                westPMs.push_back(make_unique<PositionManager_Straight>(
+                westPMs.push_back(make_unique<PositionManager_Diagonal>(
                     westEndPoint.first,
                     westEndPoint.second,
                     0,
