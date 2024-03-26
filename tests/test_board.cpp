@@ -37,7 +37,7 @@ TEST_CASE("Sends changes to registered Agents")
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxesPerBoxId) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {
@@ -102,7 +102,7 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, Box> boxesPerBoxId) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {

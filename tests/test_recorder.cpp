@@ -7,7 +7,7 @@ using namespace std;
 class RecorderListenerTest : public RecorderListener
 {
 public:
-    void receiveAllDrops(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType) override
+    void receiveAllDrops(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType, unordered_map<int, Box> boxesPerBoxId) override
     {
         _setOfDropsPerType = setOfDropsPerType;
     }
@@ -36,7 +36,9 @@ TEST_CASE("incoming boxes are recorded")
     dropsType2.insert(dropB);
     changedSetsOfDropsPerType.insert({SpotType::to_arrive, dropsType2});
 
-    recorder.receiveChanges(changedSetsOfDropsPerType);
+    unordered_map<int, Box> boxesPerBoxIdDummy{};
+
+    recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
     
     unordered_map<SpotType, unordered_set<Drop>> actual = recorder.getDrops();
     REQUIRE(2 == actual.at(SpotType::to_arrive).size());    
@@ -57,7 +59,7 @@ TEST_CASE("incoming boxes are recorded")
     dropsType4.insert(dropB);
     changedSetsOfDropsPerType.insert({SpotType::arrive, dropsType4});
 
-    recorder.receiveChanges(changedSetsOfDropsPerType);
+    recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
 
     actual = recorder.getDrops();
     REQUIRE(1 == actual.at(SpotType::to_arrive).size());    
@@ -77,14 +79,14 @@ TEST_CASE("incoming boxes are recorded")
     dropsType4 = {};
     dropsType4.insert(dropA);
     changedSetsOfDropsPerType.insert({SpotType::arrive, dropsType4});    
-    recorder.receiveChanges(changedSetsOfDropsPerType);
+    recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
 
     dropA._type = SpotType::to_leave;
     changedSetsOfDropsPerType = {};
     unordered_set<Drop> dropsType1{};
     dropsType1.insert(dropA);
     changedSetsOfDropsPerType.insert({SpotType::to_leave, dropsType1});    
-    recorder.receiveChanges(changedSetsOfDropsPerType);
+    recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
 
     // add dropB._type = 4 to expected set
     dropsType4 = {};
@@ -110,7 +112,7 @@ TEST_CASE("incoming boxes are recorded")
     unordered_set<Drop> dropsTypeNeg1 = {};
     dropsTypeNeg1.insert(dropA);
     changedSetsOfDropsPerType.insert({SpotType::left, dropsTypeNeg1});    
-    recorder.receiveChanges(changedSetsOfDropsPerType);
+    recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
 
     changedSetsOfDropsPerType = {};
     

@@ -46,6 +46,11 @@ int Board::getHeight() const
 bool Board::addNote(Position position, BoardNote boardNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
+    if (_boxesPerBoxId.find(boardNote.getBoxId()) == _boxesPerBoxId.end())
+    {
+        _boxesPerBoxId.insert({boardNote.getBoxId(), Box{boardNote.getBoxId(), 3, 3}});
+    }
+
     pair<int, bool> success = _spots[position.getY()][position.getX()].changeNote(boardNote);
 
     if (!success.second)
@@ -111,8 +116,9 @@ void Board::sendChanges()
     }
     
     for(BoardListener* listener : _listeners)
-    {   
-        listener->receiveChanges(setsOfDropsPerType, _boxesPerBoxId);
+    {
+        listener->receiveChanges(setsOfDropsPerType, unordered_map<int, Box>{});
+        //listener->receiveChanges(setsOfDropsPerType, _boxesPerBoxId);
     }
 }
 

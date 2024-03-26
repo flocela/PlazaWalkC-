@@ -42,7 +42,7 @@ void funcMoveBox(
         Mover* mover,
         bool* breaker
         )
-{
+{   
     //cout << "funcMoveBox: " << endl;
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
@@ -271,12 +271,7 @@ int main(int argc, char* argv[])
                             break; 
                     }
                 }
-                //start = clock(); 
                 boardAgent.updateWithChanges();
-                //end = clock();
-                //double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
-                //cout << "time taken to print is : " << fixed << time_taken << setprecision(5);
-                //cout << "sec" << endl;               
                 //SDL_Delay(20); 
             }
 
