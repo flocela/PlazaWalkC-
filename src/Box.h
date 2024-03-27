@@ -13,10 +13,10 @@ class Box{
 public:
     Box(int id, int width, int height);
     Box() = delete;
-    Box(const Box& o) = default;
-    Box(Box&& o) noexcept = default;
-    Box& operator= (const Box& o) = default;
-    Box& operator= (Box&& o) noexcept = default;
+    Box(const Box& o);
+    Box(Box&& o) noexcept;
+    Box& operator= (const Box& o) = delete;
+    Box& operator= (Box&& o) noexcept = delete;
     ~Box() noexcept = default;
 
     void upLevel();
@@ -24,6 +24,7 @@ public:
     int getId() const;    
     int getWidth() const;
     int getHeight() const;
+    int getLevel() const;
     
     bool operator== (const Box& o) const;
 
@@ -32,6 +33,7 @@ private:
     int _level = 0;
     int _width = 0; // make this const
     int _height = 0; // make this const
+    mutable std::shared_mutex _mm;
 };
 
 namespace std

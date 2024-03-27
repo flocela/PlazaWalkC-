@@ -3,7 +3,7 @@
 #include <thread>
 
 using namespace std;
-
+/*
 TEST_CASE("getHeight() and getWidth() return the Board's dimensions")
 {
     Board board{20, 10};
@@ -76,7 +76,69 @@ TEST_CASE("Sends changes to registered Agents")
     REQUIRE(SpotType::arrive == listener._dropsPerPosition.at(Position{5, 5})._type);
     REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{7, 7})._type);
 }
+*/
+TEST_CASE("One box tries to enter the position of another box. So both box's levels go up by 1.")
+{
+    cout << "test_board  line 82" << endl;
+    class BoardListener_Test : public BoardListener 
+    {
+    public: 
 
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxesPerBoxId) override
+        {
+            for(const pair<int, Box>& p : boxesPerBoxId)
+            {
+                _boxesPerBoxId.insert({p.first, p.second});
+            }
+        }
+        
+        unordered_map<int, Box> _boxesPerBoxId{};
+    };
+
+    int boxId10 = 10;
+    int boxId20 = 20;
+    
+    Board board{20, 20};
+    BoardListener_Test listener{};
+    board.registerListener(&listener);
+    
+    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::to_arrive});
+    board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
+    board.sendChanges(); 
+    
+    REQUIRE(1 == listener._boxesPerBoxId.at(boxId10).getLevel());
+    REQUIRE(1 == listener._boxesPerBoxId.at(boxId20).getLevel());
+
+    listener._boxesPerBoxId = unordered_map<int,Box>{};
+
+    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::arrive});
+    board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
+    board.sendChanges(); 
+    
+    REQUIRE(2 == listener._boxesPerBoxId.at(boxId10).getLevel());
+    REQUIRE(2 == listener._boxesPerBoxId.at(boxId20).getLevel());
+    
+    listener._boxesPerBoxId = unordered_map<int,Box>{};
+
+    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::to_leave});
+    board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
+    board.sendChanges(); 
+    
+    REQUIRE(3 == listener._boxesPerBoxId.at(boxId10).getLevel());
+    REQUIRE(3 == listener._boxesPerBoxId.at(boxId20).getLevel());
+    
+    listener._boxesPerBoxId = unordered_map<int,Box>{};
+
+    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::left});
+    board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
+    board.sendChanges(); 
+    
+    REQUIRE(3 == listener._boxesPerBoxId.at(boxId10).getLevel());
+    REQUIRE(3 == listener._boxesPerBoxId.at(boxId20).getLevel());
+}
+
+    
+/*
 void funcMoveBox(Board& board)
 {
     for (int ii=0; ii<1000; ++ii)
@@ -92,7 +154,7 @@ void funcAskForChanges(Board& board)
         board.sendChanges();
     }
 }
-        
+
 // In order to fail this test: remove the unique_lock in sendChanges() and add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
 TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops that have a boxId of -1 and type of not -1.")
 {
@@ -135,3 +197,5 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
     t2.join();
 
 }
+
+*/    

@@ -114,11 +114,9 @@ void Board::sendChanges()
             }
         }
     }
-    
     for(BoardListener* listener : _listeners)
     {
-        listener->receiveChanges(setsOfDropsPerType, unordered_map<int, Box>{});
-        //listener->receiveChanges(setsOfDropsPerType, _boxesPerBoxId);
+        listener->receiveChanges(setsOfDropsPerType, _boxesPerBoxId);
     }
 }
 
