@@ -21,7 +21,7 @@ public:
 
     // Need for typePerPosition memory to not be deleted until call is finished. 
     // Has a cumulative set of drops per type. But only keeps types 1, 2, and 4.
-    void receiveChanges(std::unordered_map<SpotType, std::unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxesPerBoxId);
+    void receiveChanges(std::unordered_map<SpotType, std::unordered_set<Drop>> setsOfDropsPerType, std::vector<Box> boxes);
 
     std::unordered_map<SpotType, std::unordered_set<Drop>> getDrops();
 

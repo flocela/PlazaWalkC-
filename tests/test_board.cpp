@@ -3,7 +3,7 @@
 #include <thread>
 
 using namespace std;
-/*
+
 TEST_CASE("getHeight() and getWidth() return the Board's dimensions")
 {
     Board board{20, 10};
@@ -37,7 +37,7 @@ TEST_CASE("Sends changes to registered Agents")
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxesPerBoxId) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, vector<Box> boxes) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {
@@ -76,23 +76,22 @@ TEST_CASE("Sends changes to registered Agents")
     REQUIRE(SpotType::arrive == listener._dropsPerPosition.at(Position{5, 5})._type);
     REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{7, 7})._type);
 }
-*/
-TEST_CASE("One box tries to enter the position of another box. So both box's levels go up by 1.")
+
+TEST_CASE("Box with id of 20 attempts to move to position where Box with id 10 is at. Both boxes' levels to up.")
 {
-    cout << "test_board  line 82" << endl;
     class BoardListener_Test : public BoardListener 
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxesPerBoxId) override
+        void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, vector<Box> boxes) override
         {
-            for(const pair<int, Box>& p : boxesPerBoxId)
+            for(Box box : boxes)
             {
-                _boxesPerBoxId.insert({p.first, p.second});
+                _boxes.push_back(box);
             }
         }
         
-        unordered_map<int, Box> _boxesPerBoxId{};
+        vector<Box> _boxes{};
     };
 
     int boxId10 = 10;
@@ -101,44 +100,70 @@ TEST_CASE("One box tries to enter the position of another box. So both box's lev
     Board board{20, 20};
     BoardListener_Test listener{};
     board.registerListener(&listener);
-    
+  
     board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::to_arrive});
     board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
-    board.sendChanges(); 
-    
-    REQUIRE(1 == listener._boxesPerBoxId.at(boxId10).getLevel());
-    REQUIRE(1 == listener._boxesPerBoxId.at(boxId20).getLevel());
-
-    listener._boxesPerBoxId = unordered_map<int,Box>{};
-
-    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::arrive});
     board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
-    board.sendChanges(); 
+    board.sendChanges();
     
-    REQUIRE(2 == listener._boxesPerBoxId.at(boxId10).getLevel());
-    REQUIRE(2 == listener._boxesPerBoxId.at(boxId20).getLevel());
-    
-    listener._boxesPerBoxId = unordered_map<int,Box>{};
-
-    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::to_leave});
-    board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
-    board.sendChanges(); 
-    
-    REQUIRE(3 == listener._boxesPerBoxId.at(boxId10).getLevel());
-    REQUIRE(3 == listener._boxesPerBoxId.at(boxId20).getLevel());
-    
-    listener._boxesPerBoxId = unordered_map<int,Box>{};
-
-    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::left});
-    board.addNote(Position{5, 5}, BoardNote{boxId20, SpotType::to_arrive});
-    board.sendChanges(); 
-    
-    REQUIRE(3 == listener._boxesPerBoxId.at(boxId10).getLevel());
-    REQUIRE(3 == listener._boxesPerBoxId.at(boxId20).getLevel());
+    REQUIRE(2 == listener._boxes[10].getLevel());
+    REQUIRE(2 == listener._boxes[20].getLevel());
 }
 
+
+void funcMoveBoxToPosition(Board& board, int id, Position pos, int times)
+{
+    for (int ii=0; ii<times; ++ii)
+    {
+         board.addNote(pos, BoardNote{id, SpotType::to_arrive});
+    }
+}
+
+void funcAskForChanges(Board& board, int times)
+{
+    for (int ii=0; ii<times; ++ii)
+    {
+        board.sendChanges();
+    }
+}
+
+// To make this fail move the "copy _boxes to send" for loop in the sendChanges() function outside the unique_lock lockUq's braces.
+TEST_CASE("Box with id of 20 repeatedly attempts to move to position where box with id of 10 is at. Both boxes' levels are always the same.")
+{
+    class BoardListener_Test : public BoardListener 
+    {
+    public: 
+
+        void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, vector<Box> boxes) override
+        {
+            try{
+                REQUIRE(boxes[10].getLevel() == boxes[20].getLevel());
+            }
+            catch(...)
+            {
+                return;
+            }
+        }
+        
+    };
+
+    int boxId10 = 10;
+    int boxId20 = 20;
     
-/*
+    Board board{20, 20};
+    BoardListener_Test listener{};
+    board.registerListener(&listener);
+  
+    board.addNote(Position{5, 5}, BoardNote{boxId10, SpotType::to_arrive});
+
+    std::thread t1(funcMoveBoxToPosition, std::ref(board), 20, Position{5, 5}, 100);
+    std::thread t2(funcAskForChanges, std::ref(board), 100);
+
+    t1.join();
+    t2.join();
+    
+}
+
 void funcMoveBox(Board& board)
 {
     for (int ii=0; ii<1000; ++ii)
@@ -146,15 +171,7 @@ void funcMoveBox(Board& board)
          board.addNote(Position{ii, 0}, BoardNote{ii*1000, SpotType::to_arrive});
     }
 }
-
-void funcAskForChanges(Board& board)
-{
-    for (int ii=0; ii<1000; ++ii)
-    {
-        board.sendChanges();
-    }
-}
-
+        
 // In order to fail this test: remove the unique_lock in sendChanges() and add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
 TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops that have a boxId of -1 and type of not -1.")
 {
@@ -164,7 +181,7 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, Box> boxesPerBoxId) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, vector<Box> boxes) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {
@@ -191,11 +208,9 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
     board.registerListener(&listener);
 
     std::thread t1(funcMoveBox, std::ref(board));
-    std::thread t2(funcAskForChanges, std::ref(board));
+    std::thread t2(funcAskForChanges, std::ref(board), 1000);
 
     t1.join();
     t2.join();
 
 }
-
-*/    
