@@ -7,17 +7,17 @@ using namespace std;
 class RecorderListenerTest : public RecorderListener
 {
 public:
-    void receiveAllDrops(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType, vector<Box> boxes) override
+    void receiveAllDrops(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType, unordered_map<int, Box> boxes) override
     {
         _setOfDropsPerType = setOfDropsPerType;
-        for(Box box : boxes)
+        for(const auto& p : boxes)
         {
-            _boxes.push_back(box);
+            _boxes.insert({p.second.getId(), p.second});
         }        
     }
 
     unordered_map<SpotType, unordered_set<Drop>> _setOfDropsPerType{};
-    vector<Box> _boxes{};
+    unordered_map<int, Box> _boxes{};
 };
      
 
@@ -42,7 +42,7 @@ TEST_CASE("incoming boxes are recorded")
     dropsType2.insert(dropB);
     changedSetsOfDropsPerType.insert({SpotType::to_arrive, dropsType2});
 
-    vector<Box> boxesPerBoxIdDummy{};
+    unordered_map<int, Box> boxesPerBoxIdDummy{};
 
     recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
     
@@ -148,11 +148,11 @@ TEST_CASE ("boxes are received")
     unordered_map<int, Box> boxesPerBoxIdDummy{};
 
     // Box(int id, int width, int height);
-    vector<Box> boxes = {Box{0, 3, 3}, Box{1, 3, 3,}, Box{2, 3, 3,}};
+    unordered_map<int, Box> boxes = {{0, Box{0, 0, 3, 3}}, {1, Box{1, 0, 3, 3}}, {2,Box{2, 0, 3, 3,}}};
 
     recorder.receiveChanges(changedSetsOfDropsPerTypeDummy, boxes);
     
-    vector<Box> actual = listener._boxes;
+    unordered_map<int, Box> actual = listener._boxes;
    
     REQUIRE(3 == actual.size());
     REQUIRE(0 == actual[0].getId());

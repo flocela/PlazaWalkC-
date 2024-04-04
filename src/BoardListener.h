@@ -12,7 +12,7 @@ class BoardListener
 
 public:
 
-    virtual void receiveChanges(std::unordered_map<SpotType, std::unordered_set<Drop>> setsOfDropsPerType, std::vector<Box> boxes) = 0;
+    virtual void receiveChanges(std::unordered_map<SpotType, std::unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxes) = 0;
 
 };
 

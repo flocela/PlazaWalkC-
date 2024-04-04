@@ -8,7 +8,7 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
 {
     // Set up
     // Register a BoardCallback_Accountant with Board for poistions: PositionA and PositionB.
-    Box box{1, 10, 10};
+    vector<Box> boxes{Box{0, 0,  10, 10}};
 
     Position positionA = {5, 5};
     Position positionB = {5, 6};
@@ -16,12 +16,12 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
     BoardCallback_Accountant accountantPosA{};
     BoardCallback_Accountant accountantPosB{};
      
-    Board board{10, 10};
+    Board board{10, 10, boxes};
     board.registerCallback(positionA, accountantPosA);
     board.registerCallback(positionB, accountantPosB);
 
     // Create Mover_Reg. Add a box to positionA and then move that box from positionA to positionB.
-    Mover_Reg mover{box, board};
+    Mover_Reg mover{boxes[0].getId(), &board};
     REQUIRE(true == mover.addBox(positionA));
     REQUIRE(true == mover.moveBox(positionA, positionB));
 
@@ -37,16 +37,16 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
 
     REQUIRE(4 == callbackNotesPosA.size());
 
-    REQUIRE(BoardNote{1,SpotType::to_arrive} == callbackNotesPosA[0].second); // At PositionA Imminent Arrival
-    REQUIRE(BoardNote{1,SpotType::arrive} == callbackNotesPosA[1].second); // At PositionA Arrival
+    REQUIRE(BoardNote{0,SpotType::to_arrive} == callbackNotesPosA[0].second); // At PositionA Imminent Arrival
+    REQUIRE(BoardNote{0,SpotType::arrive} == callbackNotesPosA[1].second); // At PositionA Arrival
 
-    REQUIRE(BoardNote{1, SpotType::to_arrive} == callbackNotesPosB[0].second); // At PostionB Imminent Arrival
+    REQUIRE(BoardNote{0, SpotType::to_arrive} == callbackNotesPosB[0].second); // At PostionB Imminent Arrival
 
-    REQUIRE(BoardNote{1, SpotType::to_leave} == callbackNotesPosA[2].second); // At PositionA Imminent Departure
+    REQUIRE(BoardNote{0, SpotType::to_leave} == callbackNotesPosA[2].second); // At PositionA Imminent Departure
 
-    REQUIRE(BoardNote{1, SpotType::arrive} == callbackNotesPosB[1].second); // At PositionB Arrival
+    REQUIRE(BoardNote{0, SpotType::arrive} == callbackNotesPosB[1].second); // At PositionB Arrival
 
-    REQUIRE(BoardNote{1, SpotType::left} == callbackNotesPosA[3].second); // At PositionA Departure
+    REQUIRE(BoardNote{0, SpotType::left} == callbackNotesPosA[3].second); // At PositionA Departure
     
     // The BoardNotes should be in order.
     REQUIRE(callbackNotesPosA[1].first - callbackNotesPosA[0].first > std::chrono::milliseconds(0) );
@@ -59,9 +59,9 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
 TEST_CASE("Mover_Reg removes box from board.")
 {
     // Set up Board, Box, and Mover_Reg.
-    Board board{10, 10};
-    Box box{1, 10, 10};
-    Mover_Reg mover{box, board};
+    vector<Box> boxes{Box{0, 0,  10, 10}};
+    Board board{10, 10, boxes};
+    Mover_Reg mover{boxes[0].getId(), &board};
 
     // Register a BoardCallback_Accountant to receive changes from Board's PositionA.
     Position positionA = {5, 5};
@@ -69,7 +69,7 @@ TEST_CASE("Mover_Reg removes box from board.")
 
     // Add box to positionA
     REQUIRE(true == mover.addBox(positionA));
-    REQUIRE(BoardNote{1, SpotType::arrive} ==  board.getNoteAt(positionA));
+    REQUIRE(BoardNote{0, SpotType::arrive} ==  board.getNoteAt(positionA));
 
     // Remove box from positionA
     REQUIRE(true == mover.removeBox(positionA));

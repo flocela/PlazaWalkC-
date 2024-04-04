@@ -12,9 +12,8 @@ Recorder::Recorder()
     _dropSetsPerType.insert({SpotType::left, unordered_set<Drop>{}});
 }
 
-void Recorder::receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> changedSetsOfDropsPerType, vector<Box> boxes)
+void Recorder::receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> changedSetsOfDropsPerType, std::unordered_map<int, Box> boxes)
 { 
-    (void) boxes;
     // _positionSetsPerType is a map of postion sets per type.
     // It may be that position needs to be moved from one type's set to another type's set.
 

@@ -8,7 +8,7 @@ using namespace std;
 TEST_CASE("BoardCallback_Accountant:: Adding a BoardNote to the board, should result in a callback message sent to the callBack object.")
 {
     Position pos0{0, 0};
-    Board board{10, 10};
+    Board board{10, 10, vector<Box>{Box{0, 0, 1, 1}}};
     BoardCallback_Accountant callbackObject{};
     board.registerCallback(pos0, callbackObject);
 

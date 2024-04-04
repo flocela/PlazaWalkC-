@@ -3,18 +3,17 @@
 
 using namespace std;
 
-Mover_Reg::Mover_Reg(Box& box, Board& board): _box{box}, _board{board} {}
+Mover_Reg::Mover_Reg(int boxId, Board* board): _boxId{boxId}, _board{board} {}
 
 // TODO this return value needs to be tested.
 bool Mover_Reg::addBox(Position position)
 {
-    int boxId = _box.getId();
-    bool success = _board.addNote(position, BoardNote{boxId, SpotType::to_arrive});
+    bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_arrive});
 
     if (success)
     {
         this_thread::sleep_for(5ms);
-        _board.addNote(position, BoardNote{boxId, SpotType::arrive});
+        _board->addNote(position, BoardNote{_boxId, SpotType::arrive});
     }
    
     return success;
@@ -22,13 +21,12 @@ bool Mover_Reg::addBox(Position position)
 // TODO test exceptions
 bool Mover_Reg::removeBox(Position position)
 {
-    BoardNote fromBoard = _board.getNoteAt(position);
-    int boxId = _box.getId();
+    BoardNote fromBoard = _board->getNoteAt(position);
 
-    if (fromBoard.getBoxId() != boxId)
+    if (fromBoard.getBoxId() != _boxId)
     {
         string invalidString = "Trying to remove box ";
-        invalidString.append(to_string(boxId));
+        invalidString.append(to_string(_boxId));
         invalidString.append(" but box with id of ");
         invalidString.append(to_string(fromBoard.getBoxId()));
         invalidString.append(" is at position [");
@@ -39,11 +37,11 @@ bool Mover_Reg::removeBox(Position position)
        throw invalid_argument(invalidString); 
     }
     
-    bool success = _board.addNote(position, BoardNote{boxId, SpotType::to_leave});
+    bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave});
     if (!success)
     {
         string invalidString = "Trying to remove box ";
-        invalidString.append(to_string(boxId));
+        invalidString.append(to_string(_boxId));
         invalidString.append(", but Board would not accept SpotType::to_leave at position [");
         invalidString.append(to_string(position.getX()));
         invalidString.append(", ");
@@ -52,11 +50,11 @@ bool Mover_Reg::removeBox(Position position)
         throw invalid_argument(invalidString);
     }
 
-    success = _board.addNote(position, BoardNote{boxId, SpotType::left});
+    success = _board->addNote(position, BoardNote{_boxId, SpotType::left});
     if (!success)
     {
         string invalidString = "Trying to remove box ";
-        invalidString.append(to_string(boxId));
+        invalidString.append(to_string(_boxId));
         invalidString.append(", but Board would not accept SpotType::to_leave at position [");
         invalidString.append(to_string(position.getX()));
         invalidString.append(", ");
@@ -70,12 +68,10 @@ bool Mover_Reg::removeBox(Position position)
 // TODO this return value needs to be tested. Along with the order of these moves.
 bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
 {
-    int boxId = _box.getId();
-       
-    bool success = _board.addNote(newPosition, BoardNote{boxId, SpotType::to_arrive});
+    bool success = _board->addNote(newPosition, BoardNote{_boxId, SpotType::to_arrive});
     if (success)
     {
-        _board.addNote(oldPosition, BoardNote{boxId, SpotType::to_leave});
+        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::to_leave});
 
         int deltaX = oldPosition.getX() - newPosition.getX();
         int deltaY = oldPosition.getY() - newPosition.getY(); 
@@ -88,8 +84,8 @@ bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
             this_thread::sleep_for(10ms);
         }
 
-        _board.addNote(newPosition, BoardNote{boxId, SpotType::arrive});
-        _board.addNote(oldPosition, BoardNote{boxId, SpotType::left});
+        _board->addNote(newPosition, BoardNote{_boxId, SpotType::arrive});
+        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::left});
     
     }
    

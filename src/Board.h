@@ -24,7 +24,8 @@
 class Board
 {
 public:
-    Board(int width, int height);
+    
+    Board(int width, int height, std::vector<Box> boxes);
     Board(const Board& board) = delete;
     Board(Board&& o) noexcept = delete;
     Board& operator=(const Board& board) = delete;
@@ -55,12 +56,8 @@ private:
     // _receivingMatrix points to either _dropMatrix1 or _dropMatrix2. Changes are recorded in the matrix that _receivingMatrix currenlty points to. When sendChanges() is called, the matrix _receivingMatrix points to is toggled.
     std::vector<std::vector<Drop>>* _receivingMatrix = nullptr;
 
-    std::vector<Box> _boxes;
-    std::vector<Box> _boxesBuffer1;
-    std::vector<Box> _boxesBuffer2;
-    std::vector<Box>* _receivingBoxesBuffer = nullptr;
-
-    std::vector<BoxTaken> _lastBox;
+    // boxes Per box id
+    std::unordered_map<int, Box> _boxes{};
 
     // TODO these callbacks should be const
     std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    

@@ -5,11 +5,9 @@
 
 using namespace std;
 
-Board::Board(int width, int height)
+Board::Board(int width, int height, vector<Box> boxes)
 :   _width{width},
-    _height{height},
-    _boxes(10000000, Box{}),
-    _lastBox(100000, BoxTaken{})
+    _height{height}
 {
     for(int row=0; row<height; ++row)
     {
@@ -27,7 +25,13 @@ Board::Board(int width, int height)
         _dropMatrix2.push_back(rowOfDrops2);
     }
     _receivingMatrix = &_dropMatrix1;
-    _receivingBoxesBuffer = &_boxesBuffer1;
+    for(const Box& box : boxes)
+    {
+        if(box.getId() != -1)
+        {
+            _boxes.insert({box.getId(), box});
+        }
+    }
 }
 
 int Board::getWidth() const
@@ -49,24 +53,25 @@ int Board::getHeight() const
 bool Board::addNote(Position position, BoardNote newNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
-
-    int newBoxId = newNote.getBoxId();
-
-    if (_boxes[newBoxId].getId() == -1)
+    //TODO test that this exception is thrown.
+    if(_boxes.find(newNote.getBoxId()) == _boxes.end())
     {
-        _boxes[newBoxId].setId(newBoxId);
-        _boxes[newBoxId].setWidth(3);
-        _boxes[newBoxId].setHeight(3);
-
-        _lastBox[newBoxId/100].changeToTrue();
+        string str = "Trying to add a BoardNote with a boxId of ";
+        str.append(to_string(newNote.getBoxId()));
+        str.append(" when there is no Box with that boxId.");
+        throw(invalid_argument(str));
     }
 
     pair<int, bool> success = _spots[position.getY()][position.getX()].changeNote(newNote);
 
     if (!success.second)
     {
+        //cout << "(" << _boxes[success.first].getLevel() << ", ";
         _boxes[success.first].upLevel();
+        //cout << _boxes[success.first].getLevel() << ")  ";
+        //cout << "[" << _boxes[newNote.getBoxId()].getLevel() << ", ";
         _boxes[newNote.getBoxId()].upLevel();
+        //cout << _boxes[newNote.getBoxId()].getLevel() << "]  ";
 
         return false; 
     }
@@ -96,25 +101,21 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
 
 // TODO sendChanges() should only be called by one thread at a time.
 void Board::sendChanges()
-{
+{   
     vector<vector<Drop>>* changedBoard = nullptr;
-    vector<Box> copyOfBoxes{};
+    unordered_map<int, Box> copyOfBoxes{};
     {
         unique_lock<shared_mutex> lockUq(_mux);
         changedBoard = _receivingMatrix;
         _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
         
         // copy _boxes to send
-        for(size_t ii=0; ii<_boxes.size(); ++ii)
+        for(const auto& p : _boxes)
         {
-            copyOfBoxes.push_back(_boxes[ii]);
-            if(!_lastBox[ii/100].getState())
-            {
-                break;
-            }
+            //cout << p.second.getLevel() << ", ";
+            copyOfBoxes.insert({p.first, p.second});
         }
     }
-
 
     // changedBoard holds the current matrix where changes are being made. 
   
@@ -136,6 +137,7 @@ void Board::sendChanges()
             }
         }
     }
+
     for(BoardListener* listener : _listeners)
     {
         listener->receiveChanges(setsOfDropsPerType, copyOfBoxes);

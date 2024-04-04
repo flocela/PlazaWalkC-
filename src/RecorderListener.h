@@ -9,7 +9,7 @@
 class RecorderListener 
 {
 public:
-    virtual void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::vector<Box> boxes) = 0;
+    virtual void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, Box> boxes) = 0;
 };
 
 #endif

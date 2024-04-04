@@ -11,7 +11,7 @@
 class Box{
 
 public:
-    Box(int id, int width, int height);
+    Box(int id, int group, int width, int height);
     Box() = default;
     Box(const Box& o);
     Box(Box&& o) noexcept;
@@ -21,10 +21,14 @@ public:
 
     void upLevel();
     void setId(int id);
+
+    // TODO test setGroupid
+    void setGroupid(int groupid);
     void setWidth(int w);
     void setHeight(int h);
 
     int getId() const;    
+    int getGroupId() const;
     int getWidth() const;
     int getHeight() const;
     int getLevel() const;
@@ -33,12 +37,14 @@ public:
 
 private:
     int _id     = -1;
+    int _groupid = -1;
     int _level  = 0;
     int _width  = -1; // make this const
     int _height = -1; // make this const
     mutable std::shared_mutex _mm;
 };
 
+// TODO may need to update this with groupid
 namespace std
 {
     template<>
