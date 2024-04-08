@@ -59,7 +59,6 @@ void funcMoveBox(
         Position nextPosition = decider.getNextPosition(
                                             posManager.getFuturePositions(curPosition),
                                             *board);
-
         if (nextPosition != Position{-1, -1})
         {
             if (mover.moveBox(curPosition, nextPosition))
@@ -78,8 +77,6 @@ void funcMoveBox(
 
 }
 
-//void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Position endPoint2, vector<PositionManager_Diagonal> pm, Decider_Safe decider, bool& running, int firstBoxId, int count, Board* board)
-
 void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Position endPoint2, Board* board, vector<PositionManager_Diagonal> pm, Decider_Safe decider, int firstBoxId, bool& running, int count)
 {
     for(int ii=0; ii<count; ++ii)
@@ -92,7 +89,6 @@ void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Posit
 
         int rx = minX + ( (nx==0) ? 0 : (rand() % nx) );
         int ry = minY + ( (ny==0) ? 0 : (rand() % ny) ); 
-        //cout << "[" << rx << ", " << ry << "] " << "; ";
 
         int randPM = rand() % pm.size();
 
@@ -168,7 +164,7 @@ int main(int argc, char* argv[])
             
             // Create Boxes
             vector<Box> boxes{};
-            for (int ii=0; ii<300; ++ii)
+            for (int ii=0; ii<700; ++ii)
             {
                 if (ii<100)
                 {
@@ -178,9 +174,25 @@ int main(int argc, char* argv[])
                 {
                     boxes.push_back(Box{ii, 1, 3, 3});
                 }
-                else
+                else if (ii<300)
                 {
                     boxes.push_back(Box{ii, 2, 3, 3});
+                }
+                else if (ii<400)
+                {
+                    boxes.push_back(Box{ii, 0, 3, 3});
+                }
+                else if (ii<500)
+                {
+                    boxes.push_back(Box{ii, 1, 3, 3});
+                }
+                else if (ii<600)
+                {
+                    boxes.push_back(Box{ii, 2, 3, 3});
+                }
+                else if (ii<700)
+                {
+                    boxes.push_back(Box{ii, 0, 3, 3});
                 }
             }
             
@@ -228,6 +240,22 @@ int main(int argc, char* argv[])
             insertThread(thread, Position{350, 11}, Position{450, 11}, &board, pm, dec, boxId, running, count);
             boxId += count;
             insertThread(thread, Position{788, 175}, Position{788, 225}, &board, pm, dec, boxId, running, count);
+
+            boxId += count;
+            insertThread(thread, Position{788, 575}, Position{788, 625}, &board, pm, dec, boxId, running, count);
+        
+            boxId += count;
+            insertThread(thread, Position{575, 788}, Position{625, 788}, &board, pm, dec, boxId, running, count);
+
+            boxId += count;
+            insertThread(thread, Position{175, 788}, Position{225, 788}, &board, pm, dec, boxId, running, count);
+
+            boxId += count;
+            insertThread(thread, Position{11, 575}, Position{11, 625}, &board, pm, dec, boxId, running, count);
+
+            boxId += count;
+            insertThread(thread, Position{11, 175}, Position{11, 225}, &board, pm, dec, boxId, running, count);
+
             // Event loop
             while(running)
             {

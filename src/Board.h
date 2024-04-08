@@ -64,7 +64,7 @@ private:
     std::unordered_set<BoardListener*> _listeners;
     
     mutable std::shared_mutex _mux;
-
+    mutable std::shared_mutex _sendChangesMutex;
     void toggleReceivingMatrix();
      
 };

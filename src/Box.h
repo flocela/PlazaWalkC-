@@ -39,8 +39,8 @@ private:
     int _id     = -1;
     int _groupid = -1;
     int _level  = 0;
-    int _width  = -1; // make this const
-    int _height = -1; // make this const
+    int _width  = -1; 
+    int _height = -1;
     mutable std::shared_mutex _mm;
 };
 

@@ -93,7 +93,6 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             }
             else
             {
-                cout << "amber drop" << endl;
                 if (level >= 5)
                 {
                     amberDrops[5].push_back(drop);

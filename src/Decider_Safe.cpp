@@ -10,17 +10,22 @@ Position Decider_Safe::getNextPosition(
     )
 {
     // Take each position in possiblePositions
+//    char x = (rand()%25) + 65;
+ //   cout << x << "s"<< possiblePositions.size() << endl;
     for (const Position& position : possiblePositions)
     {
-        // BoardNote at position will tell us what box (if any) is currently at that postion. 
+  //      cout << x << position<< ", ";
+        // BoardNote at position will tell us what box (if any) is currently at that position. 
         BoardNote boardNote = board.getNoteAt(position);
 
         // if the BoardNote's type is empty, then return current position. 
         if (boardNote.getType() == SpotType::left)
         {
+   //         cout << x << "return"<<position;
             return position;
         }       
     }
+   // cout << x << "{-1, -1}" << endl;
 
     return Position{-1, -1};
 } 

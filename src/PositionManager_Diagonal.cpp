@@ -1,4 +1,7 @@
 #include "PositionManager_Diagonal.h"
+#include <algorithm>
+#include <iterator>
+#include <random>
 
 using namespace std;
 
@@ -37,63 +40,32 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     int curX = position.getX();
     int curY = position.getY();
 
-    int deltaX = _targetX - position.getX();
-    int deltaY = _targetY - position.getY();
-
-    int xDir = (deltaX > 0) ? 1 : -1;
-    xDir = (deltaX == 0) ? 0 : xDir;
-
-    int yDir = (deltaY > 0) ? 1 : -1;
-    yDir = (deltaY == 0) ? 0 : yDir;
-
-    Position positionA{curX + xDir, curY};
-    Position positionB{curX, curY + yDir};
-    Position positionC{curX + xDir, curY + yDir};
-
-    double distASquared = getDistSquared(positionA, Position{_targetX, _targetY});
-    double distBSquared = getDistSquared(positionB, Position{_targetX, _targetY});
-    double distCSquared = getDistSquared(positionC, Position{_targetX, _targetY});
-
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
-    pairsOfPositionsAndDistSq.push_back({distASquared, positionA});
-    pairsOfPositionsAndDistSq.push_back({distBSquared, positionB});
-    pairsOfPositionsAndDistSq.push_back({distCSquared, positionC});
+    Position n  = Position{curX, curY+1};
+    Position nw = Position{curX + 1, curY + 1};
+    Position w  = Position{curX + 1, curY};
+    Position sw = Position{curX + 1, curY - 1};
+    Position s  = Position{curX, curY - 1};
+    Position se = Position{curX - 1, curY - 1};
+    Position e  = Position{curX - 1, curY};
+    Position ne = Position{curX - 1, curY + 1};
+    Position target = Position{_targetX, _targetY};
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(n, target), n}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(nw, target), nw}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(w, target), w}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(sw, target), sw}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(s, target), s}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(se, target), se}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(e, target), e}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(ne, target), ne}); 
 
     sort(pairsOfPositionsAndDistSq.begin(), pairsOfPositionsAndDistSq.end(), [](const pair<double, Position>& a, const pair<double, Position>& b){return a.first < b.first;});
 
-    vector<Position> tempPositions{};
-    tempPositions.push_back(pairsOfPositionsAndDistSq[0].second);
-    if (pairsOfPositionsAndDistSq[1].first == pairsOfPositionsAndDistSq[2].first)
-    {
-        if(rand()%1)
-        {
-            tempPositions.push_back(pairsOfPositionsAndDistSq[1].second);
-            tempPositions.push_back(pairsOfPositionsAndDistSq[2].second);
-        }
-        else
-        {
-            tempPositions.push_back(pairsOfPositionsAndDistSq[2].second);
-            tempPositions.push_back(pairsOfPositionsAndDistSq[1].second);
-        }
-    }
-    else
-    {
-        tempPositions.push_back(pairsOfPositionsAndDistSq[1].second);
-        tempPositions.push_back(pairsOfPositionsAndDistSq[2].second);
-    }
-    // TODO test that there is a fourth position that is random
-    if(rand()%1)
-    {
-        tempPositions.push_back(Position{curX - xDir, curY});
-    }
-    else
-    {
-        tempPositions.push_back(Position{curX, curY - yDir});
-    }
-
     vector<Position> netPositions{};
-    for (Position pos : tempPositions)
+    for (const auto& p: pairsOfPositionsAndDistSq)
     {
+        Position pos = p.second;
+
         if (pos.getX() >= _boardMinX &&
             pos.getX() <= _boardMaxX &&
             pos.getY() >= _boardMinY &&
@@ -102,6 +74,9 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
             netPositions.push_back(pos);
         }
     }
+    random_device rd;
+    mt19937 g(rd());
+    shuffle(netPositions.begin()+3, netPositions.end(), g);
 
     return netPositions;
     
