@@ -17,8 +17,7 @@
 #include "Mover_Reg.h"
 #include "PositionManager_Diagonal.h"
 #include "PositionManager_Down.h"
-#include "PositionManager_Diagonal.h"
-#include "PositionManager_Up.h"
+#include "PositionManager_Slide.h"
 #include "Printer_OneColor.h"
 #include "Recorder.h"
 
@@ -33,7 +32,7 @@
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
 
 using namespace std;
-
+/*
 void funcMoveBox(
         Position position,
         Board* board,
@@ -50,7 +49,49 @@ void funcMoveBox(
     while(!mover.addBox(curPosition) && *breaker)
     {
         this_thread::sleep_for(n * 10ms);
-     //   cout << n << ", ";
+        ++n;
+    }
+
+    while (!posManager.atEnd(curPosition) && *breaker)
+    {
+        Position nextPosition = decider.getNextPosition(
+                                            posManager.getFuturePositions(curPosition),
+                                            *board);
+        if (nextPosition != Position{-1, -1})
+        {
+            if (mover.moveBox(curPosition, nextPosition))
+            {
+                curPosition = nextPosition;
+            }
+        }
+        this_thread::sleep_for(10ms);
+    }
+
+    // if box has reached its destination then it disapears from the board.
+    if (posManager.atEnd(curPosition))
+    {
+        mover.removeBox(curPosition);
+    }
+
+}
+*/
+
+void funcMoveBox(
+        Position position,
+        Board* board,
+        PositionManager_Slide posManager,
+        Decider_Safe decider,
+        Mover_Reg mover,
+        bool* breaker
+)
+{  
+ 
+    Position curPosition = position;
+    // TODO what to do if box isn't successfully added to the board?
+    int n = 1;
+    while(!mover.addBox(curPosition) && *breaker)
+    {
+        this_thread::sleep_for(n * 10ms);
         ++n;
     }
 
@@ -77,6 +118,26 @@ void funcMoveBox(
 
 }
 
+void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Position endPoint2, Board* board, vector<PositionManager_Slide> pm, Decider_Safe decider, int firstBoxId, bool& running, int count)
+{
+    for(int ii=0; ii<count; ++ii)
+    {
+        int nx = std::abs(endPoint1.getX() - endPoint2.getX());
+        int ny = std::abs(endPoint1.getY() - endPoint2.getY());
+   
+        int minX = min(endPoint1.getX(), endPoint2.getX());
+        int minY = min(endPoint1.getY(), endPoint2.getY());
+
+        int rx = minX + ( (nx==0) ? 0 : (rand() % nx) );
+        int ry = minY + ( (ny==0) ? 0 : (rand() % ny) ); 
+
+        int randPM = rand() % pm.size();
+
+        // TODO funcMoveBox, make PositionManager a copy by value not reference
+        threads.push_back(make_unique<thread>(funcMoveBox, Position{rx, ry}, board, pm[randPM], decider, Mover_Reg{firstBoxId+ii, board}, &running));
+    }
+}
+/*
 void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Position endPoint2, Board* board, vector<PositionManager_Diagonal> pm, Decider_Safe decider, int firstBoxId, bool& running, int count)
 {
     for(int ii=0; ii<count; ++ii)
@@ -96,7 +157,7 @@ void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Posit
         threads.push_back(make_unique<thread>(funcMoveBox, Position{rx, ry}, board, pm[randPM], decider, Mover_Reg{firstBoxId+ii, board}, &running));
     }
 }
-
+*/
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -203,14 +264,14 @@ int main(int argc, char* argv[])
             int boardXMax = board.getWidth()-1;
             int boardYMax = board.getHeight()-1;
 
-            vector<PositionManager_Diagonal> pm{};
-            pm.push_back(PositionManager_Diagonal{N1.first, N1.second, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Diagonal{E2.first, E2.second, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Diagonal{E3.first, E3.second, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Diagonal{S4.first, S4.second, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Diagonal{S5.first, S5.second, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Diagonal{W6.first, W6.second, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Diagonal{W7.first, W7.second, 0, boardXMax, 0, boardYMax});
+            vector<PositionManager_Slide> pm{};
+            pm.push_back(PositionManager_Slide{N1.first, 0, boardXMax, 0, boardYMax});
+            pm.push_back(PositionManager_Slide{E2.first, 0, boardXMax, 0, boardYMax});
+            pm.push_back(PositionManager_Slide{E3.first, 0, boardXMax, 0, boardYMax});
+            pm.push_back(PositionManager_Slide{S4.first, 0, boardXMax, 0, boardYMax});
+            pm.push_back(PositionManager_Slide{S5.first, 0, boardXMax, 0, boardYMax});
+            pm.push_back(PositionManager_Slide{W6.first, 0, boardXMax, 0, boardYMax});
+            pm.push_back(PositionManager_Slide{W7.first, 0, boardXMax, 0, boardYMax});
 
 
             // Create Listeners including Printer 

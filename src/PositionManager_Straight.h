@@ -21,6 +21,7 @@ public:
     PositionManager_Straight(PositionManager_Straight&& o) noexcept = default;
     PositionManager_Straight& operator= (const PositionManager_Straight& o) = default;
     PositionManager_Straight& operator= (PositionManager_Straight&& o) = default;
+    ~PositionManager_Straight() = default;
 
     std::vector<Position> getFuturePositions(Position position) override;
     bool atEnd(Position position) override;

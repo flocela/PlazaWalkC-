@@ -99,9 +99,10 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
     _boardCallbacksPerPos.insert({pos, callBack});
 }
 
-// TODO sendChanges() should only be called by one thread at a time.
 void Board::sendChanges()
 {   
+    // The sendChangesLock prevents two threads entering sendChanges() method at the same time.
+    //unique_lock<shared_mutex> sendChangesLock(_sendChangesMutex);
     vector<vector<Drop>>* changedBoard = nullptr;
     unordered_map<int, Box> copyOfBoxes{};
     {
