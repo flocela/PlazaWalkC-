@@ -3,6 +3,14 @@
 
 using namespace std;
 
+TEST_CASE("PositionManager_Diagonal::")
+{
+
+SECTION("atEnd() returns false if position is not final position")
+{
+}
+}
+
 TEST_CASE("PositionManager_Diagonal::atEnd() return false if position is outside ending box")
 {
     PositionManager_Diagonal pm{
