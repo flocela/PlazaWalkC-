@@ -4,6 +4,11 @@
 using namespace std;
 
 Mover_Reg::Mover_Reg(int boxId, Board* board): _boxId{boxId}, _board{board} {}
+    
+int Mover_Reg::getBoxId() const
+{
+    return _boxId;
+}
 
 // TODO this return value needs to be tested.
 bool Mover_Reg::addBox(Position position)

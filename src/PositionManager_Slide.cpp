@@ -29,14 +29,14 @@ vector<Position> PositionManager_Slide::getFuturePositions(Position curPosition)
     int curY = curPosition.getY();
 
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
-    Position n  = Position{curX, curY+1};
-    Position nw = Position{curX + 1, curY + 1};
+    Position n  = Position{curX, curY-1};
+    Position nw = Position{curX + 1, curY - 1};
     Position w  = Position{curX + 1, curY};
-    Position sw = Position{curX + 1, curY - 1};
-    Position s  = Position{curX, curY - 1};
-    Position se = Position{curX - 1, curY - 1};
+    Position sw = Position{curX + 1, curY + 1};
+    Position s  = Position{curX, curY + 1};
+    Position se = Position{curX - 1, curY + 1};
     Position e  = Position{curX - 1, curY};
-    Position ne = Position{curX - 1, curY + 1};
+    Position ne = Position{curX - 1, curY - 1};
     Position target = _curTarget;
     pairsOfPositionsAndDistSq.push_back({getDistSquared(n, target), n}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(nw, target), nw}); 
@@ -88,13 +88,16 @@ void PositionManager_Slide::setCurrentTarget(Position curPosition)
         int deltaX = _finalTarget.getX() - curPosition.getX();
         int deltaY = _finalTarget.getY() - curPosition.getY();
         // If the _curTarget is close to the _finalTarget then set the _curTarget to _finalTarget.
-        if( ( (deltaX*deltaX)+(deltaY*deltaY) ) < 100 )
+        // Or if target has the same X or Y value as curPosition.
+        if( ( ( (deltaX*deltaX)+(deltaY*deltaY) ) < 100 ) ||
+            deltaX == 0 ||
+            deltaY == 0 )
         {
             _curTarget = _finalTarget;
         }
         // Else set the _currentTarget to a point close to the line connecting the curPosition and the _finalTarget.
         else
-        {   
+        {  
             // Move one point over on the x axis and find the corresponding point on the y axis.
             if(std::abs(deltaX) <= std::abs(deltaY))
             {

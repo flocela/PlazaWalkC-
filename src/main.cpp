@@ -161,6 +161,7 @@ int main(int argc, char* argv[])
             int count = 200;
             int boxId = 0;
             int ii = 0;
+            
             vector<pair<Position, Position>> smallerEndRanges = vector<pair<Position, Position>>(endRanges.begin()+1, endRanges.end());
             threader.PMSlideAndSafeDecider(thread, endRanges[0].first, endRanges[0].second, smallerEndRanges, board, boxId, count, running);
 
@@ -199,7 +200,7 @@ int main(int argc, char* argv[])
             copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
             copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
             threader.PMSlideAndSafeDecider(thread, endRanges[6].first, endRanges[6].second, smallerEndRanges, board, boxId, count, running);
-            
+           
             // Event loop
             while(running)
             {

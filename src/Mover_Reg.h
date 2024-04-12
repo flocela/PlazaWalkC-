@@ -20,6 +20,7 @@ public:
     bool removeBox(Position position) override;
     bool addBox(Position position) override;
     bool moveBox(Position oldPosition, Position newPosition) override;
+    int getBoxId() const override;
 
 private:
     
