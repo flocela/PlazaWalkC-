@@ -90,30 +90,6 @@ void Threader::PMSlideAndSafeDecider(
         )
         );
     }
-
-/*
-
-    thread t1(testFunc);
-
-    for(int ii=0; ii<count; ++ii)
-    {
-        
-
-        threads.push_back(make_unique<thread>(
-            funcMoveBox,
-            startPoints[ii],
-            std::ref(board),
-            make_unique<PositionManager_Slide>(
-                endPositionPerEndRange[ii%erSize][ii/erSize],
-                0,
-                board.getWidth()-1,
-                0,
-                board.getHeight()-1),
-            make_unique<Decider_Safe>(),
-            make_unique<Mover_Reg>(firstBoxId+ii, &board),
-            std::ref(running)));
-    }
-       */ 
 } 
 
 vector<int> Threader::getRandom(int start, int end, int count)

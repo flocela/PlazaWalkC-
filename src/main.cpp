@@ -160,19 +160,46 @@ int main(int argc, char* argv[])
             
             int count = 100;
             int boxId = 0;
+            int ii = 0;
             vector<pair<Position, Position>> smallerEndRanges = vector<pair<Position, Position>>(endRanges.begin()+1, endRanges.end());
             threader.PMSlideAndSafeDecider(thread, endRanges[0].first, endRanges[0].second, smallerEndRanges, board, boxId, 100, running);
 
             boxId += count;
-        
+            ++ii;
+            copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
+            copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
+            threader.PMSlideAndSafeDecider(thread, endRanges[1].first, endRanges[1].second, smallerEndRanges, board, boxId, 100, running);
+            
             boxId += count;
+            ++ii;
+            copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
+            copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
+            threader.PMSlideAndSafeDecider(thread, endRanges[2].first, endRanges[2].second, smallerEndRanges, board, boxId, 100, running);
 
             boxId += count;
+            ++ii;
+            copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
+            copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
+            threader.PMSlideAndSafeDecider(thread, endRanges[3].first, endRanges[3].second, smallerEndRanges, board, boxId, 100, running);
 
             boxId += count;
+            ++ii;
+            copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
+            copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
+            threader.PMSlideAndSafeDecider(thread, endRanges[4].first, endRanges[4].second, smallerEndRanges, board, boxId, 100, running);
 
             boxId += count;
+            ++ii;
+            copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
+            copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
+            threader.PMSlideAndSafeDecider(thread, endRanges[5].first, endRanges[5].second, smallerEndRanges, board, boxId, 100, running);
 
+            boxId += count;
+            ++ii;
+            copy(endRanges.cbegin(), endRanges.cbegin()+ii, smallerEndRanges.begin());
+            copy(endRanges.cbegin()+ii+1, endRanges.cend(), smallerEndRanges.begin()+ii);
+            threader.PMSlideAndSafeDecider(thread, endRanges[6].first, endRanges[6].second, smallerEndRanges, board, boxId, 100, running);
+            
             // Event loop
             while(running)
             {
