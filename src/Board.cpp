@@ -26,7 +26,7 @@ Board::Board(int width, int height, vector<Box> boxes)
     }
     _receivingMatrix = &_dropMatrix1;
     for(const Box& box : boxes)
-    {
+    {  
         if(box.getId() != -1)
         {
             _boxes.insert({box.getId(), box});
@@ -117,6 +117,7 @@ void Board::sendChanges()
             copyOfBoxes.insert({p.first, p.second});
         }
     }
+    //cout << "copyOfBoxes.size()" << copyOfBoxes.size() << endl;
 
     // changedBoard holds the current matrix where changes are being made. 
   

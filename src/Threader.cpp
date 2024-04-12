@@ -74,6 +74,7 @@ void Threader::PMSlideAndSafeDecider(
 
     for(int ii=0; ii<count; ++ii)
     {
+        //cout << "THreader: boxId: " << (firstBoxId + ii) << endl;
         threads.push_back(make_unique<thread>(
             funcMoveBox,
             startPoints[ii],

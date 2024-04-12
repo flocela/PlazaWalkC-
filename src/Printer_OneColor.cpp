@@ -118,7 +118,7 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             squareRect.h = 3;
             squareRect.x = drop._position.getX();
             squareRect.y = drop._position.getY();
-            SDL_SetRenderDrawColor(_renderer, red[level][0], red[level][1],red[level][2], 0xFF);
+            SDL_SetRenderDrawColor(_renderer, red[level][0], red[level][1], red[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++redCount;
         }
@@ -137,7 +137,7 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             squareRect.h = 3;
             squareRect.x = drop._position.getX();
             squareRect.y = drop._position.getY();
-            SDL_SetRenderDrawColor(_renderer, cyan[level][0], cyan[level][1], cyan[level][1], 0xFF);
+            SDL_SetRenderDrawColor(_renderer, cyan[level][0], cyan[level][1], cyan[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++cyanCount;
         }
@@ -145,7 +145,7 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
    
     int amberCount = 0;
     for(size_t ii=0; ii<amberDrops.size(); ++ii)
-    {
+    {   
         vector<Drop> dropVector = amberDrops[ii];
         int level = ii;
         for(const Drop& drop : dropVector)
@@ -155,7 +155,7 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             squareRect.h = 3;
             squareRect.x = drop._position.getX();
             squareRect.y = drop._position.getY();
-            SDL_SetRenderDrawColor(_renderer, amber[level][0], amber[level][1], amber[level][1], 0xFF);
+            SDL_SetRenderDrawColor(_renderer, amber[level][0], amber[level][1], amber[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++amberCount;
         }
