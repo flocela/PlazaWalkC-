@@ -20,6 +20,7 @@
 #include "PositionManager_Slide.h"
 #include "Printer_OneColor.h"
 #include "Recorder.h"
+#include "Threader.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -32,132 +33,6 @@
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
 
 using namespace std;
-/*
-void funcMoveBox(
-        Position position,
-        Board* board,
-        PositionManager_Diagonal posManager,
-        Decider_Safe decider,
-        Mover_Reg mover,
-        bool* breaker
-)
-{  
- 
-    Position curPosition = position;
-    // TODO what to do if box isn't successfully added to the board?
-    int n = 1;
-    while(!mover.addBox(curPosition) && *breaker)
-    {
-        this_thread::sleep_for(n * 10ms);
-        ++n;
-    }
-
-    while (!posManager.atEnd(curPosition) && *breaker)
-    {
-        Position nextPosition = decider.getNextPosition(
-                                            posManager.getFuturePositions(curPosition),
-                                            *board);
-        if (nextPosition != Position{-1, -1})
-        {
-            if (mover.moveBox(curPosition, nextPosition))
-            {
-                curPosition = nextPosition;
-            }
-        }
-        this_thread::sleep_for(10ms);
-    }
-
-    // if box has reached its destination then it disapears from the board.
-    if (posManager.atEnd(curPosition))
-    {
-        mover.removeBox(curPosition);
-    }
-
-}
-*/
-
-void funcMoveBox(
-        Position position,
-        Board* board,
-        PositionManager_Slide posManager,
-        Decider_Safe decider,
-        Mover_Reg mover,
-        bool* breaker
-)
-{  
- 
-    Position curPosition = position;
-    // TODO what to do if box isn't successfully added to the board?
-    int n = 1;
-    while(!mover.addBox(curPosition) && *breaker)
-    {
-        this_thread::sleep_for(n * 10ms);
-        ++n;
-    }
-
-    while (!posManager.atEnd(curPosition) && *breaker)
-    {
-        Position nextPosition = decider.getNextPosition(
-                                            posManager.getFuturePositions(curPosition),
-                                            *board);
-        if (nextPosition != Position{-1, -1})
-        {
-            if (mover.moveBox(curPosition, nextPosition))
-            {
-                curPosition = nextPosition;
-            }
-        }
-        this_thread::sleep_for(10ms);
-    }
-
-    // if box has reached its destination then it disapears from the board.
-    if (posManager.atEnd(curPosition))
-    {
-        mover.removeBox(curPosition);
-    }
-
-}
-
-void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Position endPoint2, Board* board, vector<PositionManager_Slide> pm, Decider_Safe decider, int firstBoxId, bool& running, int count)
-{
-    for(int ii=0; ii<count; ++ii)
-    {
-        int nx = std::abs(endPoint1.getX() - endPoint2.getX());
-        int ny = std::abs(endPoint1.getY() - endPoint2.getY());
-   
-        int minX = min(endPoint1.getX(), endPoint2.getX());
-        int minY = min(endPoint1.getY(), endPoint2.getY());
-
-        int rx = minX + ( (nx==0) ? 0 : (rand() % nx) );
-        int ry = minY + ( (ny==0) ? 0 : (rand() % ny) ); 
-
-        int randPM = rand() % pm.size();
-
-        // TODO funcMoveBox, make PositionManager a copy by value not reference
-        threads.push_back(make_unique<thread>(funcMoveBox, Position{rx, ry}, board, pm[randPM], decider, Mover_Reg{firstBoxId+ii, board}, &running));
-    }
-}
-/*
-void insertThread(vector<unique_ptr<thread>>& threads, Position endPoint1, Position endPoint2, Board* board, vector<PositionManager_Diagonal> pm, Decider_Safe decider, int firstBoxId, bool& running, int count)
-{
-    for(int ii=0; ii<count; ++ii)
-    {
-        int nx = std::abs(endPoint1.getX() - endPoint2.getX());
-        int ny = std::abs(endPoint1.getY() - endPoint2.getY());
-   
-        int minX = min(endPoint1.getX(), endPoint2.getX());
-        int minY = min(endPoint1.getY(), endPoint2.getY());
-
-        int rx = minX + ( (nx==0) ? 0 : (rand() % nx) );
-        int ry = minY + ( (ny==0) ? 0 : (rand() % ny) ); 
-
-        int randPM = rand() % pm.size();
-
-        // TODO funcMoveBox, make PositionManager a copy by value not reference
-        threads.push_back(make_unique<thread>(funcMoveBox, Position{rx, ry}, board, pm[randPM], decider, Mover_Reg{firstBoxId+ii, board}, &running));
-    }
-}
-*/
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -214,14 +89,15 @@ int main(int argc, char* argv[])
             SDL_RenderPresent(renderer);
             
             
-            // End points
-            pair<Position, Position> N1{Position{350, 0},   Position{450, 10}};
-            pair<Position, Position> E2{Position{789, 175}, Position{799, 225}};
-            pair<Position, Position> E3{Position{789, 575}, Position{799, 625}};
-            pair<Position, Position> S4{Position{575, 789}, Position{625, 799}};
-            pair<Position, Position> S5{Position{175, 789}, Position{225, 799}};
-            pair<Position, Position> W6{Position{0, 575},   Position{10, 625}};
-            pair<Position, Position> W7{Position{0, 175},   Position{10, 225}};
+            // End rectangles
+            vector<pair<Position, Position>> endRanges{};
+            endRanges.push_back({Position{350, 0},   Position{450, 10}}); 
+            endRanges.push_back({Position{789, 175}, Position{799, 225}}); 
+            endRanges.push_back({Position{789, 575}, Position{799, 625}});
+            endRanges.push_back({Position{575, 789}, Position{625, 799}});
+            endRanges.push_back({Position{175, 789}, Position{225, 799}});
+            endRanges.push_back({Position{0, 575},   Position{10, 625}});
+            endRanges.push_back({Position{0, 175},   Position{10, 225}});
             
             // Create Boxes
             vector<Box> boxes{};
@@ -260,62 +136,42 @@ int main(int argc, char* argv[])
             // Create Board
             Board board{800, 800, boxes};
 
-            // Create PositionManager_Diagonals
-            int boardXMax = board.getWidth()-1;
-            int boardYMax = board.getHeight()-1;
-
-            vector<PositionManager_Slide> pm{};
-            pm.push_back(PositionManager_Slide{N1.first, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Slide{E2.first, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Slide{E3.first, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Slide{S4.first, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Slide{S5.first, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Slide{W6.first, 0, boardXMax, 0, boardYMax});
-            pm.push_back(PositionManager_Slide{W7.first, 0, boardXMax, 0, boardYMax});
-
 
             // Create Listeners including Printer 
             BoardAgent boardAgent(&board);
             Recorder recorder{};
             board.registerListener(&recorder);
             Printer_OneColor printer(renderer);
-            printer.addEndPoint(N1.first, N1.second);
-            printer.addEndPoint(E2.first, E2.second);
-            printer.addEndPoint(E3.first, E3.second);
-            printer.addEndPoint(S4.first, S4.second);
-            printer.addEndPoint(S5.first, S5.second);
-            printer.addEndPoint(W6.first, W6.second);
-            printer.addEndPoint(W7.first, W7.second);
+            printer.addEndPoint(endRanges[0].first, endRanges[0].second);
+            printer.addEndPoint(endRanges[1].first, endRanges[1].second);
+            printer.addEndPoint(endRanges[2].first, endRanges[2].second);
+            printer.addEndPoint(endRanges[3].first, endRanges[3].second);
+            printer.addEndPoint(endRanges[4].first, endRanges[4].second);
+            printer.addEndPoint(endRanges[5].first, endRanges[5].second);
+            printer.addEndPoint(endRanges[6].first, endRanges[6].second);
             recorder.registerListener(&printer);
-
-            // Create decider
-            Decider_Safe dec{};
 
             // Event loop exit flag
             bool running = true;
 
             vector<unique_ptr<thread>> thread{};
+
+            Threader threader{};
             
             int count = 100;
             int boxId = 0;
-            insertThread(thread, Position{350, 11}, Position{450, 11}, &board, pm, dec, boxId, running, count);
-            boxId += count;
-            insertThread(thread, Position{788, 175}, Position{788, 225}, &board, pm, dec, boxId, running, count);
+            vector<pair<Position, Position>> smallerEndRanges = vector<pair<Position, Position>>(endRanges.begin()+1, endRanges.end());
+            threader.PMSlideAndSafeDecider(thread, endRanges[0].first, endRanges[0].second, smallerEndRanges, board, boxId, 100, running);
 
             boxId += count;
-            insertThread(thread, Position{788, 575}, Position{788, 625}, &board, pm, dec, boxId, running, count);
         
             boxId += count;
-            insertThread(thread, Position{575, 788}, Position{625, 788}, &board, pm, dec, boxId, running, count);
 
             boxId += count;
-            insertThread(thread, Position{175, 788}, Position{225, 788}, &board, pm, dec, boxId, running, count);
 
             boxId += count;
-            insertThread(thread, Position{11, 575}, Position{11, 625}, &board, pm, dec, boxId, running, count);
 
             boxId += count;
-            insertThread(thread, Position{11, 175}, Position{11, 225}, &board, pm, dec, boxId, running, count);
 
             // Event loop
             while(running)

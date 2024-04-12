@@ -57,7 +57,7 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
     vector<vector<Drop>> amberDrops(9, vector<Drop>{});
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);
-  
+
     for (auto& setPerType : dropsPerType)
     {
         // TODO should this be a reference?
