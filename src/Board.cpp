@@ -102,7 +102,7 @@ void Board::registerCallback(Position pos, BoardCallback& callBack)
 void Board::sendChanges()
 {   
     // The sendChangesLock prevents two threads entering sendChanges() method at the same time.
-    //unique_lock<shared_mutex> sendChangesLock(_sendChangesMutex);
+    unique_lock<shared_mutex> sendChangesLock(_sendChangesMutex);
     vector<vector<Drop>>* changedBoard = nullptr;
     unordered_map<int, Box> copyOfBoxes{};
     {
