@@ -110,6 +110,7 @@ src/Recorder.cpp
 src/Spot.cpp
 src/SpotType.cpp
 src/SpotListener.cpp
+src/Util.cpp
 )
 
 add_executable(RunTests ${test_SRCS})

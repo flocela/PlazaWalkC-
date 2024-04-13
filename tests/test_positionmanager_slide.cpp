@@ -43,25 +43,168 @@ SECTION(" getEndPoint() returns the final position.")
     REQUIRE(Position{5, 5} == pm.getEndPoint().second);
 }
 
-SECTION(" Say a box starts at original position. The line from original position to final target has a slope of 4. Using the first position given from calls to getFuturePositions() will result in the box being positioned on the line every 4th call.")
+// Target is north of original position.
+SECTION(" Target is at {0, 0}. Original position is at {0, 10}. The first positions from calls to getFuturePositions() will be a straight north heading line.")
 {
     PositionManager_Slide pm{
-        Position{5, 20},
+        Position{0, 0},
+        0,
+        21,
+        0,
+        21};
+    Position currentPosition{0, 10};
+    for(int ii=0; ii<10; ++ii)
+    {
+        currentPosition = pm.getFuturePositions(currentPosition)[0];
+        REQUIRE(Position{0, 9-ii} == currentPosition);
+    }
+}
+
+// Target is north east of original position.
+SECTION(" Target is at {5, 0}. Original position is at {0, 25}. Slope (y/x) is -5. Every fifth call to getFuturePositions() will be on the line with x increased by 1 and y decreased by 5.")
+{
+    PositionManager_Slide pm{
+        Position{5, 0},
+        0,
+        30,
+        0,
+        30};
+    
+    Position originalPosition{0, 25};
+    Position currentPosition = originalPosition;
+    Position requiredPosition = originalPosition;
+    for(int ii=1; ii<=25; ++ii)
+    {
+        currentPosition = pm.getFuturePositions(currentPosition)[0];
+        if (ii >= 5 && ii%5 == 0)
+        {
+            requiredPosition = Position{requiredPosition.getX()+1, requiredPosition.getY()-5};
+            REQUIRE(requiredPosition == currentPosition);
+        }
+    }
+}
+
+// Target is east of original position.
+SECTION(" Target is at {10, 0}. Original position is at {0, 0}. Calls to getFuturePositions are along the line heading east.")
+{
+    PositionManager_Slide pm{
+        Position{10, 0},
         0,
         21,
         0,
         21};
     Position currentPosition{0, 0};
-    for(int ii=0; ii<4; ++ii)
+    for(int ii=1; ii<=10; ++ii)
     {
         currentPosition = pm.getFuturePositions(currentPosition)[0];
+        REQUIRE(Position{ii, 0} == currentPosition);
     }
-    REQUIRE(Position{1, 4} == currentPosition);
-    for(int ii=0; ii<4; ++ii)
+}
+
+// Target is south east of original position.
+SECTION(" Target is at {5, 25}. Original position is at {0, 0}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x increased by 1 and y increased by 5.")
+{
+    PositionManager_Slide pm{
+        Position{5, 25},
+        0,
+        30,
+        0,
+        30};
+    
+    Position originalPosition{0, 0};
+    Position currentPosition = originalPosition;
+    Position requiredPosition = originalPosition;
+    for(int ii=1; ii<=25; ++ii)
     {
         currentPosition = pm.getFuturePositions(currentPosition)[0];
+        if (ii >= 5 && ii%5 == 0)
+        {
+            requiredPosition = Position{requiredPosition.getX()+1, requiredPosition.getY()+5};
+            REQUIRE(requiredPosition == currentPosition);
+        }
     }
-    REQUIRE(Position{2, 8} == currentPosition);
+}
+
+// Target is south of original position.
+SECTION(" Target is at {0, 10}. Original position is at {0, 0}. Calls to getFuturePositions() are along the line heading south.")
+{
+    PositionManager_Slide pm{
+        Position{0, 10},
+        0,
+        21,
+        0,
+        21};
+    Position currentPosition{0, 0};
+    for(int ii=1; ii<=10; ++ii)
+    {
+        currentPosition = pm.getFuturePositions(currentPosition)[0];
+        REQUIRE(Position{0, ii} == currentPosition);
+    }
+}
+
+// Target is south west of original position.
+SECTION(" Target is at {0, 25}. Original position is at {5, 0}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x decreased by 1 and y increased by 5.")
+{
+    PositionManager_Slide pm{
+        Position{0, 25},
+        0,
+        30,
+        0,
+        30};
+    
+    Position originalPosition{5, 0};
+    Position currentPosition = originalPosition;
+    Position requiredPosition = originalPosition;
+    for(int ii=1; ii<=25; ++ii)
+    {
+        currentPosition = pm.getFuturePositions(currentPosition)[0];
+        if (ii >= 5 && ii%5 == 0)
+        {
+            requiredPosition = Position{requiredPosition.getX()-1, requiredPosition.getY()+5};
+            REQUIRE(requiredPosition == currentPosition);
+        }
+    }
+}
+
+// Target is west of original position.
+SECTION(" Target is at {0, 0}. Original position is at {10, 0}. Calls to getFuturePositions are along the line heading west.")
+{
+    PositionManager_Slide pm{
+        Position{0, 0},
+        0,
+        21,
+        0,
+        21};
+    Position currentPosition{10, 0};
+    for(int ii=1; ii<=10; ++ii)
+    {
+        currentPosition = pm.getFuturePositions(currentPosition)[0];
+        REQUIRE(Position{10-ii, 0} == currentPosition);
+    }
+}
+
+// Target is north west of original position.
+SECTION(" Target is at {0, 0}. Original position is at {5, 25}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x decreased by 1 and y decreased by 5.")
+{
+    PositionManager_Slide pm{
+        Position{0, 0},
+        0,
+        30,
+        0,
+        30};
+    
+    Position originalPosition{5, 25};
+    Position currentPosition = originalPosition;
+    Position requiredPosition = originalPosition;
+    for(int ii=1; ii<=25; ++ii)
+    {
+        currentPosition = pm.getFuturePositions(currentPosition)[0];
+        if (ii >= 5 && ii%5 == 0)
+        {
+            requiredPosition = Position{requiredPosition.getX()-1, requiredPosition.getY()-5};
+            REQUIRE(requiredPosition == currentPosition);
+        }
+    }
 }
 
 } // TEST_CASE("PositionManager_Slide")

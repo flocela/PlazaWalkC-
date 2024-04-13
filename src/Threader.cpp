@@ -1,9 +1,9 @@
 #include "Threader.h"
 
-#include <random>
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
 #include "PositionManager_Slide.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -32,10 +32,6 @@ void Threader::funcMoveBox(
                                             board);
         if (nextPosition != Position{-1, -1})
         {  
-            if(nextPosition.getX() > 789 && nextPosition.getY() == 10)
-            {
-//                cout << mover->getBoxId() << ", " << posManager->getEndPoint().first << ", " << posManager->getEndPoint().second << endl;
-            }
             if (mover->moveBox(curPosition, nextPosition))
             {
                 curPosition = nextPosition;
@@ -65,7 +61,7 @@ void Threader::PMSlideAndSafeDecider(
 {
     int erSize = endRanges.size();
     vector<Position> startPoints = 
-        getRandomInRectangle(topLeftCornerOfStartPoint, bottomRightCornerOfStartPoint, count);
+        Util::getRandomInRectangle(topLeftCornerOfStartPoint, bottomRightCornerOfStartPoint, count);
 
     vector<vector<Position>> endPositionPerEndRange{};
 
@@ -73,22 +69,17 @@ void Threader::PMSlideAndSafeDecider(
     {
         int countPerRange = (count/erSize) + 1;
         endPositionPerEndRange.push_back(
-            getRandomInRectangle(endRanges[ii].first, endRanges[ii].second, countPerRange));
-            //cout << "top: " << endRanges[ii].first << " and " << endRanges[ii].second << endl;
-            //cout << "bot: " << topLeftCornerOfStartPoint << " and " << bottomRightCornerOfStartPoint << endl;
-            
+            Util::getRandomInRectangle(endRanges[ii].first, endRanges[ii].second, countPerRange));
     };
 
     for(int ii=0; ii<count; ++ii)
     {
-        Position end = endPositionPerEndRange[ii%erSize][ii/erSize];
         threads.push_back(make_unique<thread>(
             funcMoveBox,
             startPoints[ii],
             std::ref(board),
             make_unique<PositionManager_Slide>(
-                //endPositionPerEndRange[ii%erSize][ii/erSize],
-                end,
+                endPositionPerEndRange[ii%erSize][ii/erSize],
                 0,
                 board.getWidth()-1,
                 0,
@@ -101,56 +92,3 @@ void Threader::PMSlideAndSafeDecider(
     }
 } 
 
-vector<int> Threader::getRandom(int start, int end, int count)
-{
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<std::mt19937::result_type> distribution(start, end);
-   
-    vector<int> randomInts{};
-    for(int ii=0; ii<count; ++ii)
-    {
-        randomInts.push_back(distribution(gen));
-    }
-    return randomInts;
-} 
-
-// TODO test and put in a utility class
-vector<Position> Threader::getRandomOnLine(Position a, Position b, int count)
-{
-    int x1 = a.getX();
-    int x2 = b.getX();
-    int y1 = a.getY();
-    int y2 = b.getY();
-
-    vector<Position> positions{};
-    vector<int> randomXs = getRandom(x1, x2, count);
-    for(int x3: randomXs)
-    {
-        int y3 = y1 + ( (x3- x1) * ((y2 - y1)/(x2-x1)) );
-        positions.push_back({x3, y3});
-    }
-    
-    return positions;
-}
-
-// TODO test and put in a utility class
-vector<Position> Threader::getRandomInRectangle(Position a, Position b, int count)
-{
-    int x1 = a.getX();
-    int x2 = b.getX();
-    int y1 = a.getY();
-    int y2 = b.getY();
-
-    vector<int> randomXs = getRandom(x1, x2, count);
-    vector<int> randomYs = getRandom(y1, y2, count);
-
-    vector<Position> positions{};
-    for(int ii=0; ii<count; ++ii)
-    {
-        positions.push_back({randomXs[ii], randomYs[ii]});
-    }
-    
-    return positions;
-}
-        
