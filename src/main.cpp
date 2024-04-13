@@ -84,13 +84,6 @@ int main(int argc, char* argv[])
         }
         else
         {
-   
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0x99, 0x99, 0xFF);
-            SDL_RenderClear(renderer);
-            SDL_RenderPresent(renderer);
-            SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
-            SDL_RenderPresent(renderer);
-           
             
             // End rectangles
             vector<pair<Position, Position>> endRanges{};
