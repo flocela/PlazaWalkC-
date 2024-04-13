@@ -13,7 +13,7 @@ class Box{
 public:
     Box(int id, int group, int width, int height);
     Box() = default;
-    Box(const Box& o);
+    Box(const Box& o); // TODO delete copy constructor and move constructor. Do I ever use them?
     Box(Box&& o) noexcept;
     Box& operator= (const Box& o) = delete;
     Box& operator= (Box&& o) noexcept = delete;

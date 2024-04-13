@@ -21,6 +21,7 @@
 #include "Printer_OneColor.h"
 #include "Recorder.h"
 #include "Threader.h"
+#include "Util.h"
 
 // Define MAX and MIN macros
 #define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
@@ -33,6 +34,8 @@
 #define FONT_PATH   "assets/pacifico/Pacifico.ttf"
 
 using namespace std;
+
+
 int main(int argc, char* argv[])
 {
     // Unused argc, argv
@@ -87,7 +90,7 @@ int main(int argc, char* argv[])
             SDL_RenderPresent(renderer);
             SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0xFF, 0xFF);
             SDL_RenderPresent(renderer);
-            
+           
             
             // End rectangles
             vector<pair<Position, Position>> endRanges{};
@@ -100,38 +103,7 @@ int main(int argc, char* argv[])
             endRanges.push_back({Position{0, 175},   Position{10, 225}});
             
             // Create Boxes
-            vector<Box> boxes{};
-            for (int ii=0; ii<1400; ++ii)
-            {
-                if (ii<200)
-                {
-                    boxes.push_back(Box{ii, 0, 3, 3});
-                }
-                else if (ii<400)
-                {
-                    boxes.push_back(Box{ii, 1, 3, 3});
-                }
-                else if (ii<600)
-                {
-                    boxes.push_back(Box{ii, 2, 3, 3});
-                }
-                else if (ii<800)
-                {
-                    boxes.push_back(Box{ii, 0, 3, 3});
-                }
-                else if (ii<1000)
-                {
-                    boxes.push_back(Box{ii, 1, 3, 3});
-                }
-                else if (ii<1200)
-                {
-                    boxes.push_back(Box{ii, 2, 3, 3});
-                }
-                else if (ii<1400)
-                {
-                    boxes.push_back(Box{ii, 0, 3, 3});
-                }
-            }
+            vector<Box> boxes = Util::getBoxes(0, 7, 200);
             
             // Create Board
             Board board{800, 800, boxes};
