@@ -50,16 +50,3 @@ vector<Position> Util::getRandomInRectangle(Position cornerA, Position cornerB, 
     return positions;
 }
 
-vector<Box> Util::getBoxes(int firstBoxId, int numOfGroups, int groupSize)
-{
-    vector<Box> boxes{};
-    for(int groupNum=0; groupNum<numOfGroups; ++groupNum)
-    {
-        int boxId = firstBoxId + (groupSize * groupNum);
-        for(int boxIdx=0; boxIdx<groupSize; ++boxIdx)
-        {
-            boxes.push_back(Box{boxId+boxIdx, groupNum, 3, 3});
-        }
-    }
-    return boxes;
-}

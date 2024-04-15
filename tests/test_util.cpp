@@ -34,7 +34,8 @@ TEST_CASE("Returns count number of Positions")
     vector<Position> insideRectangle = Util::getRandomInRectangle(Position{0, 100}, Position{100, 0}, 1000);
     REQUIRE(1000 == insideRectangle.size());
 }
-
+// TODO move to MainSetup Tests
+/*
 TEST_CASE("Returns a vector of boxes with 10 groups, each of size 5")
 {
     vector<Box> boxes = Util::getBoxes(100, 10, 5);
@@ -43,3 +44,4 @@ TEST_CASE("Returns a vector of boxes with 10 groups, each of size 5")
         REQUIRE(boxes[ii] == Box{100 + ii, ii%10, 3, 3});
     }
 }
+*/
