@@ -6,9 +6,8 @@
 class Decider_Risk1 : public Decider
 {
 public:
-    bool moveTo(Position position, const Board& board) override;
     bool addToBoard(Position position, const Board& board) override;
-    Position getNextPosition(
+    std::pair<Position, int> getNextPosition(
         std::vector<Position> possiblePositions,
         const Board& board) override;
 };

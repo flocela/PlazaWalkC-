@@ -18,7 +18,7 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. D
 
     vector<Position> possiblePositions = {positionA, Position{5, 4}, Position{6, 4}};
 
-    Position nextPosition = decider.getNextPosition(possiblePositions, board);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board).first;
 
     // Decider does not return positionA because that's where Box1 is. It returns the next position.
     REQUIRE(Position{5, 4} == nextPosition);
@@ -40,7 +40,7 @@ TEST_CASE("Box0 is deciding to move to positionA, but Box1 occupies positionA. T
     vector<Position> possiblePositions = {positionA};
 
     // Decider does not return positionA because that's where Box1 is. It returns {-1, -1} because the possiblePositions vector only had one position.
-    Position nextPosition = decider.getNextPosition(possiblePositions, board);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board).first;
     REQUIRE(Position{-1, -1} == nextPosition);
 }
 
@@ -57,7 +57,7 @@ TEST_CASE("Box0 is deciding to move to postionA. Box1 has sent a note to Board t
 
     vector<Position> possiblePositions = {positionA};
 
-    Position nextPosition = decider.getNextPosition(possiblePositions, board);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board).first;
 
     REQUIRE(Position{-1, -1} == nextPosition);
 }
@@ -79,7 +79,7 @@ TEST_CASE("Box0 is deciding to move to postionA. Box1 occupies positionA, but ha
 
     vector<Position> possiblePositions = {positionA};
 
-    Position nextPosition = decider.getNextPosition(possiblePositions, board);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board).first;
 
     REQUIRE(Position{-1, -1} == nextPosition);
 }
@@ -94,7 +94,7 @@ TEST_CASE("Box0 is deciding to move to postionA. PositionA is unoccupied. Decide
 
     vector<Position> possiblePositions = {positionA, Position{5, 4}, Position{6, 4}};
    
-    Position nextPosition = decider.getNextPosition(possiblePositions, board);
+    Position nextPosition = decider.getNextPosition(possiblePositions, board).first;
 
     REQUIRE(positionA == nextPosition);
 }

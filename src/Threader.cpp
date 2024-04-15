@@ -1,5 +1,6 @@
 #include "Threader.h"
 
+#include <chrono>
 #include "Decider_Risk1.h"
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
@@ -36,17 +37,18 @@ void Threader::funcMoveBox(
     
     while (!posManager->atEnd(curPosition) && breaker)
     {
-        Position nextPosition = decider->getNextPosition(
+        pair<Position,int> nextPosition = decider->getNextPosition(
                                             posManager->getFuturePositions(curPosition),
                                             board);
-        if (nextPosition != Position{-1, -1})
+        if (nextPosition.first != Position{-1, -1})
         {  
-            if (decider->moveTo(nextPosition, board))
+            if (nextPosition.second != 0)
             {
-                if (mover->moveBox(curPosition, nextPosition))
-                {
-                    curPosition = nextPosition;
-                }
+               this_thread::sleep_for(chrono::milliseconds(nextPosition.second));
+            } 
+            if (mover->moveBox(curPosition, nextPosition.first))
+            {
+                curPosition = nextPosition.first;
             }
         }
         this_thread::sleep_for(10ms);
@@ -57,7 +59,6 @@ void Threader::funcMoveBox(
     {
         mover->removeBox(curPosition);
     }
-
 }
 
 void Threader::PMSlideAndSafeDecider(

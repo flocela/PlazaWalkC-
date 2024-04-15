@@ -10,20 +10,7 @@ bool Decider_Safe::addToBoard(Position position, const Board& board)
     return board.getNoteAt(position).getType() == SpotType::left;
 }
 
-bool Decider_Safe::moveTo(Position position, const Board& board)
-{
-    BoardNote note = board.getNoteAt(position);
-    if(note.getType() == SpotType::left)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-Position Decider_Safe::getNextPosition(
+pair<Position, int> Decider_Safe::getNextPosition(
     vector<Position> possiblePositions,
     const Board& board
     )
@@ -41,11 +28,11 @@ Position Decider_Safe::getNextPosition(
         if (boardNote.getType() == SpotType::left)
         {
    //         cout << x << "return"<<position;
-            return position;
+            return {position, 0};
         }       
     }
    // cout << x << "{-1, -1}" << endl;
 
-    return Position{-1, -1};
+    return {Position{-1, -1}, -1};
 } 
 

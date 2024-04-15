@@ -7,8 +7,7 @@ class Decider_Safe : public Decider
 {
 public:
     bool addToBoard(Position position, const Board& board) override;
-    bool moveTo(Position position, const Board& board) override;
-    Position getNextPosition(
+    std::pair<Position, int> getNextPosition(
         std::vector<Position> possiblePositions,
         const Board& board) override;
 };

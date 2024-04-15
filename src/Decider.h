@@ -11,9 +11,8 @@ class Decider
 public:
     virtual ~Decider() = default;
     //TODO test moveTo and addToBoard methods
-    virtual bool moveTo(Position position, const Board& board) = 0;
     virtual bool addToBoard(Position position, const Board& board) = 0;
-    virtual Position getNextPosition(
+    virtual std::pair<Position, int> getNextPosition(
         std::vector<Position> possiblePositions,
         const Board& board) = 0;
 
