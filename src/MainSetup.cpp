@@ -16,15 +16,15 @@ vector<Box> MainSetup::getBoxes(int firstBoxId, int numOfGroups, int groupSize)
     return boxes;
 }
 
-vector<pair<Position, Position>> MainSetup::getEndRectangles()
+vector<pair<Position, Position>> MainSetup::getEndRectangles(int bW, int bH)
 {
     vector<pair<Position, Position>> endRanges{};
-    endRanges.push_back({Position{350, 0},   Position{450, 10}}); 
-    endRanges.push_back({Position{789, 175}, Position{799, 225}}); 
-    endRanges.push_back({Position{789, 575}, Position{799, 625}});
-    endRanges.push_back({Position{575, 789}, Position{625, 799}});
-    endRanges.push_back({Position{175, 789}, Position{225, 799}});
-    endRanges.push_back({Position{0, 575},   Position{10, 625}});
-    endRanges.push_back({Position{0, 175},   Position{10, 225}});
+    endRanges.push_back({Position{bW/2-50, 0},   Position{bW/2+50, 10}}); 
+    endRanges.push_back({Position{bW-11, bH/4-25}, Position{bW-1, bH/4+25}}); 
+    endRanges.push_back({Position{bW-11, bH*3/4-25}, Position{bW-1, bH*3/4+25}});
+    endRanges.push_back({Position{bW*3/4-25, bH-11}, Position{bW*3/4+25, bH-1}});
+    endRanges.push_back({Position{bW/4-25, bH-11}, Position{bW/4+25, bH-1}});
+    endRanges.push_back({Position{0, bW*3/4-25},   Position{10, bW*3/4+25}});
+    endRanges.push_back({Position{0, bW/4-25},   Position{10, bW/4+25}});
     return endRanges;
 }

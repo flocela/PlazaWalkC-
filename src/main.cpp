@@ -52,8 +52,7 @@ int main(int argc, char* argv[])
     if(!SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0"))
     {
         printf("SDL can not disable compositor bypass!\n");
-        return 0;
-    }
+        return 0; }
     #endif
 
     // Create window
@@ -76,13 +75,13 @@ int main(int argc, char* argv[])
         }
         else
         {
-            vector<pair<Position, Position>> endRectangles = MainSetup::getEndRectangles(); 
+            auto endRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
             
             // Create Boxes
             vector<Box> boxes = MainSetup::getBoxes(0, 7, 200);
             
             // Create Board
-            Board board{800, 800, boxes};
+            Board board{SCREEN_WIDTH, SCREEN_HEIGHT, boxes};
 
             // Create BoardAgent. It will periodically ask Board to send changes to recorder.
             BoardAgent boardAgent(&board);
