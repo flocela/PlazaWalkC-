@@ -84,13 +84,19 @@ int main(int argc, char* argv[])
             // Create Board
             Board board{800, 800, boxes};
 
-            // Create Listeners including Printer 
+            // Create BoardAgent. It will periodically ask Board to send changes to recorder.
             BoardAgent boardAgent(&board);
+
+            // Create recorder, it will listen for changes from Board and send those changes to the printer.
             Recorder recorder{};
             board.registerListener(&recorder);
+
+            // Create the printer and have it listen for changes from teh recorder.
             Printer_OneColor printer(renderer);
-            printer.addEndRectangles(endRectangles);
             recorder.registerListener(&printer);
+
+            // Add the end rectangles to printer. It will print them at each rendering.
+            printer.addEndRectangles(endRectangles);
 
             // Event loop exit flag
             bool running = true;
