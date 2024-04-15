@@ -84,20 +84,13 @@ int main(int argc, char* argv[])
             // Create Board
             Board board{800, 800, boxes};
 
-
             // Create Listeners including Printer 
             BoardAgent boardAgent(&board);
             Recorder recorder{};
             board.registerListener(&recorder);
             Printer_OneColor printer(renderer);
-            /*printer.addEndPoint(endRectangles[0].first, endRectangles[0].second);
-            printer.addEndPoint(endRectangles[1].first, endRectangles[1].second);
-            printer.addEndPoint(endRectangles[2].first, endRectangles[2].second);
-            printer.addEndPoint(endRectangles[3].first, endRectangles[3].second);
-            printer.addEndPoint(endRectangles[4].first, endRectangles[4].second);
-            printer.addEndPoint(endRectangles[5].first, endRectangles[5].second);
-            printer.addEndPoint(endRectangles[6].first, endRectangles[6].second);
-            */recorder.registerListener(&printer);
+            printer.addEndRectangles(endRectangles);
+            recorder.registerListener(&printer);
 
             // Event loop exit flag
             bool running = true;

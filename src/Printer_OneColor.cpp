@@ -166,7 +166,7 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
     (void)cyanCount;
         //cout << "sizes: " << redCount << ", " << cyanCount << ", " << amberCount << ", " << (redCount + cyanCount + amberCount) << endl;
 
-    for(const pair<Position, Position>& endPoint : _endPoints)
+    for(const pair<Position, Position>& endPoint : _endRectangles)
     {
         Position topLeft = endPoint.first;
         Position bottomRight = endPoint.second;
@@ -176,14 +176,26 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
         endRect.y = topLeft.getY();
         endRect.w = bottomRight.getX() - topLeft.getX();
         endRect.h = bottomRight.getY() - topLeft.getY();
-        SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0xFF);
+        SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x30);
         SDL_RenderFillRect(_renderer, &endRect);
     }
 
     SDL_RenderPresent(_renderer);
 }
 
-void Printer_OneColor::addEndPoint(Position topLeft, Position bottomRight)
+void Printer_OneColor::addEndRectangle(Position topLeft, Position bottomRight)
 {
-    _endPoints.push_back({topLeft, bottomRight});
+    _endRectangles.push_back({topLeft, bottomRight});
 }
+
+void Printer_OneColor::addEndRectangles(vector<pair<Position, Position>> rectangles)
+{
+    for(const auto& rect : rectangles)
+    {
+        _endRectangles.push_back(rect);
+    }
+}
+
+
+
