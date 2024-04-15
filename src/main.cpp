@@ -107,14 +107,14 @@ int main(int argc, char* argv[])
             Recorder recorder{};
             board.registerListener(&recorder);
             Printer_OneColor printer(renderer);
-            printer.addEndPoint(endRanges[0].first, endRanges[0].second);
+            /*printer.addEndPoint(endRanges[0].first, endRanges[0].second);
             printer.addEndPoint(endRanges[1].first, endRanges[1].second);
             printer.addEndPoint(endRanges[2].first, endRanges[2].second);
             printer.addEndPoint(endRanges[3].first, endRanges[3].second);
             printer.addEndPoint(endRanges[4].first, endRanges[4].second);
             printer.addEndPoint(endRanges[5].first, endRanges[5].second);
             printer.addEndPoint(endRanges[6].first, endRanges[6].second);
-            recorder.registerListener(&printer);
+            */recorder.registerListener(&printer);
 
             // Event loop exit flag
             bool running = true;

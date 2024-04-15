@@ -10,6 +10,8 @@ class Util
 {
 public:
 
+    static int  getRandom(int start, int end);
+
     static std::vector<int>  getRandom(int start, int end, int count);
 
     static std::vector<Position> getRandomInRectangle(Position a, Position b, int count);

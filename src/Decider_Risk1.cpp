@@ -1,21 +1,25 @@
-#include "Decider_Safe.h"
+#include "Decider_Risk1.h"
 
 #include "SpotType.h"
 #include "Util.h"
 
 using namespace std;
 
-bool Decider_Safe::addToBoard(Position position, const Board& board)
+bool Decider_Risk1::addToBoard(Position position, const Board& board)
 {
     return board.getNoteAt(position).getType() == SpotType::left;
 }
 
-bool Decider_Safe::moveTo(Position position, const Board& board)
+bool Decider_Risk1::moveTo(Position position, const Board& board)
 {
     BoardNote note = board.getNoteAt(position);
     if(note.getType() == SpotType::left)
     {
         return true;
+    }
+    else if(note.getType() == SpotType::to_leave)
+    {
+       return Util::getRandom(0, 100) < 25;
     }
     else
     {
@@ -23,7 +27,7 @@ bool Decider_Safe::moveTo(Position position, const Board& board)
     }
 }
 
-Position Decider_Safe::getNextPosition(
+Position Decider_Risk1::getNextPosition(
     vector<Position> possiblePositions,
     const Board& board
     )
@@ -38,7 +42,8 @@ Position Decider_Safe::getNextPosition(
         BoardNote boardNote = board.getNoteAt(position);
 
         // if the BoardNote's type is empty, then return current position. 
-        if (boardNote.getType() == SpotType::left)
+        if (boardNote.getType() == SpotType::left || 
+            boardNote.getType() == SpotType::to_leave)
         {
    //         cout << x << "return"<<position;
             return position;

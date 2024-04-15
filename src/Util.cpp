@@ -1,7 +1,19 @@
 #include "Util.h"
 
 using namespace std;
+// TODO test this getRandom
+int  Util::getRandom(int start, int end)
+{
+    int min = std::min(start, end);
+    int max = std::max(start, end);
 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<std::mt19937::result_type> distribution(min, max);
+   
+    return distribution(gen);
+
+}
 vector<int> Util::getRandom(int start, int end, int count)
 {
     int min = std::min(start, end);

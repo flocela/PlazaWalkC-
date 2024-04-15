@@ -1,5 +1,6 @@
 #include "Threader.h"
 
+#include "Decider_Risk1.h"
 #include "Decider_Safe.h"
 #include "Mover_Reg.h"
 #include "PositionManager_Slide.h"
@@ -19,12 +20,20 @@ void Threader::funcMoveBox(
     Position curPosition = position;
     // TODO what to do if box isn't successfully added to the board?
     int n = 1;
-    while(!mover->addBox(curPosition) && breaker)
+
+    while(breaker)
     {
+        if(decider->addToBoard(position, board))
+        {
+            if(mover->addBox(curPosition))
+            {
+                break;
+            }
+        }
         this_thread::sleep_for(n * 10ms);
         ++n;
     }
-
+    
     while (!posManager->atEnd(curPosition) && breaker)
     {
         Position nextPosition = decider->getNextPosition(
@@ -32,9 +41,12 @@ void Threader::funcMoveBox(
                                             board);
         if (nextPosition != Position{-1, -1})
         {  
-            if (mover->moveBox(curPosition, nextPosition))
+            if (decider->moveTo(nextPosition, board))
             {
-                curPosition = nextPosition;
+                if (mover->moveBox(curPosition, nextPosition))
+                {
+                    curPosition = nextPosition;
+                }
             }
         }
         this_thread::sleep_for(10ms);
@@ -84,7 +96,7 @@ void Threader::PMSlideAndSafeDecider(
                 board.getWidth()-1,
                 0,
                 board.getHeight()-1),
-            make_unique<Decider_Safe>(),
+            make_unique<Decider_Risk1>(),
             make_unique<Mover_Reg>(firstBoxId+ii, &board),
             std::ref(running)
         )
