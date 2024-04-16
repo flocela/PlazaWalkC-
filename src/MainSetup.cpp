@@ -28,3 +28,18 @@ vector<pair<Position, Position>> MainSetup::getEndRectangles(int bW, int bH)
     endRanges.push_back({Position{0, bW/4-25},   Position{10, bW/4+25}});
     return endRanges;
 }
+
+vector<pair<Position, Position>> MainSetup::deleteRect(
+                vector<pair<Position, Position>> rectangles,
+                pair<Position, Position> rectangle)
+{
+    vector<pair<Position, Position>> reduced{};
+    for(pair<Position, Position> rect : rectangles)
+    {
+        if(!(rect == rectangle))
+        {
+            reduced.push_back(rect);
+        }
+    }
+    return reduced;
+}

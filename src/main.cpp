@@ -75,10 +75,11 @@ int main(int argc, char* argv[])
         }
         else
         {
-            auto endRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
+            auto reducedRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
             
             // Create Boxes
-            vector<Box> boxes = MainSetup::getBoxes(0, 7, 200);
+            int countPerGroup = 200;
+            vector<Box> boxes = MainSetup::getBoxes(0, 7, countPerGroup);
             
             // Create Board
             Board board{SCREEN_WIDTH, SCREEN_HEIGHT, boxes};
@@ -95,7 +96,7 @@ int main(int argc, char* argv[])
             recorder.registerListener(&printer);
 
             // Add the end rectangles to printer. It will print them at each rendering.
-            printer.addEndRectangles(endRectangles);
+            printer.addEndRectangles(reducedRectangles);
 
             // Event loop exit flag
             bool running = true;
@@ -104,48 +105,34 @@ int main(int argc, char* argv[])
 
             Threader threader{};
             
-            int count = 200;
             int boxId = 0;
-            int ii = 0;
             
-            vector<pair<Position, Position>> smallerEndRectangles = vector<pair<Position, Position>>(endRectangles.begin()+1, endRectangles.end());
-            threader.PMSlideAndSafeDecider(thread, endRectangles[0].first, endRectangles[0].second, smallerEndRectangles, board, boxId, count, running);
+            auto reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[0]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[0].first, reducedRectangles[0].second, reducedEndRectangles, board, boxId, countPerGroup, running);
 
-            boxId += count;
-            ++ii;
-            copy(endRectangles.cbegin(), endRectangles.cbegin()+ii, smallerEndRectangles.begin());
-            copy(endRectangles.cbegin()+ii+1, endRectangles.cend(), smallerEndRectangles.begin()+ii);
-            threader.PMSlideAndSafeDecider(thread, endRectangles[1].first, endRectangles[1].second, smallerEndRectangles, board, boxId, count, running);
+            boxId += countPerGroup;
+            reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[1]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[1].first, reducedRectangles[1].second, reducedRectangles, board, boxId, countPerGroup, running);
             
-            boxId += count;
-            ++ii;
-            copy(endRectangles.cbegin(), endRectangles.cbegin()+ii, smallerEndRectangles.begin());
-            copy(endRectangles.cbegin()+ii+1, endRectangles.cend(), smallerEndRectangles.begin()+ii);
-            threader.PMSlideAndSafeDecider(thread, endRectangles[2].first, endRectangles[2].second, smallerEndRectangles, board, boxId, count, running);
+            boxId += countPerGroup;
+            reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[2]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[2].first, reducedRectangles[2].second, reducedRectangles, board, boxId, countPerGroup, running);
 
-            boxId += count;
-            ++ii;
-            copy(endRectangles.cbegin(), endRectangles.cbegin()+ii, smallerEndRectangles.begin());
-            copy(endRectangles.cbegin()+ii+1, endRectangles.cend(), smallerEndRectangles.begin()+ii);
-            threader.PMSlideAndSafeDecider(thread, endRectangles[3].first, endRectangles[3].second, smallerEndRectangles, board, boxId, count, running);
+            boxId += countPerGroup;
+            reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[3]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[3].first, reducedRectangles[3].second, reducedRectangles, board, boxId, countPerGroup, running);
 
-            boxId += count;
-            ++ii;
-            copy(endRectangles.cbegin(), endRectangles.cbegin()+ii, smallerEndRectangles.begin());
-            copy(endRectangles.cbegin()+ii+1, endRectangles.cend(), smallerEndRectangles.begin()+ii);
-            threader.PMSlideAndSafeDecider(thread, endRectangles[4].first, endRectangles[4].second, smallerEndRectangles, board, boxId, count, running);
+            boxId += countPerGroup;
+            reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[4]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[4].first, reducedRectangles[4].second, reducedRectangles, board, boxId, countPerGroup, running);
 
-            boxId += count;
-            ++ii;
-            copy(endRectangles.cbegin(), endRectangles.cbegin()+ii, smallerEndRectangles.begin());
-            copy(endRectangles.cbegin()+ii+1, endRectangles.cend(), smallerEndRectangles.begin()+ii);
-            threader.PMSlideAndSafeDecider(thread, endRectangles[5].first, endRectangles[5].second, smallerEndRectangles, board, boxId, count, running);
+            boxId += countPerGroup;
+            reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[5]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[5].first, reducedRectangles[5].second, reducedRectangles, board, boxId, countPerGroup, running);
 
-            boxId += count;
-            ++ii;
-            copy(endRectangles.cbegin(), endRectangles.cbegin()+ii, smallerEndRectangles.begin());
-            copy(endRectangles.cbegin()+ii+1, endRectangles.cend(), smallerEndRectangles.begin()+ii);
-            threader.PMSlideAndSafeDecider(thread, endRectangles[6].first, endRectangles[6].second, smallerEndRectangles, board, boxId, count, running);
+            boxId += countPerGroup;
+            reducedEndRectangles = MainSetup::deleteRect(reducedRectangles, reducedRectangles[6]);
+            threader.PMSlideAndSafeDecider(thread, reducedRectangles[6].first, reducedRectangles[6].second, reducedRectangles, board, boxId, countPerGroup, running);
            
             // Event loop
             while(running)
