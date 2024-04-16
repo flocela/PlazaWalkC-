@@ -11,7 +11,6 @@
 #include "BoardCallback.h"
 #include "BoardListener.h"
 #include "Box.h"
-#include "BoxTaken.h"
 #include "Drop.h"
 #include "Position.h"
 #include "Spot.h"
