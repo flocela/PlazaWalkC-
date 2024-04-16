@@ -32,7 +32,7 @@ public:
 
 
 private:
-    Position _position;
+    const Position _position;
     int _boxId = -1;
     SpotType _type = SpotType::left;
     std::string _combined = "-1, 4";
