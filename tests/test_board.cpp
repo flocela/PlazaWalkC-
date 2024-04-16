@@ -15,7 +15,7 @@ TEST_CASE("Add BoardNotes with different types to Position{5, 5}. The retrieved 
 {  
     int boxId = 0;
     vector<Box> boxes(1,Box{0, 0, 1, 1,});
-    Board board{20, 10, boxes};
+    Board board{20, 10, std::move(boxes)};
     
     // BoardNote(int type, int boxId)
     board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::to_arrive});
@@ -56,7 +56,7 @@ TEST_CASE("Sends changes to registered Agents")
 
     int boxId = 0;
     vector<Box> boxes(1,Box{0, 0, 1, 1,});
-    Board board{10, 10, boxes};
+    Board board{10, 10, std::move(boxes)};
     BoardListener_Test listener{};
 
     board.registerListener(&listener);
@@ -101,7 +101,7 @@ TEST_CASE("Box with id of 20 attempts to move to position where Box with id 10 i
     int boxId1 = 1;
     
     vector<Box> boxes{Box{0, 0, 1, 1}, Box{1, 0, 1, 1}};
-    Board board{20, 20, boxes};
+    Board board{20, 20, std::move(boxes)};
     
     BoardListener_Test listener{};
     board.registerListener(&listener);
@@ -156,7 +156,7 @@ TEST_CASE("Box with id of 20 repeatedly attempts to move to position where box w
     int boxId1 = 1;
     
     vector<Box> boxes{Box{0, 0, 1, 1}, Box{1, 0, 1, 1}};
-    Board board{20, 20, boxes};
+    Board board{20, 20, std::move(boxes)};
     BoardListener_Test listener{};
     board.registerListener(&listener);
   
@@ -215,7 +215,7 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
         boxes.push_back(Box{ii, 0, 1, 1});
     }
 
-    Board board{1000, 1000, boxes};
+    Board board{1000, 1000, std::move(boxes)};
     BoardListener_Test listener{};
     board.registerListener(&listener);
 

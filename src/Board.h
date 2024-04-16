@@ -25,7 +25,7 @@ class Board
 {
 public:
     
-    Board(int width, int height, std::vector<Box> boxes);
+    Board(int width, int height, std::vector<Box>&& boxes);
     Board(const Board& board) = delete;
     Board(Board&& o) noexcept = delete;
     Board& operator=(const Board& board) = delete;

@@ -14,7 +14,7 @@ Box::Box(const Box& o): _id{o._id}, _groupid{o._groupid}, _level{o._level}, _wid
 
 Box::Box(Box&& o) noexcept: _id{o._id}, _groupid{o._groupid}, _level{o._level}, _width{o._width}, _height{o._height}
 {}
-
+/*
 // TODO is this tested?
 void Box::setId(int id)
 {
@@ -47,7 +47,7 @@ void Box::setGroupid(int groupid)
     }
     _groupid = groupid;
 }
-        
+ */       
     
 void Box::setWidth(int w)
 {

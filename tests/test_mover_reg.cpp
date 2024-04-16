@@ -16,7 +16,7 @@ TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
     BoardCallback_Accountant accountantPosA{};
     BoardCallback_Accountant accountantPosB{};
      
-    Board board{10, 10, boxes};
+    Board board{10, 10, std::move(boxes)};
     board.registerCallback(positionA, accountantPosA);
     board.registerCallback(positionB, accountantPosB);
 
@@ -60,7 +60,7 @@ TEST_CASE("Mover_Reg removes box from board.")
 {
     // Set up Board, Box, and Mover_Reg.
     vector<Box> boxes{Box{0, 0,  10, 10}};
-    Board board{10, 10, boxes};
+    Board board{10, 10, std::move(boxes)};
     Mover_Reg mover{boxes[0].getId(), &board};
 
     // Register a BoardCallback_Accountant to receive changes from Board's PositionA.

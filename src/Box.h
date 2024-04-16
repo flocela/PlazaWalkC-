@@ -20,10 +20,7 @@ public:
     ~Box() noexcept = default;
 
     void upLevel();
-    void setId(int id);
 
-    // TODO test setGroupid
-    void setGroupid(int groupid);
     void setWidth(int w);
     void setHeight(int h);
 
@@ -36,8 +33,8 @@ public:
     bool operator== (const Box& o) const;
 
 private:
-    int _id     = -1;
-    int _groupid = -1;
+    const int _id = -1;
+    const int _groupid = -1;
     int _level  = 0;
     int _width  = -1; 
     int _height = -1;

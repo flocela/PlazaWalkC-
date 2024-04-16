@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
             vector<Box> boxes = MainSetup::getBoxes(0, 7, countPerGroup);
             
             // Create Board
-            Board board{SCREEN_WIDTH, SCREEN_HEIGHT, boxes};
+            Board board{SCREEN_WIDTH, SCREEN_HEIGHT, std::move(boxes)};
 
             // Create BoardAgent. It will periodically ask Board to send changes to recorder.
             BoardAgent boardAgent(&board);

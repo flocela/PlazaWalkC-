@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Board::Board(int width, int height, vector<Box> boxes)
+Board::Board(int width, int height, vector<Box>&& boxes)
 :   _width{width},
     _height{height}
 {
@@ -29,7 +29,7 @@ Board::Board(int width, int height, vector<Box> boxes)
     {  
         if(box.getId() != -1)
         {
-            _boxes.insert({box.getId(), box});
+            _boxes.emplace(pair<int, Box>{box.getId(), std::move(box)});
         }
     }
 }
