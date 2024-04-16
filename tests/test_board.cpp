@@ -38,7 +38,7 @@ TEST_CASE("Sends changes to registered Agents")
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, Box> boxes) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, BoxInfo> boxes) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {
@@ -86,7 +86,7 @@ TEST_CASE("Box with id of 20 attempts to move to position where Box with id 10 i
     {
     public: 
 
-        void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, Box> boxes) override
+        void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, BoxInfo> boxes) override
         {
             for(const auto& p: boxes)
             {
@@ -94,7 +94,7 @@ TEST_CASE("Box with id of 20 attempts to move to position where Box with id 10 i
             }
         }
         
-        unordered_map<int, Box> _boxes{};
+        unordered_map<int, BoxInfo> _boxes{};
     };
 
     int boxId0 = 0;
@@ -111,8 +111,8 @@ TEST_CASE("Box with id of 20 attempts to move to position where Box with id 10 i
     board.addNote(Position{5, 5}, BoardNote{boxId1, SpotType::to_arrive});
     board.sendChanges();
     
-    REQUIRE(2 == listener._boxes[0].getLevel());
-    REQUIRE(2 == listener._boxes[1].getLevel());
+    REQUIRE(2 == listener._boxes.at(0).getLevel());
+    REQUIRE(2 == listener._boxes.at(0).getLevel());
 }
 
 
@@ -139,10 +139,10 @@ TEST_CASE("Box with id of 20 repeatedly attempts to move to position where box w
     {
     public: 
 
-        void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, Box> boxes) override
+        void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, unordered_map<int, BoxInfo> boxes) override
         {
             try{
-                REQUIRE(boxes[0].getLevel() == boxes[1].getLevel());
+                REQUIRE(boxes.at(0).getLevel() == boxes.at(1).getLevel());
             }
             catch(...)
             {
@@ -187,7 +187,7 @@ TEST_CASE("removing the unique_lock protecting _receivingMatrix results in Drops
     {
     public: 
 
-        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, Box> boxes) override
+        void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, BoxInfo> boxes) override
         {
             for(auto& setOfDropsPerType : setsOfDropsPerType)
             {

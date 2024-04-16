@@ -18,11 +18,11 @@ public:
     void addEndRectangle(Position topLeft, Position bottomRight);
     void addEndRectangles(std::vector<std::pair<Position, Position>> rectangles);
 
-    void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, Box> boxes) override;
+    void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, BoxInfo> boxes) override;
 
 private:
     SDL_Renderer* _renderer;
-    void print(std::unordered_map<SpotType, std::unordered_set<Drop>> dropsPerType, std::unordered_map<int, Box> boxes);
+    void print(std::unordered_map<SpotType, std::unordered_set<Drop>> dropsPerType, std::unordered_map<int, BoxInfo> boxes);
     std::vector<std::pair<Position, Position>> _endRectangles{};
 };
 

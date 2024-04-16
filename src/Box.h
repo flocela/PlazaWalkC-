@@ -8,6 +8,8 @@
 #include <unordered_set>
 #include <utility>
 
+#include "BoxInfo.h"
+
 class Box{
 
 public:
@@ -29,6 +31,7 @@ public:
     int getWidth() const;
     int getHeight() const;
     int getLevel() const;
+    BoxInfo getInfo() const;
     
     bool operator== (const Box& o) const;
 

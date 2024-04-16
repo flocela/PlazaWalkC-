@@ -92,6 +92,7 @@ src/BoardCallback_Accountant.cpp
 src/BoardNote.cpp
 src/BoardReader_Reg.cpp
 src/Box.cpp
+src/BoxInfo.cpp
 src/BoxChanger_Reg.cpp
 src/BoxReader_Reg.cpp
 src/BoxNote.cpp

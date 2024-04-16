@@ -104,7 +104,7 @@ void Board::sendChanges()
     // The sendChangesLock prevents two threads entering sendChanges() method at the same time.
     unique_lock<shared_mutex> sendChangesLock(_sendChangesMutex);
     vector<vector<Drop>>* changedBoard = nullptr;
-    unordered_map<int, Box> copyOfBoxes{};
+    unordered_map<int, BoxInfo> copyOfBoxes{};
     {
         unique_lock<shared_mutex> lockUq(_mux);
         changedBoard = _receivingMatrix;
@@ -114,7 +114,7 @@ void Board::sendChanges()
         for(const auto& p : _boxes)
         {
             //cout << p.second.getLevel() << ", ";
-            copyOfBoxes.insert({p.first, p.second});
+            copyOfBoxes.insert({p.first, p.second.getInfo()});
         }
     }
     //cout << "copyOfBoxes.size()" << copyOfBoxes.size() << endl;

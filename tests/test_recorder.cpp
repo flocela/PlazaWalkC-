@@ -7,7 +7,7 @@ using namespace std;
 class RecorderListenerTest : public RecorderListener
 {
 public:
-    void receiveAllDrops(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType, unordered_map<int, Box> boxes) override
+    void receiveAllDrops(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType, unordered_map<int, BoxInfo> boxes) override
     {
         _setOfDropsPerType = setOfDropsPerType;
         for(const auto& p : boxes)
@@ -17,7 +17,7 @@ public:
     }
 
     unordered_map<SpotType, unordered_set<Drop>> _setOfDropsPerType{};
-    unordered_map<int, Box> _boxes{};
+    unordered_map<int, BoxInfo> _boxes{};
 };
      
 
@@ -42,7 +42,7 @@ TEST_CASE("incoming boxes are recorded")
     dropsType2.insert(dropB);
     changedSetsOfDropsPerType.insert({SpotType::to_arrive, dropsType2});
 
-    unordered_map<int, Box> boxesPerBoxIdDummy{};
+    unordered_map<int, BoxInfo> boxesPerBoxIdDummy{};
 
     recorder.receiveChanges(changedSetsOfDropsPerType, boxesPerBoxIdDummy);
     
@@ -145,18 +145,19 @@ TEST_CASE ("boxes are received")
     recorder.registerListener(&listener);
 
     unordered_map<SpotType, unordered_set<Drop>> changedSetsOfDropsPerTypeDummy{};
-    unordered_map<int, Box> boxesPerBoxIdDummy{};
+    unordered_map<int, BoxInfo> boxesPerBoxIdDummy{};
 
     // Box(int id, int width, int height);
-    unordered_map<int, Box> boxes = {{0, Box{0, 0, 3, 3}}, {1, Box{1, 0, 3, 3}}, {2,Box{2, 0, 3, 3,}}};
+    unordered_map<int, BoxInfo> boxes = {
+        {0, BoxInfo{0, 0, 3, 3, 0}}, {1, BoxInfo{1, 0, 3, 3, 0}}, {2,BoxInfo{2, 0, 3, 3, 0}}};
 
     recorder.receiveChanges(changedSetsOfDropsPerTypeDummy, boxes);
     
-    unordered_map<int, Box> actual = listener._boxes;
+    unordered_map<int, BoxInfo> actual = listener._boxes;
    
     REQUIRE(3 == actual.size());
-    REQUIRE(0 == actual[0].getId());
-    REQUIRE(1 == actual[1].getId());
-    REQUIRE(2 == actual[2].getId());
+    REQUIRE(0 == actual.at(0).getId());
+    REQUIRE(1 == actual.at(1).getId());
+    REQUIRE(2 == actual.at(2).getId());
 
 }

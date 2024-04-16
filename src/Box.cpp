@@ -14,40 +14,6 @@ Box::Box(const Box& o): _id{o._id}, _groupid{o._groupid}, _level{o._level}, _wid
 
 Box::Box(Box&& o) noexcept: _id{o._id}, _groupid{o._groupid}, _level{o._level}, _width{o._width}, _height{o._height}
 {}
-/*
-// TODO is this tested?
-void Box::setId(int id)
-{
-    unique_lock<shared_mutex> lock(_mm);
-    if (_id != -1)
-    {
-        string str = "Trying to assign id of ";
-        str.append(to_string(id));
-        str.append(" to Box with an existing _id of ");
-        str.append(to_string(_id));
-        str.append(".");
-        throw invalid_argument(str);
-    }
-    _id = id;
-}
-
-// TODO is this tested?
-// TODO probably shouldn't be using same mutex???
-void Box::setGroupid(int groupid)
-{
-    unique_lock<shared_mutex> lock(_mm);
-    if(_groupid != -1)
-    {
-        string str = "Trying to assign groupid of ";
-        str.append(to_string(groupid));
-        str.append(" to Box with an existing _groupid of ");
-        str.append(to_string(_groupid));
-        str.append(".");
-        throw invalid_argument(str);
-    }
-    _groupid = groupid;
-}
- */       
     
 void Box::setWidth(int w)
 {
@@ -97,6 +63,12 @@ int Box::getGroupId() const
 {
     shared_lock<shared_mutex> lock(_mm);
     return _groupid;
+}
+
+BoxInfo Box::getInfo() const
+{
+    shared_lock<shared_mutex> lock(_mm);
+    return BoxInfo{_id, _groupid, _width, _height, _level};
 }
 
 int Box::getHeight() const

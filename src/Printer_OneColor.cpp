@@ -45,12 +45,12 @@ vector<vector<Uint8>> amber{
 
 Printer_OneColor::Printer_OneColor(SDL_Renderer* renderer): _renderer{renderer} {}
 
-void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, Box> boxes)
+void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, BoxInfo> boxes)
 {
     print(setOfDropsPerType, boxes);
 }
 
-void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, std::unordered_map<int, Box> boxes)
+void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, std::unordered_map<int, BoxInfo> boxes)
 {  
     vector<vector<Drop>> redDrops(9, vector<Drop>{});
     vector<vector<Drop>> cyanDrops(9, vector<Drop>{});
@@ -66,8 +66,8 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
         for (auto& drop: setOfDrops)
         {
             int id = drop._boxId;
-            int groupId = boxes[id].getGroupId();
-            int level = boxes[id].getLevel();
+            int groupId = boxes.at(id).getGroupId();
+            int level = boxes.at(id).getLevel();
             //cout << level << ", "; 
             if(groupId%3 == 0 )
             {
