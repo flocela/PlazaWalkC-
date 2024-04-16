@@ -43,8 +43,8 @@ public:
     BoardNote getNoteAt(Position position) const;
 
 private:
-    int _width;
-    int _height;
+    const int _width;
+    const int _height;
     
     // _spots is the master board.
     std::vector<std::vector<Spot>> _spots;
