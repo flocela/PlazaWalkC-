@@ -1,7 +1,6 @@
 #ifndef DECIDER__H
 #define DECIDER__H
 
-#include <unordered_map>
 #include <vector>
 #include "Board.h"
 
