@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     #endif
 
     // Create window
-    SDL_Window *window = SDL_CreateWindow("SDL2_ttf sample",
+    SDL_Window *window = SDL_CreateWindow("Across The Plaza",
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED,
                                           SCREEN_WIDTH, SCREEN_HEIGHT,

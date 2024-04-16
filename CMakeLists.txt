@@ -26,11 +26,11 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-# Define the project name
-project(sdl2-ttf-sample)
-
 # Set the cmake minimum version to 3.5.1
 cmake_minimum_required(VERSION 3.5.1)
+
+# Define the project name
+project(sdl2-ttf-sample)
 
 ## This is not recommended:
 #set(CMAKE_CXX_COMPILER "g++")
