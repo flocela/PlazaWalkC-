@@ -11,6 +11,11 @@ class BoxInfo{
 
 public:
     BoxInfo(int id, int group, int width, int height, int level);
+    BoxInfo(const BoxInfo& o) = default;
+    BoxInfo(BoxInfo&& o) noexcept = default;
+    BoxInfo& operator=(const BoxInfo& o) = delete;
+    BoxInfo& operator=(BoxInfo&& o) noexcept = delete;
+    ~BoxInfo() = default;    
 
     int getId() const;    
     int getGroupId() const;
@@ -21,11 +26,11 @@ public:
     bool operator== (const BoxInfo& o) const;
 
 private:
-    int _id = -1;
-    int _groupid = -1;
-    int _width  = -1; 
-    int _height = -1;
-    int _level  = 0;
+    const int _id = -1;
+    const int _groupid = -1;
+    const int _width  = -1; 
+    const int _height = -1;
+    const int _level  = 0;
 };
 
 namespace std
