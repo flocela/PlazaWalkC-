@@ -30,8 +30,8 @@ vector<pair<Position, Position>> MainSetup::getEndRectangles(int bW, int bH)
 }
 
 vector<pair<Position, Position>> MainSetup::deleteRect(
-                vector<pair<Position, Position>> rectangles,
-                pair<Position, Position> rectangle)
+    vector<pair<Position, Position>> rectangles,
+    pair<Position, Position> rectangle)
 {
     vector<pair<Position, Position>> reduced{};
     for(pair<Position, Position> rect : rectangles)
