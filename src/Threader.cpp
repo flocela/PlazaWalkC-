@@ -37,24 +37,25 @@ void Threader::funcMoveBox(
     
     while (!posManager->atEnd(curPosition) && breaker)
     {
-        pair<Position,int> nextPosition = decider->getNextPosition(
-                                            posManager->getFuturePositions(curPosition),
-                                            board);
-        if (nextPosition.first != Position{-1, -1})
-        {  
-            if (nextPosition.second != 0)
-            {
-               this_thread::sleep_for(chrono::milliseconds(nextPosition.second));
-            } 
-            if (mover->moveBox(curPosition, nextPosition.first))
-            {
-                curPosition = nextPosition.first;
-            }
+        pair<Position,int> nextPosition = 
+            decider->getNextPosition(posManager->getFuturePositions(curPosition),
+                                     board);
+        // if suggested sleep time from decider is positive, then sleep for suggested sleep time.
+        if(nextPosition.second > 0)
+        {
+           this_thread::sleep_for(chrono::milliseconds(nextPosition.second));
         }
+        // if moving to valid position, sleep for time suggested by decider. 
+        if((nextPosition.first != Position{-1, -1}) && 
+           (mover->moveBox(curPosition, nextPosition.first)))
+        {
+            curPosition = nextPosition.first;
+        }
+        // always sleep between movements.
         this_thread::sleep_for(10ms);
     }
 
-    // if box has reached its destination then it disapears from the board.
+    // if box has reached its final destination then it disapears from the board.
     if (posManager->atEnd(curPosition))
     {
         mover->removeBox(curPosition);
@@ -88,13 +89,13 @@ void Threader::populateThreads_Slide_Safe(
                 funcMoveBox,
                 startPoints[ii],
                 std::ref(board),
-                createPositionManager(PositionManagerType::Safe,
+                createPositionManager(PositionManagerType::slide,
                                       randomEndPoints[ii],
                                       0,
                                       board.getWidth()-1,
                                       0,
                                       board.getHeight()-1),
-                createDecider(DeciderType::Safe),
+                createDecider(DeciderType::safe),
                 make_unique<Mover_Reg>(firstBoxId+ii, &board),
                 std::ref(running))
         );
@@ -112,10 +113,9 @@ void Threader::populateRandomPoints(
         vector<Position> toAppend = Util::getRandomInRectangle(
             rects[ii].first,
             rects[ii].second,
-            bottomRight,
             numOfPoints);
 
-        randomEndPoints.insert(randomPositions.end(), toAppend.begin(), toAppend.end());
+        randomPositions.insert(randomPositions.end(), toAppend.begin(), toAppend.end());
     };
 
     Util::utilShuffle(randomPositions);
@@ -129,7 +129,7 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     int boardMinY,
     int boardMaxY)
 {
-    if(pmt == PositionManagerType::Slide)
+    if(pmt == PositionManagerType::slide)
     {
         return make_unique<PositionManager_Slide>(
             endPoint,
@@ -151,13 +151,12 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     
 unique_ptr<Decider> Threader::createDecider(DeciderType dt)
 {
-    if(dt == Decider::Risk1)
+    if(dt == DeciderType::risk1)
     {
         return make_unique<Decider_Risk1>();
     }
     else
     {
-        return make_unique<Decider_Safe();
+        return make_unique<Decider_Safe>();
     }
 } 
-}
