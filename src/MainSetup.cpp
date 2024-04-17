@@ -31,16 +31,35 @@ void MainSetup::addAGroupOfBoxes(
 }
 
 
+/* Placement of entrances and exits to plaza
+
+                North Wall
+              -----    ------
+            --------------------
+           |                    |  
+          ||                    ||
+          ||                    ||
+          ||                    ||
+West Wall  |                    |  East Wall
+          ||                    ||
+          ||                    ||
+          ||                    ||
+           |                    |
+            --------------------
+               ______   ______
+                  South Wall
+*/
+
 vector<pair<Position, Position>> MainSetup::getEndRectangles(int bW, int bH)
 {
     vector<pair<Position, Position>> endRanges{};
-    endRanges.push_back({Position{bW/2-50, 0},   Position{bW/2+50, 10}}); 
-    endRanges.push_back({Position{bW-11, bH/4-25}, Position{bW-1, bH/4+25}}); 
-    endRanges.push_back({Position{bW-11, bH*3/4-25}, Position{bW-1, bH*3/4+25}});
-    endRanges.push_back({Position{bW*3/4-25, bH-11}, Position{bW*3/4+25, bH-1}});
-    endRanges.push_back({Position{bW/4-25, bH-11}, Position{bW/4+25, bH-1}});
-    endRanges.push_back({Position{0, bW*3/4-25},   Position{10, bW*3/4+25}});
-    endRanges.push_back({Position{0, bW/4-25},   Position{10, bW/4+25}});
+    endRanges.push_back({Position{bW/2-50, 0},   Position{bW/2+50, 10}}); // North wall at center
+    endRanges.push_back({Position{bW-11, bH/4-25}, Position{bW-1, bH/4+25}}); // East wall at top 
+    endRanges.push_back({Position{bW-11, bH*3/4-25}, Position{bW-1, bH*3/4+25}}); // East wall at bottom 
+    endRanges.push_back({Position{0, bW*3/4-25},   Position{10, bW*3/4+25}}); // West wallat bottom 
+    endRanges.push_back({Position{0, bW/4-25},   Position{10, bW/4+25}}); // West wall at top 
+    endRanges.push_back({Position{bW*3/4-25, bH-11}, Position{bW*3/4+25, bH-1}}); // South wall at left
+    endRanges.push_back({Position{bW/4-25, bH-11}, Position{bW/4+25, bH-1}}); // South wall at right 
     return endRanges;
 }
 

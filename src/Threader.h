@@ -14,7 +14,15 @@
 class Threader
 {
 public:
-    void populateThreads(
+    static void funcMoveBox(
+        Position position,
+        Board& board,
+        std::unique_ptr<PositionManager> posManager,
+        std::unique_ptr<Decider> decider,
+        std::unique_ptr<Mover> mover,
+        bool& breaker);
+
+    void populateThreadsForOneGroup(
         std::vector<std::unique_ptr<std::thread>>& threads,
         Position topLeftCornerOfStartPoint,
         Position bottomRightCornerOfStartPoint,
@@ -24,6 +32,16 @@ public:
         int count,
         PositionManagerType pmt,
         DeciderType dt,
+        bool& running);
+
+    void populateThreads(
+        std::vector<std::unique_ptr<std::thread>>& threads,
+        std::vector<std::pair<Position, Position>> startPoints,
+        std::vector<std::pair<Position, Position>> endRanges,
+        Board& board,
+        std::vector<std::pair<int, int>> boxIds,
+        std::vector<PositionManagerType> pmts,
+        std::vector<DeciderType> dts,
         bool& running);
 
     void populateRandomPoints(
@@ -50,34 +68,7 @@ public:
         int firstBoxId,
         int count,
         bool& running); 
-   /* 
-    void populateThreads_Slide_Risky1(
-        std::vector<std::unique_ptr<std::thread>>& threads,
-        Position topLeftCornerOfStartPoint,
-        Position bottomRightCornerOfStartPoint,
-        std::vector<std::pair<Position, Position>> endRanges,
-        Board& board,
-        int firstBoxId,
-        int count,
-        bool& running); 
     
-    void populateThreads_Direct_Safe(
-        std::vector<std::unique_ptr<std::thread>>& threads,
-        Position topLeftCornerOfStartPoint,
-        Position bottomRightCornerOfStartPoint,
-        std::vector<std::pair<Position, Position>> endRanges,
-        Board& board,
-        int firstBoxId,
-        int count,
-        bool& running); 
-*/
-    static void funcMoveBox(
-        Position position,
-        Board& board,
-        std::unique_ptr<PositionManager> posManager,
-        std::unique_ptr<Decider> decider,
-        std::unique_ptr<Mover> mover,
-        bool& breaker);
 
 };
 #endif

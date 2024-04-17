@@ -27,7 +27,7 @@ pair<Position, int> Decider_Risk1::getNextPosition(
         }
         if (boardNote.getType() == SpotType::to_leave)
         {
-            return {position, 5};
+            return {position, 7};
         }
     }
 

@@ -3,6 +3,7 @@
 #include <chrono>
 #include "Decider_Risk1.h"
 #include "Decider_Safe.h"
+#include "MainSetup.h"
 #include "Mover_Reg.h"
 #include "PositionManager_Slide.h"
 #include "Util.h"
@@ -62,7 +63,7 @@ void Threader::funcMoveBox(
     }
 }
 
-void Threader::populateThreads_Slide_Safe(
+void Threader::populateThreadsForOneGroup(
     vector<unique_ptr<thread>>& threads,
     // top left corner of start rectangle
     Position tlStartPoint,
@@ -72,12 +73,14 @@ void Threader::populateThreads_Slide_Safe(
     Board& board,
     int firstBoxId,
     int count,
+    PositionManagerType pmt,
+    DeciderType dt,
     bool& running)
 
 {
     vector<Position> startPoints = Util::getRandomInRectangle(tlStartPoint, brStartPoint, count);
     
-    // randomEndPoints contains the same number of random points from each pair of endRects. 
+    // Each rectangle in endRects contributes the same number of points to randomEndPoints.
     int numOfEndPointsPerOneEndRect = (count/endRects.size()) + 1;
     vector<Position> randomEndPoints{};
     populateRandomPoints(randomEndPoints, endRects, numOfEndPointsPerOneEndRect);
@@ -89,18 +92,44 @@ void Threader::populateThreads_Slide_Safe(
                 funcMoveBox,
                 startPoints[ii],
                 std::ref(board),
-                createPositionManager(PositionManagerType::slide,
+                createPositionManager(pmt,
                                       randomEndPoints[ii],
                                       0,
                                       board.getWidth()-1,
                                       0,
                                       board.getHeight()-1),
-                createDecider(DeciderType::safe),
+                createDecider(dt),
                 make_unique<Mover_Reg>(firstBoxId+ii, &board),
                 std::ref(running))
         );
     }
 } 
+
+void Threader::populateThreads(
+    std::vector<std::unique_ptr<std::thread>>& threads,
+    std::vector<std::pair<Position, Position>> startPoints,
+    std::vector<std::pair<Position, Position>> endRanges,
+    Board& board,
+    vector<std::pair<int, int>> boxIds,
+    std::vector<PositionManagerType> pmts,
+    std::vector<DeciderType> dts,
+    bool& running)
+{
+    for(size_t ii=0; ii<startPoints.size(); ++ii)
+    {
+        populateThreadsForOneGroup(
+            threads,
+            startPoints[ii].first,
+            startPoints[ii].second,
+            MainSetup::deleteRect(endRanges, endRanges[ii]),
+            board,
+            boxIds[ii].first,
+            boxIds[ii].second - boxIds[ii].first + 1,
+            pmts[ii],
+            dts[ii],
+            running);
+    }
+}
 
 void Threader::populateRandomPoints(
     vector<Position>& randomPositions,
