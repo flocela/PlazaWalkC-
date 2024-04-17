@@ -61,47 +61,103 @@ void Threader::funcMoveBox(
     }
 }
 
-void Threader::PMSlideAndSafeDecider(
-    std::vector<unique_ptr<thread>>& threads,
-    Position topLeftCornerOfStartPoint,
-    Position bottomRightCornerOfStartPoint,
-    std::vector<std::pair<Position, Position>> endRanges, // these are rectangles
+void Threader::populateThreads_Slide_Safe(
+    vector<unique_ptr<thread>>& threads,
+    // top left corner of start rectangle
+    Position tlStartPoint,
+    // bottom right corner of start rectangle
+    Position brStartPoint,
+    vector<pair<Position, Position>> endRects, 
     Board& board,
     int firstBoxId,
     int count,
     bool& running)
 
 {
-    int erSize = endRanges.size();
-    vector<Position> startPoints = 
-        Util::getRandomInRectangle(topLeftCornerOfStartPoint, bottomRightCornerOfStartPoint, count);
-
-    vector<vector<Position>> endPositionPerEndRange{};
-
-    for(int ii=0; ii<erSize; ++ii)
-    {
-        int countPerRange = (count/erSize) + 1;
-        endPositionPerEndRange.push_back(
-            Util::getRandomInRectangle(endRanges[ii].first, endRanges[ii].second, countPerRange));
-    };
+    vector<Position> startPoints = Util::getRandomInRectangle(tlStartPoint, brStartPoint, count);
+    
+    // randomEndPoints contains the same number of random points from each pair of endRects. 
+    int numOfEndPointsPerOneEndRect = (count/endRects.size()) + 1;
+    vector<Position> randomEndPoints{};
+    populateRandomPoints(randomEndPoints, endRects, numOfEndPointsPerOneEndRect);
 
     for(int ii=0; ii<count; ++ii)
     {
-        threads.push_back(make_unique<thread>(
-            funcMoveBox,
-            startPoints[ii],
-            std::ref(board),
-            make_unique<PositionManager_Slide>(
-                endPositionPerEndRange[ii%erSize][ii/erSize],
-                0,
-                board.getWidth()-1,
-                0,
-                board.getHeight()-1),
-            make_unique<Decider_Risk1>(),
-            make_unique<Mover_Reg>(firstBoxId+ii, &board),
-            std::ref(running)
-        )
+        threads.push_back(
+            make_unique<thread>(
+                funcMoveBox,
+                startPoints[ii],
+                std::ref(board),
+                createPositionManager(PositionManagerType::Safe,
+                                      randomEndPoints[ii],
+                                      0,
+                                      board.getWidth()-1,
+                                      0,
+                                      board.getHeight()-1),
+                createDecider(DeciderType::Safe),
+                make_unique<Mover_Reg>(firstBoxId+ii, &board),
+                std::ref(running))
         );
     }
 } 
 
+void Threader::populateRandomPoints(
+    vector<Position>& randomPositions,
+    vector<pair<Position, Position>> rects,
+    int numOfPoints)
+{
+    for(size_t ii=0; ii<rects.size(); ++ii)
+    {
+        // vector of random positions to append to randomPositions.
+        vector<Position> toAppend = Util::getRandomInRectangle(
+            rects[ii].first,
+            rects[ii].second,
+            bottomRight,
+            numOfPoints);
+
+        randomEndPoints.insert(randomPositions.end(), toAppend.begin(), toAppend.end());
+    };
+
+    Util::utilShuffle(randomPositions);
+}
+
+unique_ptr<PositionManager> Threader::createPositionManager(
+    PositionManagerType pmt,
+    Position endPoint,
+    int boardMinX,
+    int boardMaxX,
+    int boardMinY,
+    int boardMaxY)
+{
+    if(pmt == PositionManagerType::Slide)
+    {
+        return make_unique<PositionManager_Slide>(
+            endPoint,
+            boardMinX,
+            boardMaxX,
+            boardMinY,
+            boardMaxY);
+    }
+    else
+    {
+        return make_unique<PositionManager_Slide>(
+            endPoint,
+            boardMinX,
+            boardMaxX,
+            boardMinY,
+            boardMaxY);
+    }
+}
+    
+unique_ptr<Decider> Threader::createDecider(DeciderType dt)
+{
+    if(dt == Decider::Risk1)
+    {
+        return make_unique<Decider_Risk1>();
+    }
+    else
+    {
+        return make_unique<Decider_Safe();
+    }
+} 
+}

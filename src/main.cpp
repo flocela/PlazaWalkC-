@@ -79,8 +79,15 @@ int main(int argc, char* argv[])
             auto toFromRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
             
             // Create Boxes
-            int countPerGroup = 200;
-            vector<Box> boxes = MainSetup::getBoxes(0, 7, countPerGroup);
+            // Group0 with 200 boxes (red) will tread safely.
+            // Group1 with 800 boxes (blue) will tread safely.
+            // Group2 with 400 boxes (yellow) will tread recklessly.
+            // Group4 with 100 boxes (purple) will tread safely.
+            vector<Box> boxes{};
+            MainSetup::addAGroupOfBoxes(boxes, 0, 0, 200);
+            MainSetup::addAGroupOfBoxes(boxes, 200, 1, 800);
+            MainSetup::addAGroupOfBoxes(boxes, 1000, 2, 400);
+            MainSetup::addAGroupOfBoxes(boxes, 1400, 3, 100);
             
             // Create Board
             Board board{SCREEN_WIDTH, SCREEN_HEIGHT, std::move(boxes)};
@@ -92,7 +99,7 @@ int main(int argc, char* argv[])
             Recorder recorder{};
             board.registerListener(&recorder);
 
-            // Create the printer and have it listen for changes from teh recorder.
+            // Create the printer and have it listen for changes from the recorder.
             Printer_OneColor printer(renderer);
             recorder.registerListener(&printer);
 
@@ -108,10 +115,11 @@ int main(int argc, char* argv[])
             
             int boxId = 0;
            
-            // Do not include the rectangles that these boxes originate at in the vector of rectangles where these boxes will end up at. 
+            // Do not include the rectangles that these boxes originate at in the vector of rectangles where these boxes will end up at.
+            // Create threads for Group 0. 
             auto endRectangles = MainSetup::deleteRect(toFromRectangles, toFromRectangles[0]);
-            threader.PMSlideAndSafeDecider(thread, toFromRectangles[0].first, toFromRectangles[0].second, endRectangles, board, boxId, countPerGroup, running);
-
+            threader.populateThreads_Slide_Safe(thread, toFromRectangles[0].first, toFromRectangles[0].second, endRectangles, board, boxId, 200, running);
+/*
             boxId += countPerGroup;
             endRectangles = MainSetup::deleteRect(toFromRectangles, toFromRectangles[1]);
             threader.PMSlideAndSafeDecider(thread, toFromRectangles[1].first, toFromRectangles[1].second, endRectangles, board, boxId, countPerGroup, running);
@@ -135,7 +143,7 @@ int main(int argc, char* argv[])
             boxId += countPerGroup;
             endRectangles = MainSetup::deleteRect(toFromRectangles, toFromRectangles[6]);
             threader.PMSlideAndSafeDecider(thread, toFromRectangles[6].first, toFromRectangles[6].second, endRectangles, board, boxId, countPerGroup, running);
-           
+ */          
             // Event loop
             while(running)
             {

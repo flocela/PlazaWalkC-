@@ -2,19 +2,34 @@
 
 using namespace std;
 
-vector<Box> MainSetup::getBoxes(int firstBoxId, int numOfGroups, int groupSize)
+void MainSetup::addGroupsOfBoxes(
+    vector<Box>& boxes,
+    int firstBoxId,
+    int firstGroupNum,
+    int numOfGroups,
+    int groupSize)
 {
-    vector<Box> boxes{};
-    for(int groupNum=0; groupNum<numOfGroups; ++groupNum)
+    for(int gn = firstGroupNum; gn<numOfGroups+firstGroupNum; ++gn)
     {
-        int boxId = firstBoxId + (groupSize * groupNum);
-        for(int boxIdx=0; boxIdx<groupSize; ++boxIdx)
+        int temp = firstBoxId + (groupSize * gn);
+        for(int ii=0; ii<groupSize; ++ii)
         {
-            boxes.push_back(Box{boxId+boxIdx, groupNum, 3, 3});
+            boxes.push_back(Box{temp+ii, gn, 3, 3});
         }
     }
-    return boxes;
 }
+void MainSetup::addAGroupOfBoxes(
+    vector<Box>& boxes,
+    int firstBoxId,
+    int groupId,
+    int groupSize)
+{
+    for(int ii=0; ii<groupSize; ++ii)
+    {
+        boxes.push_back(Box{firstBoxId+ii, groupId, 3, 3});
+    }
+}
+
 
 vector<pair<Position, Position>> MainSetup::getEndRectangles(int bW, int bH)
 {

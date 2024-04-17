@@ -49,4 +49,3 @@ vector<Position> Util::getRandomInRectangle(Position cornerA, Position cornerB, 
     
     return positions;
 }
-
