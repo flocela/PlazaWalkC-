@@ -26,24 +26,14 @@ bool Mover_Reg::addBox(Position position)
 // TODO test exceptions
 bool Mover_Reg::removeBox(Position position)
 {
-    BoardNote fromBoard = _board->getNoteAt(position);
-
-    if (fromBoard.getBoxId() != _boxId)
+    bool success = false;
+    // Adding the extra information (that this was a call to remove the box) to the error string.
+    try
     {
-        string invalidString = "Trying to remove box ";
-        invalidString.append(to_string(_boxId));
-        invalidString.append(" but box with id of ");
-        invalidString.append(to_string(fromBoard.getBoxId()));
-        invalidString.append(" is at position [");
-        invalidString.append(to_string(position.getX()));
-        invalidString.append(", ");
-        invalidString.append(to_string(position.getY()));
-        invalidString.append("].");
-       throw invalid_argument(invalidString); 
+        success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave});
+        success = _board->addNote(position, BoardNote{_boxId, SpotType::left});
     }
-    
-    bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave});
-    if (!success)
+    catch(std::exception& e)
     {
         string invalidString = "Trying to remove box ";
         invalidString.append(to_string(_boxId));
@@ -51,23 +41,12 @@ bool Mover_Reg::removeBox(Position position)
         invalidString.append(to_string(position.getX()));
         invalidString.append(", ");
         invalidString.append(to_string(position.getY()));
-        invalidString.append("].");
+        invalidString.append("].  ");
+        invalidString.append(e.what());
         throw invalid_argument(invalidString);
     }
 
-    success = _board->addNote(position, BoardNote{_boxId, SpotType::left});
-    if (!success)
-    {
-        string invalidString = "Trying to remove box ";
-        invalidString.append(to_string(_boxId));
-        invalidString.append(", but Board would not accept SpotType::to_leave at position [");
-        invalidString.append(to_string(position.getX()));
-        invalidString.append(", ");
-        invalidString.append(to_string(position.getY()));
-        invalidString.append("].");
-        throw invalid_argument(invalidString);
-    }
-    return true;
+    return success;
 }
 
 // TODO this return value needs to be tested. Along with the order of these moves.

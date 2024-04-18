@@ -5,31 +5,39 @@
 
 using namespace std;
 
-Board::Board(int width, int height, vector<Box>&& boxes)
+Board::Board(
+    int width,
+    int height,
+    vector<Box>&& boxes)
 :   _width{width},
     _height{height}
 {
+    _spots = vector<vector<Spot>>(height,vector<Spot>{});
+    _dropMatrix1 = vector<vector<Drop>>(height, vector<Drop>{});
+    _dropMatrix2 = vector<vector<Drop>>(height, vector<Drop>{});
+
     for(int row=0; row<height; ++row)
     {
-        vector<Spot> rowOfSpots{};
-        vector<Drop> rowOfDrops1{};
-        vector<Drop> rowOfDrops2{};
         for(int col=0; col<width; ++col)
         {
-            rowOfSpots.push_back(Spot{Position{col, row}});
-            rowOfDrops1.push_back(Drop{col, row});
-            rowOfDrops2.push_back(Drop{col, row});
+            _spots[row].push_back(Spot{Position{col, row}});
+            _dropMatrix1[row].push_back(Drop{col, row});
+            _dropMatrix2[row].push_back(Drop{col, row});
         }
-        _spots.push_back(rowOfSpots);
-        _dropMatrix1.push_back(rowOfDrops1);
-        _dropMatrix2.push_back(rowOfDrops2);
     }
+
     _receivingMatrix = &_dropMatrix1;
+
     for(const Box& box : boxes)
     {  
         if(box.getId() != -1)
         {
             _boxes.emplace(pair<int, Box>{box.getId(), std::move(box)});
+        }
+        else
+        {
+            //TODO test
+            throw invalid_argument("box id given in Board's constructor is -1, which is invalid.");
         }
     }
 }
@@ -44,7 +52,7 @@ int Board::getHeight() const
     return _height;
 }
 
-// Note many threads can be inside addNote() at the same time, it is protected by a shared_lock.
+// Many threads can be inside addNote() at the same time, it is protected by a shared_lock.
 // Although many threads can be inside addNote() at the same time, only one thread can change a particular spot at one time. Spot's changeNote() method is protected by a unique_lock.
 
 // The shared_lock protecting addNote() will not allow changes to any Spot or any Drop while the _receivingMatrix is being toggled.
@@ -54,6 +62,7 @@ bool Board::addNote(Position position, BoardNote newNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
     //TODO test that this exception is thrown.
+    // Can not put Box on the Board (change Spot) if Box is not in Board's map of Boxes.
     if(_boxes.find(newNote.getBoxId()) == _boxes.end())
     {
         string str = "Trying to add a BoardNote with a boxId of ";
@@ -62,35 +71,35 @@ bool Board::addNote(Position position, BoardNote newNote)
         throw(invalid_argument(str));
     }
 
+    // See Spot's rules that determine if Box's movement at Position is allowed. But basically, Position has to either be empty, or already be occupied by this Box.
     pair<int, bool> success = _spots[position.getY()][position.getX()].changeNote(newNote);
-
-    if (!success.second)
-    {
-        //cout << "(" << _boxes[success.first].getLevel() << ", ";
-        _boxes[success.first].upLevel();
-        //cout << _boxes[success.first].getLevel() << ")  ";
-        //cout << "[" << _boxes[newNote.getBoxId()].getLevel() << ", ";
-        _boxes[newNote.getBoxId()].upLevel();
-        //cout << _boxes[newNote.getBoxId()].getLevel() << "]  ";
-
-        return false; 
-    }
-    else 
+    
+    if (success.second)
     {
         // Record changed boxId and type at position in _receivingMatrix.
         BoardNote currentBoardNote = _spots[position.getY()][position.getX()].getBoardNote();
         Drop& drop = (*_receivingMatrix)[position.getY()][position.getX()];
         drop._changed = true;
         drop._boxId = currentBoardNote.getBoxId();
-        //std::this_thread::sleep_for(1ms);
+        // In order to fail a test, Add a sleep time here.
+        // std::this_thread::sleep_for(1ms);
         drop._type = currentBoardNote.getType();
 
-        // Notify all BoardCallbacks. Should be none as BoardCallbacks are only used in testing.
+        // Notify all BoardCallbacks.
         if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
         {
             _boardCallbacksPerPos.at(position).callback(newNote, position);
         }
+
         return true;
+    }
+    else
+    {
+        // Movement was not successful
+        _boxes[success.first].upLevel();
+        _boxes[newNote.getBoxId()].upLevel();
+
+        return false; 
     }
 }
 
@@ -103,25 +112,23 @@ void Board::sendChanges()
 {   
     // The sendChangesLock prevents two threads entering sendChanges() method at the same time.
     unique_lock<shared_mutex> sendChangesLock(_sendChangesMutex);
+
+    // changedBoard will point to the current _receivingMatrix.
     vector<vector<Drop>>* changedBoard = nullptr;
-    unordered_map<int, BoxInfo> copyOfBoxes{};
+    unordered_map<int, BoxInfo> copyOfBoxInfo{};
     {
+        // While 1) toggling _receivedMatrix, 2) assigning changedBoard, and 3) copying _boxes boxInfos, no new notes are being added. addNote() shares the _mux mutex that lockUq is using.
         unique_lock<shared_mutex> lockUq(_mux);
         changedBoard = _receivingMatrix;
         _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
         
-        // copy _boxes to send
+        // copy BoxInfos to send 
         for(const auto& p : _boxes)
         {
-            //cout << p.second.getLevel() << ", ";
-            copyOfBoxes.insert({p.first, p.second.getInfo()});
+            copyOfBoxInfo.insert({p.first, p.second.getInfo()});
         }
     }
-    //cout << "copyOfBoxes.size()" << copyOfBoxes.size() << endl;
 
-    // changedBoard holds the current matrix where changes are being made. 
-  
-    // TODO return setOfDropsPerPosition changing to per type should be done by the listener
     // Collect changes in setsOfDropsPerType  
     unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType;
 
@@ -140,9 +147,10 @@ void Board::sendChanges()
         }
     }
 
+    // Send changes to Drops and set of BoxInfo to BoardListeners.
     for(BoardListener* listener : _listeners)
     {
-        listener->receiveChanges(setsOfDropsPerType, copyOfBoxes);
+        listener->receiveChanges(setsOfDropsPerType, copyOfBoxInfo);
     }
 }
 
@@ -151,15 +159,10 @@ void Board::registerListener(BoardListener* listener)
     _listeners.insert(listener);
 }
 
-// TODO check that this shouldn't be locked. Maybe it should be a shared lock
+// Note changes to a Spot can happen at the same time that getNoteAt() is being called.
 BoardNote Board::getNoteAt(Position position) const
 {
     shared_lock<shared_mutex> lock(_mux);
     return _spots[position.getY()][position.getX()].getBoardNote();
 }
 
-void Board::toggleReceivingMatrix()
-{
-    unique_lock<shared_mutex> lockUq(_mux);    
-    _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
-}
