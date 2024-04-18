@@ -11,6 +11,7 @@
 #include <SDL_ttf.h>
 
 #include "Board.h"
+#include "BoardProxy.h"
 #include "BroadcastAgent.h"
 #include "Box.h"
 #include "Decider_Safe.h"
@@ -102,8 +103,8 @@ int main(int argc, char* argv[])
     // Create Board
     Board board{SCREEN_WIDTH, SCREEN_HEIGHT, std::move(boxes)};
 
-    // Create BroadcastAgent. It will periodically ask Board to send changes to recorder.
-    BroadcastAgent broadcastAgent(&board);
+    // Create BroadcastAgent. It will periodically ask Board (via BoardProxy) to send changes to recorder.
+    BroadcastAgent broadcastAgent{BoardProxy(board)};
 
     // Create Recorder, it will listen for changes from Board and send those changes to the printer.
     Recorder recorder{};
@@ -113,7 +114,7 @@ int main(int argc, char* argv[])
     Printer printer(renderer);
     recorder.registerListener(&printer);
 
-    // Add the end rectangles to printer. It will print them at each rendering.
+    // Add the in-bound and out-bound rectangles to printer (where the boxes start and end). It will print the recangles at each rendering.
     printer.addInOutBoundRectangles(toFromRectangles);
 
     // Event loop exit flag
@@ -123,20 +124,21 @@ int main(int argc, char* argv[])
 
     Threader threader{};
    
-    // Add threads for boxes 0 through 1399. That's red, blue, yellow, and boxes.
+    // Add threads for boxes 0 through 1399. That's red, blue, yellow, and purple boxes.
+    // Box id comments refer to where the box starts at and what color its group is.
     threader.populateThreads(
         thread,
         MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT),
         MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT),
         board,
         vector<pair<int, int>>{
-            {0, 199},      // North wall
-            {200, 399},    // West wall top  
-            {400, 599},    // East wall top
-            {600, 799},    // West wall bottom
-            {800, 999},    // East wall bottom
-            {1000, 1199},  // South wall left
-            {1200, 1399}}, // South wall right
+            {0, 199},      // North wall, red boxes
+            {200, 399},    // West wall top, blue boxes
+            {400, 599},    // East wall top, blue boxes
+            {600, 799},    // West wall bottom, yellow boxes
+            {800, 999},    // East wall bottom, yellow boxes
+            {1000, 1199},  // South wall left, purple boxes
+            {1200, 1399}}, // South wall right, purple boxes
         vector<PositionManagerType>{
             PositionManagerType::slide,
             PositionManagerType::slide,
@@ -169,7 +171,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        broadcastAgent.updateWithChanges();
+        broadcastAgent.requestBroadcastChanges();
     }
 
     for(uint32_t ii=0; ii<thread.size(); ++ii)

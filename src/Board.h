@@ -38,7 +38,7 @@ public:
     void registerCallback(Position pos, BoardCallback& callBack);
     void registerListener(BoardListener* listener);
     void sendChanges();
-    
+
     BoardNote getNoteAt(Position position) const;
 
 private:

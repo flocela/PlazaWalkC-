@@ -2,13 +2,11 @@
 
 using namespace std;
 
-// TODO this should be a const Board
-BroadcastAgent::BroadcastAgent(Board* board)
-:   _board{board}
+BroadcastAgent::BroadcastAgent(BoardProxy&& boardProxy): _boardProxy{std::move(boardProxy)}
 {}
 
-void BroadcastAgent::updateWithChanges()
+void BroadcastAgent::requestBroadcastChanges()
 {
-    _board->sendChanges();
+    _boardProxy.sendChanges();
 }
 

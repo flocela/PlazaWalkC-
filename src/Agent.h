@@ -1,13 +1,13 @@
 #ifndef AGENT__H
 #define AGENT__H
 
-#include <unordered_map>
-#include "Position.h"
-
+// Will send a request to an object to broadcast its changes.
 class Agent
 {
 public:
-    virtual void updateWithChanges() = 0;
+    
+    virtual void requestBroadcastChanges() = 0;
+    virtual ~Agent() = default;
 };
 
 #endif
