@@ -1,11 +1,11 @@
-#include "Printer_OneColor.h"
+#include "Printer.h"
 #include <iostream>
 
 using namespace std;
 
 
 vector<vector<Uint8>> red{
-{0xFF, 0xEB, 0xEE},
+//{0xFF, 0xEB, 0xEE},
 {0xFF, 0xCD, 0xD2},
 {0xEF, 0x9A, 0x9A},
 {0xE5, 0x73, 0x73},
@@ -18,7 +18,7 @@ vector<vector<Uint8>> red{
 };
 
 vector<vector<Uint8>> cyan{
-{0xE0, 0xF7, 0xFA},
+//{0xE0, 0xF7, 0xFA},
 {0xB2, 0xEB, 0xF2},
 {0x80, 0xDE, 0xEA},
 {0x4D, 0xD0, 0xE1},
@@ -31,7 +31,7 @@ vector<vector<Uint8>> cyan{
 };
 
 vector<vector<Uint8>> amber{
-{0xFF, 0xF8, 0xE1},
+//{0xFF, 0xF8, 0xE1},
 {0xFF, 0xEC, 0xB3},
 {0xFF, 0xE0, 0x82},
 {0xFF, 0xD5, 0x4F},
@@ -44,7 +44,7 @@ vector<vector<Uint8>> amber{
 };
 
 vector<vector<Uint8>> purple{
-{0xF3, 0xE5, 0xF5},
+//{0xF3, 0xE5, 0xF5},
 {0xE1, 0xBE, 0xE7},
 {0xCE, 0x93, 0xD8},
 {0xBA, 0x68, 0xC8},
@@ -56,19 +56,19 @@ vector<vector<Uint8>> purple{
 {0x4A, 0x14, 0x8C},
 };
 
-Printer_OneColor::Printer_OneColor(SDL_Renderer* renderer): _renderer{renderer} {}
+Printer::Printer(SDL_Renderer* renderer): _renderer{renderer} {}
 
-void Printer_OneColor::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, BoxInfo> boxes)
+void Printer::receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, BoxInfo> boxes)
 {
     print(setOfDropsPerType, boxes);
 }
 
-void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, std::unordered_map<int, BoxInfo> boxes)
+void Printer::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, std::unordered_map<int, BoxInfo> boxes)
 {  
-    vector<vector<Drop>> redDrops(10, vector<Drop>{});
-    vector<vector<Drop>> cyanDrops(10, vector<Drop>{});
-    vector<vector<Drop>> amberDrops(10, vector<Drop>{});
-    vector<vector<Drop>> purpleDrops(10, vector<Drop>{});
+    vector<vector<Drop>> redDrops(9, vector<Drop>{});
+    vector<vector<Drop>> cyanDrops(9, vector<Drop>{});
+    vector<vector<Drop>> amberDrops(9, vector<Drop>{});
+    vector<vector<Drop>> purpleDrops(9, vector<Drop>{});
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);
 
@@ -85,9 +85,9 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             //cout << level << ", "; 
             if(groupId%4 == 0 )
             {
-                if (level >= 9)
+                if (level >= 8)
                 {
-                    redDrops[9].push_back(drop);
+                    redDrops[8].push_back(drop);
                 }
                 else
                 {
@@ -96,9 +96,9 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             }
             else if(groupId%4 == 1 )
             {
-                if (level >= 9)
+                if (level >= 8)
                 {
-                    cyanDrops[9].push_back(drop);
+                    cyanDrops[8].push_back(drop);
                 }
                 else
                 {
@@ -108,9 +108,9 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             else if(groupId%4 == 2 )
             {
             //cout << "[" << id << "]"<< level << ", ";
-                if (level >= 9)
+                if (level >= 8)
                 {
-                    amberDrops[9].push_back(drop);
+                    amberDrops[8].push_back(drop);
                 }
                 else
                 {
@@ -119,9 +119,9 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
             }
             else
             {
-                if (level >= 9)
+                if (level >= 8)
                 {
-                    purpleDrops[9].push_back(drop);
+                    purpleDrops[8].push_back(drop);
                 }
                 else
                 {
@@ -231,12 +231,12 @@ void Printer_OneColor::print(unordered_map<SpotType, unordered_set<Drop>> dropsP
     SDL_RenderPresent(_renderer);
 }
 
-void Printer_OneColor::addEndRectangle(Position topLeft, Position bottomRight)
+void Printer::addInOutBoundRectangle(Position topLeft, Position bottomRight)
 {
     _endRectangles.push_back({topLeft, bottomRight});
 }
 
-void Printer_OneColor::addEndRectangles(vector<pair<Position, Position>> rectangles)
+void Printer::addInOutBoundRectangles(vector<pair<Position, Position>> rectangles)
 {
     for(const auto& rect : rectangles)
     {
