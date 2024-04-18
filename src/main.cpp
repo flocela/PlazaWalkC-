@@ -86,8 +86,8 @@ int main(int argc, char* argv[])
 
     /* SDL, TTF, window, and renderer work! */
 
-    // Boxes on grid start at one of these rectangles and end at another one of these rectangles.
-    auto toFromRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
+    // In-bound and out-bound rectangles are where the boxes start from and terminate at. A box can not start and end at the same rectangle in inOutBoundRectangles.
+    auto inOutBoundRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
     
     // Create Boxes
     // Group0 with 200 boxes (red) will tread safely. Boxes start at north wall.
@@ -114,8 +114,8 @@ int main(int argc, char* argv[])
     Printer printer(renderer);
     recorder.registerListener(&printer);
 
-    // Add the in-bound and out-bound rectangles to printer (where the boxes start and end). It will print the recangles at each rendering.
-    printer.addInOutBoundRectangles(toFromRectangles);
+    // Add the in-bound and out-bound rectangles to printer (where the boxes start and end).
+    printer.addInOutBoundRectangles(inOutBoundRectangles);
 
     // Event loop exit flag
     bool running = true;

@@ -1,6 +1,6 @@
 #include "BoardProxy.h"
 
-BoardProxy::BoardProxy(BoardProxy&& o)noexcept :_board{o._board} 
+BoardProxy::BoardProxy(Board& o) :_board{o} 
 {}
 
 void BoardProxy::sendChanges()
