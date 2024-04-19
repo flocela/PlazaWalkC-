@@ -9,7 +9,6 @@ TEST_CASE("Insert BoardNotes with different types to Position{5, 5}. The getNote
     vector<Box> boxes(1,Box{0, 0, 1, 1,});
     Board board{20, 10, std::move(boxes)};
     
-    // BoardNote(int type, int boxId)
     board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::to_arrive});
     REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::to_arrive});
 
@@ -24,7 +23,7 @@ TEST_CASE("Insert BoardNotes with different types to Position{5, 5}. The getNote
 
 }
 
-// When receiveChanges() is called, TempListener 1) receives and saves changes to Spots, 2) receives and then saves BoxInfos. Note, changes to Spots are infact changes since the last time receivedChanges() was called. The BoxInfos received are the current state of the Boxes. 
+// When receiveChanges() is called, TempListener 1) receives and saves changes to Spots, 2) receives and then saves BoxInfos. Note, changes to Spots are in fact changes since the last time receivedChanges() was called. The BoxInfos received are the current state of the Boxes. 
 class TempListener : public BoardListener 
 {
 public: 
@@ -53,7 +52,7 @@ public:
     unordered_map<int, BoxInfo> _boxes{};
 };
 
-TEST_CASE("Create a BoardListener, which saves changes that are sent to it. Make changes to Board, request that Board send changes to the BoardListener. Verify that the BoardListener received the changes.")
+TEST_CASE("Verify changes to Board's Spots and that BoardListener receives those changes. Create a BoardListener which saves changes that are sent to it. Make changes to Board. Request that Board send changes to the BoardListener. Verify that the BoardListener received the changes.")
 {
     // Create one box with id=0, groupId=0, width=1, height=1.
     vector<Box> boxes(1, Box{0, 0, 1, 1,});
@@ -83,9 +82,8 @@ TEST_CASE("Create a BoardListener, which saves changes that are sent to it. Make
     REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{7, 7})._type);
 }
 
-TEST_CASE("Using the addNote() method, a box with id of 20 attempts to move to position where a box with id 10 is at. Both boxes' levels go up.")
+TEST_CASE("Verify 1) addNotes() returns false when unsuccessful and 2) BoardListener receives changes Boxes. Using the addNote() method, a box with id of 20 attempts to move to position where a box with id 10 is at. Both boxes' levels go up.")
 {
-
     int boxId_0 = 0;
     int boxId_1 = 1;
     
@@ -96,11 +94,30 @@ TEST_CASE("Using the addNote() method, a box with id of 20 attempts to move to p
     board.registerListener(&listener);
   
     board.addNote(Position{5, 5}, BoardNote{boxId_0, SpotType::to_arrive});
-    board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive}); // both boxes' levels go up by 1
-    board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive}); // again both boxes' levels go up by 1
+
+    // successful should be false and both boxes' levels go up by 1
+    bool successful = board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive});
+    REQUIRE(false == successful);
+    
+    // successful should be false again, and both boxes' levels go up by 1 again.
+    successful = board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive}); 
+    REQUIRE(false == successful);
     board.sendChanges();
    
     REQUIRE(2 == listener._boxes.at(0).getLevel());
     REQUIRE(2 == listener._boxes.at(1).getLevel());
+}
+
+
+TEST_CASE("Adding a BoardNote with an unknown BoxId results in an exception.")
+{
+    int boxId_0 = 0;
+    int boxId_1 = 1;
+    
+    vector<Box> boxes{Box{boxId_0, 0, 1, 1}, Box{boxId_1, 0, 1, 1}};
+    Board board{20, 20, std::move(boxes)};
+
+    // Board does not have a Box id of 100.
+    REQUIRE_THROWS(board.addNote(Position{5, 5}, BoardNote{100, SpotType::to_arrive}));
 }
 

@@ -30,15 +30,7 @@ Board::Board(
 
     for(const Box& box : boxes)
     {  
-        if(box.getId() != -1)
-        {
-            _boxes.emplace(pair<int, Box>{box.getId(), std::move(box)});
-        }
-        else
-        {
-            //TODO test
-            throw invalid_argument("box id given in Board's constructor is -1, which is invalid.");
-        }
+        _boxes.emplace(pair<int, Box>{box.getId(), std::move(box)});
     }
 }
 
@@ -61,7 +53,7 @@ int Board::getHeight() const
 bool Board::addNote(Position position, BoardNote newNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
-    //TODO test that this exception is thrown.
+
     // Can not put Box on the Board (change Spot) if Box is not in Board's map of Boxes.
     if(_boxes.find(newNote.getBoxId()) == _boxes.end())
     {
@@ -71,7 +63,7 @@ bool Board::addNote(Position position, BoardNote newNote)
         throw(invalid_argument(str));
     }
 
-    // See Spot's rules that determine if Box's movement at Position is allowed. But basically, Position has to either be empty, or already be occupied by this Box.
+    // See Spot's rules that determine if Box's movement at Position is allowed. But basically, Position has to either be empty, or already be occupied by this Box in order for movement to be successful.
     pair<int, bool> success = _spots[position.getY()][position.getX()].changeNote(newNote);
     
     if (success.second)
@@ -85,10 +77,10 @@ bool Board::addNote(Position position, BoardNote newNote)
         // std::this_thread::sleep_for(1ms);
         drop._type = currentBoardNote.getType();
 
-        // Notify all BoardCallbacks.
-        if (_boardCallbacksPerPos.find(position) != _boardCallbacksPerPos.end())
+        // Notify all NoteSubscriber.
+        if (_noteSubscribersPerPos.find(position) != _noteSubscribersPerPos.end())
         {
-            _boardCallbacksPerPos.at(position).callback(newNote, position);
+            _noteSubscribersPerPos.at(position).callback(newNote, position);
         }
 
         return true;
@@ -103,9 +95,9 @@ bool Board::addNote(Position position, BoardNote newNote)
     }
 }
 
-void Board::registerCallback(Position pos, BoardCallback& callBack)
+void Board::registerNoteSubscriber(Position pos, NoteSubscriber& subscriber)
 {
-    _boardCallbacksPerPos.insert({pos, callBack});
+    _noteSubscribersPerPos.insert({pos, subscriber});
 }
 
 void Board::sendChanges()
@@ -159,7 +151,7 @@ void Board::registerListener(BoardListener* listener)
     _listeners.insert(listener);
 }
 
-// Note changes to a Spot can happen at the same time that getNoteAt() is being called.
+// Note changes to a Spot (via addNote()) can happen at the same time that getNoteAt() is being called.
 BoardNote Board::getNoteAt(Position position) const
 {
     shared_lock<shared_mutex> lock(_mux);

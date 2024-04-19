@@ -1,31 +1,31 @@
 #include "catch.hpp"
 #include "../src/Mover_Reg.h"
-#include "../src/BoardCallback_Accountant.h"
+#include "../src/NoteAccountant.h"
 
 using namespace std;
 
 TEST_CASE("Mover_Reg adds BoardNotes to Board in the correct order.")
 {
     // Set up
-    // Register a BoardCallback_Accountant with Board for poistions: PositionA and PositionB.
+    // Register a NoteAccountant with Board for poistions: PositionA and PositionB.
     vector<Box> boxes{Box{0, 0,  10, 10}};
 
     Position positionA = {5, 5};
     Position positionB = {5, 6};
 
-    BoardCallback_Accountant accountantPosA{};
-    BoardCallback_Accountant accountantPosB{};
+    NoteAccountant accountantPosA{};
+    NoteAccountant accountantPosB{};
      
     Board board{10, 10, std::move(boxes)};
-    board.registerCallback(positionA, accountantPosA);
-    board.registerCallback(positionB, accountantPosB);
+    board.registerNoteSubscriber(positionA, accountantPosA);
+    board.registerNoteSubscriber(positionB, accountantPosB);
 
     // Create Mover_Reg. Add a box to positionA and then move that box from positionA to positionB.
     Mover_Reg mover{boxes[0].getId(), &board};
     REQUIRE(true == mover.addBox(positionA));
     REQUIRE(true == mover.moveBox(positionA, positionB));
 
-    // Get BoardNotes from BoardCallback_Accountants corresponding to positions: PositionA and PositionB.
+    // Get BoardNotes from NoteAccountants corresponding to positions: PositionA and PositionB.
     vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> callbackNotesPosA = accountantPosA.getNotes();
     vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> callbackNotesPosB = accountantPosB.getNotes();
 
@@ -63,9 +63,9 @@ TEST_CASE("Mover_Reg removes box from board.")
     Board board{10, 10, std::move(boxes)};
     Mover_Reg mover{boxes[0].getId(), &board};
 
-    // Register a BoardCallback_Accountant to receive changes from Board's PositionA.
+    // Register a NoteAccountant to receive changes from Board's PositionA.
     Position positionA = {5, 5};
-    BoardCallback_Accountant accountantForPosA{};
+    NoteAccountant accountantForPosA{};
 
     // Add box to positionA
     REQUIRE(true == mover.addBox(positionA));

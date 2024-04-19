@@ -88,7 +88,6 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 file(GLOB test_SRCS tests/*.cpp
 src/Board.cpp
 src/BoardRecorderAgent.cpp
-src/BoardCallback_Accountant.cpp
 src/BoardNote.cpp
 src/BoardReader_Reg.cpp
 src/Box.cpp
@@ -106,6 +105,7 @@ src/PositionManager_Down.cpp
 src/PositionManager_Slide.cpp
 src/PositionManager_Straight.cpp
 src/PositionManager_Up.cpp
+src/NoteAccountant.cpp
 src/HelloWorld.cpp
 src/Recorder.cpp
 src/Spot.cpp

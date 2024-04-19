@@ -1,16 +1,16 @@
 #include "catch.hpp"
-#include "../src/BoardCallback_Accountant.h"
+#include "../src/NoteAccountant.h"
 #include "../src/Board.h"
 #include <iostream>
 
 using namespace std;
 
-TEST_CASE("BoardCallback_Accountant:: Adding a BoardNote to the board, should result in a callback message sent to the callBack object.")
+TEST_CASE("NoteAccountant:: Adding a BoardNote to the board, should result in a callback message sent to the callBack object.")
 {
     Position pos0{0, 0};
     Board board{10, 10, vector<Box>{Box{0, 0, 1, 1}}};
-    BoardCallback_Accountant callbackObject{};
-    board.registerCallback(pos0, callbackObject);
+    NoteAccountant callbackObject{};
+    board.registerNoteSubscriber(pos0, callbackObject);
 
     BoardNote noteBox0Type2{0, SpotType::to_arrive}; // box 0 is about to arrive
     BoardNote noteBox0Type4{0, SpotType::arrive}; // box 0 arrives

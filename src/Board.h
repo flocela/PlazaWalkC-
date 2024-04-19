@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "BoardCallback.h"
+#include "NoteSubscriber.h"
 #include "BoardListener.h"
 #include "Box.h"
 #include "Drop.h"
@@ -39,8 +39,8 @@ public:
     // BoardNote contains the BoxId and MovementType that will happen at this Position. If the movement is successful (See Spot's rules.) then this Position's Spot will contain the new BoardNote. If the movement is not successful (because another box is already at that position) then then the Spot does not change and both boxes' levels will go up by one. This symbolizing the incoming box running into the box standing at that Position.
     bool addNote(Position position, BoardNote boardNote);
 
-    // RegisterCallback is only used during testing. Registers a BoardCallback at Position pos. When addNote is successful at pos, the registered BoardCallback is notified through its callback() method. 
-    void registerCallback(Position pos, BoardCallback& callBack);
+    // Registers a NoteSubscriber at Position pos. When addNote is successful at pos, the registered NoteSubscriber is notified through its callback() method. 
+    void registerNoteSubscriber(Position pos, NoteSubscriber& callBack);
 
     // Register a BoardListener. When requested (through sendChanges()) BoardListeners receive changes. See sendChanges() for more info on those sent changes.
     void registerListener(BoardListener* listener);
@@ -67,7 +67,7 @@ private:
     // boxes per box id
     std::unordered_map<int, Box> _boxes{};
 
-    std::unordered_map<Position, BoardCallback&> _boardCallbacksPerPos{};    
+    std::unordered_map<Position, NoteSubscriber&> _noteSubscribersPerPos{};    
     std::unordered_set<BoardListener*> _listeners;
     
     mutable std::shared_mutex _mux;

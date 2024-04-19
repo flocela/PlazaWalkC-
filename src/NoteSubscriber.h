@@ -1,10 +1,10 @@
-#ifndef BOARDCALLBACK__H
-#define BOARDCALLBACK__H
+#ifndef NOTESUBSCRIBER__H
+#define NOTESUBSCRIBER__H
 
 #include "BoardNote.h"
 #include "Position.h"
 
-class BoardCallback
+class NoteSubscriber
 {
 public:
     virtual void callback(BoardNote boardnote, Position position) = 0;
