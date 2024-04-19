@@ -7,6 +7,7 @@
 #include "Drop.h"
 #include "SpotType.h"
 
+// Receives 1) changes to Spots on Board and 2) the current state of the Boxes. Changes to Spots are in the form of an unordered_map<SpotType, unordered_set<Drop>>. This map only contains the changes since the last time it received changes. The current state of the Boxes is in the form of an unordered_map<int, BoxInfo>. All Boxes are included, even Boxes that have not entered the Board yet or have been removed because they reached their final destination.
 class BoardListener
 {
 
