@@ -6,7 +6,7 @@ class Agent
 {
 public:
     
-    virtual void requestBroadcastChanges() = 0;
+    virtual void requestBroadcast() = 0;
     virtual ~Agent() = default;
 };
 

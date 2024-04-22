@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        broadcastAgent.requestBroadcastChanges();
+        broadcastAgent.requestBroadcast();
     }
 
     for(uint32_t ii=0; ii<thread.size(); ++ii)

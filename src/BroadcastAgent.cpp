@@ -5,7 +5,7 @@ using namespace std;
 BroadcastAgent::BroadcastAgent(BoardProxy&& boardProxy): _boardProxy{std::move(boardProxy)}
 {}
 
-void BroadcastAgent::requestBroadcastChanges()
+void BroadcastAgent::requestBroadcast()
 {
     _boardProxy.sendChanges();
 }

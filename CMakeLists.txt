@@ -97,6 +97,7 @@ src/BoxChanger_Reg.cpp
 src/BoxReader_Reg.cpp
 src/BoxNote.cpp
 src/BoxTaken.cpp
+src/BroadcastAgent.cpp
 src/Decider_Safe.cpp
 src/Drop.cpp
 src/Mover_Reg.cpp

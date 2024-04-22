@@ -16,7 +16,7 @@ public:
     ~BroadcastAgent() noexcept = default;
 
     // Calls BoardProxy's sendChanges() method, so that board can broadcast its changes.
-    void requestBroadcastChanges() override;
+    void requestBroadcast() override;
 
 private:
     BoardProxy _boardProxy;
