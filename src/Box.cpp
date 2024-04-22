@@ -36,8 +36,6 @@ bool Box::operator== (const Box& o) const
             _height == o._height;
 }
 
-// No reason to lock getId(), getGroupId(), getHeight(), getWidth() methods
-// with a shared_lock since they are immutable.
 int Box::getId() const
 {
     return _id;
