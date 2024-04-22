@@ -5,7 +5,7 @@ using namespace std;
 
 TEST_CASE("Board_getters_setters::")
 {
-    TEST_CASE("getHeight() and getWidth() return the Board's dimensions")
+    SECTION("getHeight() and getWidth() return the Board's dimensions")
     {
         Board board{20, 10, vector<Box>{}};
         REQUIRE(board.getHeight() == 10);

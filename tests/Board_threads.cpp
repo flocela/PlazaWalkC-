@@ -19,6 +19,14 @@ void requestChanges(Board& board, int times)
         board.sendChanges();
     }
 }
+// Moves numOfBoxes into new Positions by adding BoardNotes with MovementType::to_arrive. Assumes Board initially has only empty Positions, all of MovementType::left.
+void moveBoxesToArrive(Board& board, int numOfBoxes)
+{
+    for (int ii=0; ii<numOfBoxes; ++ii)
+    {
+         board.addNote(Position{ii, 0}, BoardNote{ii, SpotType::to_arrive});
+    }
+}
 
 TEST_CASE("Board_threads::")
 {
@@ -67,14 +75,6 @@ TEST_CASE("Board_threads::")
         
     }
 
-    // Moves numOfBoxes into new Positions by adding BoardNotes with MovementType::to_arrive. Assumes Board initially has only empty Positions, all of MovementType::left.
-    void moveBoxesToArrive(Board& board, int numOfBoxes)
-    {
-        for (int ii=0; ii<numOfBoxes; ++ii)
-        {
-             board.addNote(Position{ii, 0}, BoardNote{ii, SpotType::to_arrive});
-        }
-    }
             
     // In order to fail this test: remove the unique_lock, lockUq, in sendChanges(). May also have to add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
 
