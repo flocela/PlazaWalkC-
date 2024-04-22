@@ -89,6 +89,7 @@ file(GLOB test_SRCS tests/*.cpp
 src/Board.cpp
 src/BoardRecorderAgent.cpp
 src/BoardNote.cpp
+src/BoardProxy.cpp
 src/BoardReader_Reg.cpp
 src/Box.cpp
 src/BoxInfo.cpp
