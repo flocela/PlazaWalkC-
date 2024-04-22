@@ -6,60 +6,55 @@ using namespace std;
 
 Recorder::Recorder()
 {
-    _dropSetsPerType.insert({SpotType::to_arrive, unordered_set<Drop>{}});
-    _dropSetsPerType.insert({SpotType::arrive, unordered_set<Drop>{}});
-    _dropSetsPerType.insert({SpotType::to_leave, unordered_set<Drop>{}});
-    _dropSetsPerType.insert({SpotType::left, unordered_set<Drop>{}});
+    _dropSetPerType.insert({SpotType::to_arrive, unordered_set<Drop>{}});
+    _dropSetPerType.insert({SpotType::arrive, unordered_set<Drop>{}});
+    _dropSetPerType.insert({SpotType::to_leave, unordered_set<Drop>{}});
+    _dropSetPerType.insert({SpotType::left, unordered_set<Drop>{}});
 }
 
-void Recorder::receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> changedSetsOfDropsPerType, std::unordered_map<int, BoxInfo> boxes)
-{ 
-    // _positionSetsPerType is a map of postion sets per type.
-    // It may be that position needs to be moved from one type's set to another type's set.
-
-    // Remove position from former set (if it is contained in a former set).
-    // And add position to its new set. 
-
-    for (const auto& changedSetPerType : changedSetsOfDropsPerType)
+void Recorder::receiveChanges(
+        std::unordered_map<SpotType, unordered_set<Drop>> setOfChangedDropsPerType,
+        std::unordered_map<int, BoxInfo> boxes)
+{
+    // The incoming sets of drops are divided per SpotType, setOfChangedDropsPerType.
+    // Recorder contains a map of set of drops divided per SpotType, _dropSetPerType.
+    // If an incoming drop is in the wrong set in _dropSetPerType, remove it from 
+    // the set, and add it to the correct set.
+    for (const auto& incomingSetPerType : setOfChangedDropsPerType)
     {
-        
-        SpotType newType = changedSetPerType.first;
+        const SpotType& incomingType = incomingSetPerType.first;
+        const unordered_set<Drop>& incomingDrops = incomingSetPerType.second; 
 
-        for (const auto& drop : changedSetPerType.second)
-        {   // TODO make is so this never happens, shouldn't have to check.
-            // OR TODO make a test for this exception.
-            if (drop._type != newType)
+        for (const auto& drop : incomingDrops)
+        {   
+            for (const auto& dropSetPerType : _dropSetPerType)
             {
-                throw invalid_argument("drop type is different from designated set type.");
-            }
-            // for each set in _positionsetsPerType 
-            for (const auto& dropSetPerType : _dropSetsPerType)
-            {
-                SpotType curType = dropSetPerType.first;
+                const SpotType& curType = dropSetPerType.first;
 
-                if (_dropSetsPerType.at(curType).find(drop) != _dropSetsPerType.at(curType).end())
+                if (_dropSetPerType.at(curType).find(drop) != _dropSetPerType.at(curType).end())
                 {
-                    _dropSetsPerType.at(curType).erase(drop);
+                    _dropSetPerType.at(curType).erase(drop);
                     break; 
                 }
             }
 
-            if (newType != SpotType::left)
+            // Add the incoming drop to its corresponding set of drops.
+            if (incomingType != SpotType::left)
             {
-                _dropSetsPerType[newType].insert(drop);
+                _dropSetPerType[incomingType].insert(drop);
             }
         }
     }
     
     for (RecorderListener* listener : _listeners)
     {
-        listener->receiveAllDrops(_dropSetsPerType, boxes);
+        listener->receiveAllDrops(_dropSetPerType, boxes);
     }
 }
 
 unordered_map<SpotType, unordered_set<Drop>> Recorder::getDrops()
 {
-    return _dropSetsPerType;
+    return _dropSetPerType;
 }
 
 void Recorder::registerListener(RecorderListener* listener)
