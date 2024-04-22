@@ -4,6 +4,9 @@
 #include "Position.h"
 #include "SpotType.h"
 
+// BoardNote contains a box id and SpotType.
+// Note box id and SpotType do not have any setters and the
+// assignment operators are deleted.
 class BoardNote
 {
 
@@ -12,8 +15,8 @@ public:
     BoardNote() = delete;
     BoardNote(const BoardNote& o) = default;
     BoardNote(BoardNote&& o) noexcept = default;
-    BoardNote& operator=(const BoardNote& o) = default;
-    BoardNote& operator=(BoardNote&& o) noexcept = default;
+    BoardNote& operator=(const BoardNote& o) = delete;
+    BoardNote& operator=(BoardNote&& o) noexcept = delete;
     ~BoardNote() = default;
 
     SpotType getType() const;
