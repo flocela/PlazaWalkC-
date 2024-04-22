@@ -23,13 +23,10 @@ public:
 
     void upLevel();
 
-    void setWidth(int w);
-    void setHeight(int h);
-
     int getId() const;    
     int getGroupId() const;
-    int getWidth() const;
     int getHeight() const;
+    int getWidth() const;
     int getLevel() const;
     BoxInfo getInfo() const;
     
