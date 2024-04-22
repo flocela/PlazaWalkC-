@@ -23,11 +23,20 @@ public:
 
     void upLevel();
 
+    // No reason to lock getId(), getGroupId(), getHeight(), getWidth() methods
+    // with a shared_lock since _id, _groupid, _width, and _height are immutable.
     int getId() const;    
     int getGroupId() const;
     int getHeight() const;
     int getWidth() const;
+
+    // getLevel() is protected with a unique_lock using mutex _mm. It can not be
+    // called at the same time as getInfo(). No two threads can "enter" into 
+    // getLevel() at the same time.
     int getLevel() const;
+
+    // Contains a _shared_mutex with mutex _mm. Can not be called at the same time 
+    // as getLevel().
     BoxInfo getInfo() const;
     
     bool operator== (const Box& o) const;
