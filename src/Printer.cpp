@@ -79,7 +79,7 @@ void Printer::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, s
              
         for (auto& drop: setOfDrops)
         {
-            int id = drop._boxId;
+            int id = drop.getBoxId();
             int groupId = boxes.at(id).getGroupId();
             int level = boxes.at(id).getLevel();
             //cout << level << ", "; 
@@ -143,8 +143,8 @@ void Printer::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, s
             SDL_Rect squareRect;
             squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
             squareRect.h = 3;
-            squareRect.x = drop._position.getX();
-            squareRect.y = drop._position.getY();
+            squareRect.x = drop.getPosition().getX();
+            squareRect.y = drop.getPosition().getY();
             SDL_SetRenderDrawColor(_renderer, red[level][0], red[level][1], red[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++redCount;
@@ -162,8 +162,8 @@ void Printer::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, s
             SDL_Rect squareRect;
             squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
             squareRect.h = 3;
-            squareRect.x = drop._position.getX();
-            squareRect.y = drop._position.getY();
+            squareRect.x = drop.getPosition().getX();
+            squareRect.y = drop.getPosition().getY();
             SDL_SetRenderDrawColor(_renderer, cyan[level][0], cyan[level][1], cyan[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++cyanCount;
@@ -180,8 +180,8 @@ void Printer::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, s
             SDL_Rect squareRect;
             squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
             squareRect.h = 3;
-            squareRect.x = drop._position.getX();
-            squareRect.y = drop._position.getY();
+            squareRect.x = drop.getPosition().getX();
+            squareRect.y = drop.getPosition().getY();
             SDL_SetRenderDrawColor(_renderer, amber[level][0], amber[level][1], amber[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++amberCount;
@@ -199,8 +199,8 @@ void Printer::print(unordered_map<SpotType, unordered_set<Drop>> dropsPerType, s
             SDL_Rect squareRect;
             squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
             squareRect.h = 3;
-            squareRect.x = drop._position.getX();
-            squareRect.y = drop._position.getY();
+            squareRect.x = drop.getPosition().getX();
+            squareRect.y = drop.getPosition().getY();
             SDL_SetRenderDrawColor(_renderer, purple[level][0], purple[level][1], purple[level][2], 0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
             ++purpleCount;

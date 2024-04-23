@@ -71,11 +71,11 @@ bool Board::addNote(Position position, BoardNote newNote)
         // Record changed boxId and type at position in _receivingMatrix.
         BoardNote currentBoardNote = _spots[position.getY()][position.getX()].getBoardNote();
         Drop& drop = (*_receivingMatrix)[position.getY()][position.getX()];
-        drop._changed = true;
-        drop._boxId = currentBoardNote.getBoxId();
+        drop.setHasChanged(true);
+        drop.setBoxId(currentBoardNote.getBoxId());
         // In order to fail a test, Add a sleep time here.
         // std::this_thread::sleep_for(1ms);
-        drop._type = currentBoardNote.getType();
+        drop.setSpotType(currentBoardNote.getType());
 
         // Notify all NoteSubscriber.
         if (_noteSubscribersPerPos.find(position) != _noteSubscribersPerPos.end())
@@ -129,12 +129,12 @@ void Board::sendChanges()
         for (int col=0; col<_width; ++col)
         {
             Drop curDrop = (*changedBoard)[row][col];
-            if (curDrop._changed)
+            if (curDrop.hasChanged())
             {
-                setsOfDropsPerType[curDrop._type].insert(curDrop);
-                (*changedBoard)[row][col]._boxId = -1;
-                (*changedBoard)[row][col]._type = SpotType::left;
-                (*changedBoard)[row][col]._changed = false;
+                setsOfDropsPerType[curDrop.getSpotType()].insert(curDrop);
+                (*changedBoard)[row][col].setBoxId(-1);
+                (*changedBoard)[row][col].setSpotType(SpotType::left);
+                (*changedBoard)[row][col].setHasChanged(false);
             }
         }
     }

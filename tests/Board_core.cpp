@@ -45,7 +45,7 @@ TEST_CASE("Board_core::")
 
                 for (auto& drop : setOfDropsPerType.second)
                 {
-                    _dropsPerPosition.insert({drop._position, drop});
+                    _dropsPerPosition.insert({drop.getPosition(), drop});
                 }
             }
         }
@@ -69,8 +69,8 @@ TEST_CASE("Board_core::")
         board.sendChanges();
 
         REQUIRE(listener._dropsPerPosition.size() == 2);
-        REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{5, 5})._type);
-        REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{6, 6})._type);
+        REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{5, 5}).getSpotType());
+        REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{6, 6}).getSpotType());
 
         // Clear listener's drops. Again, add BoardNotes to Board, request Board send changes. Verify BoardListener received changes.
         listener._dropsPerPosition.clear();
@@ -80,8 +80,8 @@ TEST_CASE("Board_core::")
         board.sendChanges();
         
         REQUIRE(listener._dropsPerPosition.size() == 2);
-        REQUIRE(SpotType::arrive == listener._dropsPerPosition.at(Position{5, 5})._type);
-        REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{7, 7})._type);
+        REQUIRE(SpotType::arrive == listener._dropsPerPosition.at(Position{5, 5}).getSpotType());
+        REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{7, 7}).getSpotType());
     }
 
     SECTION("Verify 1) addNotes() returns false when unsuccessful and 2) BoardListener receives changes Boxes. Using the addNote() method, a box with id of 20 attempts to move to position where a box with id 10 is at. Both boxes' levels go up.")

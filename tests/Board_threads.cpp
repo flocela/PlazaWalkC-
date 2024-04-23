@@ -107,11 +107,11 @@ TEST_CASE("Board_threads::")
                         {
                             if (type == SpotType::left)
                             {
-                                    REQUIRE(drop._boxId == -1);
+                                    REQUIRE(drop.getBoxId()== -1);
                             } 
                             if (type != SpotType::left)
                             {
-                                    REQUIRE(drop._boxId != -1);
+                                    REQUIRE(drop.getBoxId()!= -1);
                             }
                         }
                         catch(...)
