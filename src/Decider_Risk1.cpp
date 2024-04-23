@@ -10,8 +10,8 @@ bool Decider_Risk1::addToBoard(Position position, const Board& board)
     return board.getNoteAt(position).getType() == SpotType::left;
 }
 
-pair<Position, int> Decider_Risk1::getNextPosition(
-    vector<Position> possiblePositions,
+pair<Position, int> Decider_Risk1::getNext(
+    const vector<Position>& possiblePositions,
     const Board& board
     )
 {

@@ -39,7 +39,7 @@ void Threader::funcMoveBox(
     while (!posManager->atEnd(curPosition) && breaker)
     {
         pair<Position,int> nextPosition = 
-            decider->getNextPosition(posManager->getFuturePositions(curPosition),
+            decider->getNext(posManager->getFuturePositions(curPosition),
                                      board);
         // if suggested sleep time from decider is positive, then sleep for suggested sleep time.
         if(nextPosition.second > 0)
