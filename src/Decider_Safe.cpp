@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool Decider_Safe::addToBoard(Position position, const Board& board)
+bool Decider_Safe::suggestMoveTo(Position position, const Board& board)
 {
     return board.getNoteAt(position).getType() == SpotType::left;
 }

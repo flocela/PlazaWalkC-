@@ -7,8 +7,8 @@ class Decider_Safe : public Decider
 {
     public:
 
-    // If position has a Spot::Left then the position is empty, and this Decider suggests moving to this position. Decider returns true. If the position has any other type of SpotType, then returns false. 
-    bool addToBoard(Position position, const Board& board) override;
+    // If position is designated as Spot::left, then returns true. Otherwise returns false.
+    bool suggestMoveTo(Position position, const Board& board) override;
 
     // Receives a vector of possible Positions to choose from. Assumes that the first Positions are more desirable than later positions.
     // Goes through the Positions in order. If a Position has a SpotType::left, then returns that Position with a time of zero. 

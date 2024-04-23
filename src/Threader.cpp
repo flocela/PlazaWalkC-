@@ -25,7 +25,7 @@ void Threader::funcMoveBox(
 
     while(breaker)
     {
-        if(decider->addToBoard(position, board))
+        if(decider->suggestMoveTo(position, board))
         {
             if(mover->addBox(curPosition))
             {

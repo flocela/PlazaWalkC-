@@ -99,6 +99,7 @@ src/BoxNote.cpp
 src/BoxTaken.cpp
 src/BroadcastAgent.cpp
 src/Decider_Safe.cpp
+src/Decider_Risk1.cpp
 src/Drop.cpp
 src/Mover_Reg.cpp
 src/Position.cpp

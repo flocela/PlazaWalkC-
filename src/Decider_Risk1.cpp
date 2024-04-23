@@ -5,9 +5,11 @@
 
 using namespace std;
 
-bool Decider_Risk1::addToBoard(Position position, const Board& board)
+bool Decider_Risk1::suggestMoveTo(Position position, const Board& board)
 {
-    return board.getNoteAt(position).getType() == SpotType::left;
+    BoardNote note = board.getNoteAt(position);
+    return ((note.getType() == SpotType::left) ||
+           (note.getType() == SpotType::to_leave));
 }
 
 pair<Position, int> Decider_Risk1::getNext(
