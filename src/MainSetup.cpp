@@ -9,12 +9,13 @@ void MainSetup::addGroupsOfBoxes(
     int numOfGroups,
     int groupSize)
 {
-    for(int gn = firstGroupNum; gn<numOfGroups+firstGroupNum; ++gn)
+    for(int ii=0; ii<numOfGroups; ++ii)
     {
-        int temp = firstBoxId + (groupSize * gn);
-        for(int ii=0; ii<groupSize; ++ii)
+        int groupNumber = firstGroupNum + ii;
+        int tempId = firstBoxId + (groupSize * ii);
+        for(int jj=0; jj<groupSize; ++jj)
         {
-            boxes.push_back(Box{temp+ii, gn, 3, 3});
+            boxes.push_back(Box{tempId+jj, groupNumber, 3, 3});
         }
     }
 }

@@ -1,6 +1,5 @@
 #include "catch.hpp"
 #include "../src/Box.h"
-#include <thread>
 
 using namespace std;
 
