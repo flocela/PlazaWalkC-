@@ -5,7 +5,7 @@
 #include "Decider_Safe.h"
 #include "MainSetup.h"
 #include "Mover_Reg.h"
-#include "PositionManager_Slide.h"
+#include "PositionManager_Step.h"
 #include "Util.h"
 
 using namespace std;
@@ -160,7 +160,7 @@ unique_ptr<PositionManager> Threader::createPositionManager(
 {
     if(pmt == PositionManagerType::slide)
     {
-        return make_unique<PositionManager_Slide>(
+        return make_unique<PositionManager_Step>(
             endPoint,
             boardMinX,
             boardMaxX,
@@ -169,7 +169,7 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     }
     else
     {
-        return make_unique<PositionManager_Slide>(
+        return make_unique<PositionManager_Step>(
             endPoint,
             boardMinX,
             boardMaxX,

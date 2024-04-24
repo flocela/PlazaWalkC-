@@ -1,9 +1,9 @@
-#include "PositionManager_Slide.h"
+#include "PositionManager_Step.h"
 #include <random>
 
 using namespace std;
 
-PositionManager_Slide::PositionManager_Slide(
+PositionManager_Step::PositionManager_Step(
     Position finalTarget,
     int boardMinX,
     int boardMaxX,
@@ -16,8 +16,12 @@ PositionManager_Slide::PositionManager_Slide(
     _boardMaxY{boardMaxY}
 {}
 
-vector<Position> PositionManager_Slide::getFuturePositions(Position curPosition)
+vector<Position> PositionManager_Step::getFuturePositions(Position curPosition)
 {
+    if (!isValid(curPosition))
+    {
+       throw invalid_argument(inValidPositionErrorString(curPosition));
+    }    
     if (atEnd(curPosition))
     {
         return vector<Position>{};
@@ -28,6 +32,8 @@ vector<Position> PositionManager_Slide::getFuturePositions(Position curPosition)
     int curX = curPosition.getX();
     int curY = curPosition.getY();
 
+    // Populate parisOfPositionsAndDistSq with positions that are adjacent to curPosition.
+    // The distance is the distance from _curTarget to curPosition.
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
     Position n  = Position{curX, curY-1};
     Position nw = Position{curX + 1, curY - 1};
@@ -47,21 +53,21 @@ vector<Position> PositionManager_Slide::getFuturePositions(Position curPosition)
     pairsOfPositionsAndDistSq.push_back({getDistSquared(e, target), e}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(ne, target), ne}); 
 
+    // Sort the pairs of positions and distances.
     sort(pairsOfPositionsAndDistSq.begin(), pairsOfPositionsAndDistSq.end(), [](const pair<double, Position>& a, const pair<double, Position>& b){return a.first < b.first;});
 
+    // Remove and Positions that are invalid
     vector<Position> netPositions{};
     for (const auto& p: pairsOfPositionsAndDistSq)
     {
         Position pos = p.second;
-
-        if (pos.getX() >= _boardMinX &&
-            pos.getX() <= _boardMaxX &&
-            pos.getY() >= _boardMinY &&
-            pos.getY() <= _boardMaxY)
+        if(isValid(pos))
         {
             netPositions.push_back(pos);
         }
     }
+
+    // Shuffle the Positions after index 2.
     random_device rd;
     mt19937 g(rd());
     shuffle(netPositions.begin()+3, netPositions.end(), g);
@@ -69,17 +75,17 @@ vector<Position> PositionManager_Slide::getFuturePositions(Position curPosition)
     return netPositions;
 }
 
-bool PositionManager_Slide::atEnd(Position curPosition)
+bool PositionManager_Step::atEnd(Position curPosition)
 {
     return curPosition == _finalTarget;
 }
 
-std::pair<Position, Position> PositionManager_Slide::getEndPoint() const
+std::pair<Position, Position> PositionManager_Step::getEndPoint() const
 {
     return pair<Position, Position>{_finalTarget, _finalTarget};
 }
 
-void PositionManager_Slide::setCurrentTarget(Position curPosition)
+void PositionManager_Step::setCurrentTarget(Position curPosition)
 {
     // Set a new target if the _curTarget hasn't been set, or 
     // if the box has reached the _curTarget.
@@ -118,10 +124,23 @@ void PositionManager_Slide::setCurrentTarget(Position curPosition)
     }
 }
 
-double PositionManager_Slide::getDistSquared(Position a, Position b) const
+double PositionManager_Step::getDistSquared(Position a, Position b) const
 {
     double x = std::abs(static_cast<double>(a.getX()) - b.getX());
     double y = std::abs(static_cast<double>(a.getY()) - b.getY());
 
     return (x * x) + (y * y);
+}
+
+bool PositionManager_Step::isValid(Position& p) const
+{
+    return  (p.getX() >= _boardMinX &&
+             p.getX() <= _boardMaxX &&
+             p.getY() >= _boardMinY &&
+             p.getY() <= _boardMaxY);
+}
+
+string PositionManager_Step::inValidPositionErrorString(Position p) const
+{
+    return "{" + to_string(p.getX()) + ", " + to_string(p.getY()) + "} is an invalid Position.";
 }
