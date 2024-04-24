@@ -18,12 +18,13 @@ public:
     NoteAccountant& operator=(NoteAccountant&& o) noexcept = delete;
     ~NoteAccountant() noexcept = default;
 
-    void callback(BoardNote boardNote, Position position) override;
+    // Saves the newBoardNote with a time stamp.
+    void callback(BoardNote boardNote) override;
 
-    std::vector< std::pair< std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote > > getNotes() const;
+    // Returns all the BoardNotes that have been sent so far.
+    std::vector< std::pair< std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote > > getNotes() const override;
     
 private:
-    // TODO board should be const.
    std::vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> _receivedBoardNotes; 
 
 };

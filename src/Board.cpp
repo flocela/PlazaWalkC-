@@ -80,7 +80,7 @@ bool Board::addNote(Position position, BoardNote newNote)
         // Notify all NoteSubscriber.
         if (_noteSubscribersPerPos.find(position) != _noteSubscribersPerPos.end())
         {
-            _noteSubscribersPerPos.at(position).callback(newNote, position);
+            _noteSubscribersPerPos.at(position).callback(newNote);
         }
 
         return true;
