@@ -40,6 +40,7 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     int curX = position.getX();
     int curY = position.getY();
 
+    // Collect all possible new Positions, in all 8 directions.
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
     Position n  = Position{curX, curY+1};
     Position nw = Position{curX + 1, curY + 1};
@@ -50,6 +51,8 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     Position e  = Position{curX - 1, curY};
     Position ne = Position{curX - 1, curY + 1};
     Position target = Position{_targetX, _targetY};
+
+    // Calculate distance to each of the new Positions.
     pairsOfPositionsAndDistSq.push_back({getDistSquared(n, target), n}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(nw, target), nw}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(w, target), w}); 
@@ -58,10 +61,9 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     pairsOfPositionsAndDistSq.push_back({getDistSquared(se, target), se}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(e, target), e}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(ne, target), ne}); 
-
-    sort(pairsOfPositionsAndDistSq.begin(), pairsOfPositionsAndDistSq.end(), [](const pair<double, Position>& a, const pair<double, Position>& b){return a.first < b.first;});
-
-    vector<Position> netPositions{};
+   
+    // Remove Positions that are outside of the Board. 
+    vector<pair<double,Position>> netPositionPairs{};
     for (const auto& p: pairsOfPositionsAndDistSq)
     {
         Position pos = p.second;
@@ -71,14 +73,29 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
             pos.getY() >= _boardMinY &&
             pos.getY() <= _boardMaxY)
         {
-            netPositions.push_back(pos);
+            netPositionPairs.push_back(p);
         }
     }
+
+    // Sort the vector by closes to center of destination rectangle.
+    sort(netPositionPairs.begin(), netPositionPairs.end(), [](const pair<double, Position>& a, const pair<double, Position>& b){return a.first < b.first;});
+
     random_device rd;
     mt19937 g(rd());
-    shuffle(netPositions.begin()+3, netPositions.end(), g);
 
-    return netPositions;
+    vector<Position> newPositions{};
+    for(const auto& p : netPositionPairs)
+    {
+        newPositions.push_back(p.second);
+    }
+
+    // Shuffle positions after the 3rd position.
+    if (newPositions.size() > 3)
+    {
+        shuffle(newPositions.begin()+3, newPositions.end(), g);
+    }
+
+    return newPositions;
     
 }
 
