@@ -3,9 +3,12 @@
 
 #include <iostream>
 #include <string>
+
+// Holds an x and y value.
 class Position
 {
-public:
+    public:
+
     Position(int x, int y);
     Position() = delete;
     Position(const Position& o) = default;
@@ -23,7 +26,9 @@ public:
         o << "[" + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) << "]";
         return o;
     }
-private:
+    
+    private:
+
     int _x = 0;
     int _y = 0;
 };
@@ -39,6 +44,5 @@ namespace std
         }
     };
 }
-
 
 #endif
