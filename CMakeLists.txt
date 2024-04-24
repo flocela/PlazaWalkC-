@@ -107,7 +107,6 @@ src/Position.cpp
 src/PositionManager_Diagonal.cpp
 src/PositionManager_Down.cpp
 src/PositionManager_Step.cpp
-src/PositionManager_Straight.cpp
 src/PositionManager_Up.cpp
 src/NoteAccountant.cpp
 src/HelloWorld.cpp

@@ -2,16 +2,26 @@
 
 using namespace std;
 
-PositionManager_Up::PositionManager_Up(int finalY, int boardMinX, int boardMaxX, int boardMinY, int boardMaxY)
-: _endY{finalY},
-  _boardMinX{boardMinX},
-  _boardMaxX{boardMaxX},
-  _boardMinY{boardMinY},
-  _boardMaxY{boardMaxY}
+PositionManager_Up::PositionManager_Up(
+    int finalY,
+    int boardMinX,
+    int boardMaxX,
+    int boardMinY,
+    int boardMaxY)
+:   _endY{finalY},
+    _boardMinX{boardMinX},
+    _boardMaxX{boardMaxX},
+    _boardMinY{boardMinY},
+    _boardMaxY{boardMaxY}
 {}
 
 vector<Position> PositionManager_Up::getFuturePositions(Position position)
 {
+    if (!isValid(position))
+    {
+       throw invalid_argument(invalidPositionErrorString(position));
+    }    
+
     Position curPosition = position;
 
     vector<Position> newPositions{};
@@ -29,11 +39,7 @@ vector<Position> PositionManager_Up::getFuturePositions(Position position)
 
     for (Position pos : tempPositions)
     {
-        if (pos.getY() >= _endY &&
-            pos.getY() >= _boardMinY &&
-            pos.getY() <= _boardMaxY &&
-            pos.getX() >= _boardMinX &&
-            pos.getX() <= _boardMaxX)
+        if(isValid(pos))
         {
             newPositions.push_back(pos);
         }
@@ -47,8 +53,20 @@ bool PositionManager_Up::atEnd(Position position)
     return position.getY() <= _endY;
 }
     
-// TODO fill this in later    
 std::pair<Position, Position> PositionManager_Up::getEndPoint() const
 {
-    return pair<Position, Position>{Position{0,0}, Position{0,0}};
+    return pair<Position, Position>{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
+}
+
+bool PositionManager_Up::isValid(Position& p) const
+{
+    return  (p.getX() >= _boardMinX &&
+             p.getX() <= _boardMaxX &&
+             p.getY() >= _boardMinY &&
+             p.getY() <= _boardMaxY);
+}
+
+string PositionManager_Up::invalidPositionErrorString(Position p) const
+{
+    return  p.toString() + " is an invalid Position.";
 }
