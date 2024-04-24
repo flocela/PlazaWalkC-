@@ -107,10 +107,21 @@ double PositionManager_Diagonal::getDistSquared(Position a, Position b)
     return (x * x) + (y * y);
 }
 
-    
-
 // TODO needs a test
 std::pair<Position, Position> PositionManager_Diagonal::getEndPoint() const
 {
     return pair<Position, Position>{Position{_topLeftX, _topLeftY}, Position{_botRightX, _botRightY}};
+}
+
+bool PositionManager_Diagonal::isValid(Position& p) const
+{
+    return  (p.getX() >= _boardMinX &&
+             p.getX() <= _boardMaxX &&
+             p.getY() >= _boardMinY &&
+             p.getY() <= _boardMaxY);
+}
+
+string PositionManager_Diagonal::invalidPositionErrorString(Position p) const
+{
+    return  p.toString() + " is an invalid Position.";
 }

@@ -17,6 +17,11 @@ PositionManager_Down::PositionManager_Down(
 
 vector<Position> PositionManager_Down::getFuturePositions(Position position)
 {
+    if (!isValid(position))
+    {
+       throw invalid_argument(invalidPositionErrorString(position));
+    }    
+
     Position curPosition = position;
 
     vector<Position> newPositions{};
@@ -33,11 +38,7 @@ vector<Position> PositionManager_Down::getFuturePositions(Position position)
 
     for (Position pos : tempPositions)
     {
-        if (pos.getY() <= _endY &&
-            pos.getY() >= _boardMinY &&
-            pos.getY() <= _boardMaxY &&
-            pos.getX() >= _boardMinX &&
-            pos.getX() <= _boardMaxX)
+        if (isValid(pos))
         {
             newPositions.push_back(pos);
         }
@@ -51,8 +52,20 @@ bool PositionManager_Down::atEnd(Position position)
     return position.getY() >= _endY;
 }
 
-// TODO fill this in later    
 std::pair<Position, Position> PositionManager_Down::getEndPoint() const
 {
-    return pair<Position, Position>{Position{0,0}, Position{0,0}};
+    return pair<Position, Position>{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
+}
+    
+bool PositionManager_Down::isValid(Position& p) const
+{
+    return  (p.getX() >= _boardMinX &&
+             p.getX() <= _boardMaxX &&
+             p.getY() >= _boardMinY &&
+             p.getY() <= _boardMaxY);
+}
+
+string PositionManager_Down::invalidPositionErrorString(Position p) const
+{
+    return  p.toString() + " is an invalid Position.";
 }

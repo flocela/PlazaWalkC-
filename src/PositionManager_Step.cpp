@@ -20,8 +20,9 @@ vector<Position> PositionManager_Step::getFuturePositions(Position curPosition)
 {
     if (!isValid(curPosition))
     {
-       throw invalid_argument(inValidPositionErrorString(curPosition));
+       throw invalid_argument(invalidPositionErrorString(curPosition));
     }    
+
     if (atEnd(curPosition))
     {
         return vector<Position>{};
@@ -140,7 +141,7 @@ bool PositionManager_Step::isValid(Position& p) const
              p.getY() <= _boardMaxY);
 }
 
-string PositionManager_Step::inValidPositionErrorString(Position p) const
+string PositionManager_Step::invalidPositionErrorString(Position p) const
 {
-    return "{" + to_string(p.getX()) + ", " + to_string(p.getY()) + "} is an invalid Position.";
+    return  p.toString() + " is an invalid Position.";
 }

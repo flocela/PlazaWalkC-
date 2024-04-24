@@ -49,6 +49,8 @@ private:
 
     std::vector<std::pair<int, int>> pastPositions{};
     double getDistSquared(Position a, Position b);
+    bool isValid(Position& p) const;
+    std::string invalidPositionErrorString(Position p) const;
 }; 
 
 #endif

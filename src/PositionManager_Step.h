@@ -45,7 +45,7 @@ private:
     void setCurrentTarget(Position curPosition);
     double getDistSquared(Position a, Position b) const;
     bool isValid(Position& p) const;
-    std::string inValidPositionErrorString(Position p) const;
+    std::string invalidPositionErrorString(Position p) const;
 };
 
 #endif
