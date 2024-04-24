@@ -2,12 +2,17 @@
 
 using namespace std;
 
-PositionManager_Down::PositionManager_Down(int finalY, int boardMinX, int boardMaxX, int boardMinY, int boardMaxY)
-: _endY{finalY},
-  _boardMinX{boardMinX},
-  _boardMaxX{boardMaxX},
-  _boardMinY{boardMinY},
-  _boardMaxY{boardMaxY}
+PositionManager_Down::PositionManager_Down(
+    int finalY,
+    int boardMinX,
+    int boardMaxX,
+    int boardMinY,
+    int boardMaxY)
+:   _endY{finalY},
+    _boardMinX{boardMinX},
+    _boardMaxX{boardMaxX},
+    _boardMinY{boardMinY},
+    _boardMaxY{boardMaxY}
 {}
 
 vector<Position> PositionManager_Down::getFuturePositions(Position position)
