@@ -8,6 +8,8 @@ class PositionManager_Diagonal : public PositionManager
 {
 
 public:
+    // topLeft is the top left corner of the final destination rectangle.
+    // botRight is the bottom right corner of the final destination rectangle.
     PositionManager_Diagonal(
         Position topLeft,
         Position botRight,
@@ -22,8 +24,13 @@ public:
     PositionManager_Diagonal& operator= (const PositionManager_Diagonal& o) = default;
     PositionManager_Diagonal& operator= (PositionManager_Diagonal&& o) = default;
 
+    // Collects the all adjacent Positions from position in a vector. Then sorts the vector from closest to middle of the final destination rectangle. Returns the vector of Positions.
     std::vector<Position> getFuturePositions(Position position) override;
+
+    // If position is within (perimeter is within) the topLeft corner and botRight corner of the final destination rectangle given in the constructor, then returns true.  Otherwise returns false
     bool atEnd(Position position) override;
+
+    
     std::pair<Position, Position> getEndPoint() const override;
 
 private:
