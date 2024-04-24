@@ -48,4 +48,10 @@ TEST_CASE("Position_core::")
         
         REQUIRE(p == op);
     }
+
+    SECTION("toString()")
+    {
+        Position p{101, 202};
+        REQUIRE("[101, 202]" == p.toString());
+    }
 }

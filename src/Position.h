@@ -19,6 +19,7 @@ class Position
 
     int getX() const;
     int getY() const;
+    std::string toString() const;
 
     bool operator== (const Position& o) const;
     friend std::ostream& operator<< (std::ostream& o, const Position& p)

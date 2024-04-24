@@ -24,4 +24,12 @@ bool Position::operator== (const Position& o) const
     return _x == o._x && _y == o._y;
 }
 
-
+std::string Position::toString() const
+{
+    string str{"["};
+    str.append(to_string(_x));
+    str.append(", ");
+    str.append(to_string(_y));
+    str.append("]");
+    return str;
+}
