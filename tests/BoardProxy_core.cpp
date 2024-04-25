@@ -8,11 +8,11 @@ TEST_CASE("BoardProxy_core::")
 {
     SECTION("calling sendChanges() causes Board to call its sendChanges()")
     {
-        class TestListener : public BoardListener 
+        class SubListener : public BoardListener 
         {
         public: 
 
-            void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType,
+            void receiveChanges(unordered_set<Drop> setOfDropsPerType,
                                 unordered_map<int, BoxInfo> boxesPerId) override
             {
                 try
@@ -31,7 +31,7 @@ TEST_CASE("BoardProxy_core::")
         };
 
         Board board{20, 20, vector<Box>{}};
-        TestListener listener{};
+        SubListener listener{};
         board.registerListener(&listener);
 
         BoardProxy boardProxy{board};

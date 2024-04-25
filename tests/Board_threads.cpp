@@ -42,7 +42,7 @@ TEST_CASE("Board_threads::")
         {
         public: 
 
-            void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType,
+            void receiveChanges(unordered_set<Drop> setsOfDropsPerType,
                                 unordered_map<int, BoxInfo> boxesPerId) override
             {
                 try
@@ -95,29 +95,24 @@ TEST_CASE("Board_threads::")
         {
         public: 
 
-            void receiveChanges(std::unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType, std::unordered_map<int, BoxInfo> boxes) override
+            void receiveChanges(unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes) override
             {
-                for(auto& setOfDropsPerType : setsOfDropsPerType)
+                for (auto& drop : drops)
                 {
-                    SpotType type = setOfDropsPerType.first;
-
-                    for (auto& drop : setOfDropsPerType.second)
+                    try
                     {
-                        try
+                        if (drop.getSpotType() == SpotType::left)
                         {
-                            if (type == SpotType::left)
-                            {
-                                    REQUIRE(drop.getBoxId()== -1);
-                            } 
-                            if (type != SpotType::left)
-                            {
-                                    REQUIRE(drop.getBoxId()!= -1);
-                            }
-                        }
-                        catch(...)
+                                REQUIRE(drop.getBoxId()== -1);
+                        } 
+                        if (drop.getSpotType() != SpotType::left)
                         {
-                            return;
+                                REQUIRE(drop.getBoxId()!= -1);
                         }
+                    }
+                    catch(...)
+                    {
+                        return;
                     }
                 }
             }

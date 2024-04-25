@@ -98,6 +98,7 @@ src/BoxReader_Reg.cpp
 src/BoxNote.cpp
 src/BoxTaken.cpp
 src/BroadcastAgent.cpp
+src/Color.cpp
 src/Decider_Safe.cpp
 src/Decider_Risk1.cpp
 src/Drop.cpp

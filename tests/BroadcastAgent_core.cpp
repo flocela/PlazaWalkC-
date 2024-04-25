@@ -13,7 +13,7 @@ TEST_CASE("BroadcastAgent_core::")
         {
         public: 
 
-            void receiveChanges(unordered_map<SpotType, unordered_set<Drop>> setOfDropsPerType,
+            void receiveChanges(unordered_set<Drop> setOfDropsPerType,
                                 unordered_map<int, BoxInfo> boxesPerId) override
             {
                 try

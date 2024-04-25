@@ -8,8 +8,11 @@
 
 class RecorderListener 
 {
-public:
-    virtual void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, BoxInfo> boxes) = 0;
+    public:
+    
+    // Receives all the Drops and all Boxes, even Boxes that have not entered the Board or have been taken off the Board. 
+    virtual void receiveAllDropsAllBoxes(std::unordered_set<Drop> changedDrops,
+                                         std::unordered_map<int, BoxInfo> boxes) = 0;
 };
 
 #endif

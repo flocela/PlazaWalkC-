@@ -18,19 +18,15 @@ public:
     Recorder& operator=(Recorder&& o) noexcept = delete;
     ~Recorder() noexcept = default; 
 
-    // Need for typePerPosition memory to not be deleted until call is finished. 
-    // Has a cumulative set of drops per type. But only keeps types 1, 2, and 4.
     void receiveChanges(
-        std::unordered_map<SpotType, std::unordered_set<Drop>> setOfChangedDropsPerType,
+        std::unordered_set<Drop> changedDrops,
         std::unordered_map<int, BoxInfo> boxes);
-
-    std::unordered_map<SpotType, std::unordered_set<Drop>> getDrops();
 
     void registerListener(RecorderListener* listener);
 
 private:
    
-    std::unordered_map<SpotType, std::unordered_set<Drop>> _dropSetPerType{}; 
+    std::unordered_set<Drop> _drops{}; 
     std::vector<RecorderListener*> _listeners;
 
 };

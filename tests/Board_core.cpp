@@ -31,7 +31,7 @@ TEST_CASE("Board_core::")
     public: 
 
         void receiveChanges(
-            unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType,
+            unordered_set<Drop> drops,
             unordered_map<int, BoxInfo> boxes) override
         {
             for(const auto& p: boxes)
@@ -39,14 +39,9 @@ TEST_CASE("Board_core::")
                 _boxes.insert({p.second.getId(), p.second});
             }
 
-            for(auto& setOfDropsPerType : setsOfDropsPerType)
+            for(auto& drop : drops)
             {
-                SpotType type = setOfDropsPerType.first;
-
-                for (auto& drop : setOfDropsPerType.second)
-                {
-                    _dropsPerPosition.insert({drop.getPosition(), drop});
-                }
+                _dropsPerPosition.insert({drop.getPosition(), drop});
             }
         }
         

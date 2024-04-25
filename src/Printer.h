@@ -1,12 +1,17 @@
 #ifndef PRINTER__H
 #define PRINTER__H
 
+#include <unordered_map>
+
+#include "Color.h"
 #include "RecorderListener.h"
 #include "Recorder.h"
 #include "SDL.h"
 
 class Printer : public RecorderListener {
-public:
+
+
+    public:
     Printer(SDL_Renderer* renderer);
     Printer() = delete;
     Printer(const Printer& o) = delete;
@@ -18,12 +23,20 @@ public:
     void addInOutBoundRectangle(Position topLeft, Position bottomRight);
     void addInOutBoundRectangles(std::vector<std::pair<Position, Position>> rectangles);
 
-    void receiveAllDrops(std::unordered_map<SpotType, std::unordered_set<Drop>> setOfDropsPerType, std::unordered_map<int, BoxInfo> boxes) override;
+    // Each color is a vector<vector<Uint8>>. Inside this vector is 
+    void setGroupColors(std::unordered_map<int, Color> colorPerGroupNumber);
 
-private:
+    // Prints these Boxes on the Board.
+    void receiveAllDropsAllBoxes(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes) override;
+
+
+    private:
     SDL_Renderer* _renderer;
-    void print(std::unordered_map<SpotType, std::unordered_set<Drop>> dropsPerType, std::unordered_map<int, BoxInfo> boxes);
+    std::unordered_map<int, Color> _colorPerGroupNumber{};
+    std::unordered_map<int, int> _numOfShadesPerGroupNumber{}; 
+    void print(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes);
     std::vector<std::pair<Position, Position>> _endRectangles{};
+    
 };
 
 #endif

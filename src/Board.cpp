@@ -121,8 +121,8 @@ void Board::sendChanges()
         }
     }
 
-    // Collect changes in setsOfDropsPerType  
-    unordered_map<SpotType, unordered_set<Drop>> setsOfDropsPerType;
+    // Collect changed Drops.
+    unordered_set<Drop> changedDrops;
 
     for (int row=0; row<_height; ++row)
     {
@@ -131,7 +131,7 @@ void Board::sendChanges()
             Drop curDrop = (*changedBoard)[row][col];
             if (curDrop.hasChanged())
             {
-                setsOfDropsPerType[curDrop.getSpotType()].insert(curDrop);
+                changedDrops.insert(curDrop);
                 (*changedBoard)[row][col].setBoxId(-1);
                 (*changedBoard)[row][col].setSpotType(SpotType::left);
                 (*changedBoard)[row][col].setHasChanged(false);
@@ -142,7 +142,7 @@ void Board::sendChanges()
     // Send changes to Drops and set of BoxInfo to BoardListeners.
     for(BoardListener* listener : _listeners)
     {
-        listener->receiveChanges(setsOfDropsPerType, copyOfBoxInfo);
+        listener->receiveChanges(changedDrops, copyOfBoxInfo);
     }
 }
 
