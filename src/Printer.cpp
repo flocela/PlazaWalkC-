@@ -1,67 +1,71 @@
 #include "Printer.h"
 #include <iostream>
-
+#include <map>
 using namespace std;
 
 
 Printer::Printer(SDL_Renderer* renderer): _renderer{renderer} {}
 
-// TODO there should be a unique_locck here so one print job finishes before the next one starts.
 void Printer::receiveAllDropsAllBoxes(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes) 
 {
     print(drops, boxes);
 }
 
 void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes)
-{  (void)drops;
-    (void)boxes;
-    (void)_renderer;
+{  
 
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);
 
-    // Every group number has a Color in _colorPerGroupNumber.
-    // _dropsPerShadePerGroupNumber has a vector for every group number. That vector has an index for every shade that Color has. Drops are put into the index corresponding to their shade. If a Drop's level is equal to or larger than the number of shades, then Drop is placed in the last shade.
-    unordered_map<int, vector<vector<Drop>>> dropsPerShadePerGroupNumber;
-    for(auto& groupNumberAndColor : _colorPerGroupNumber)
+    // Print Boxes
+
+    // Need to group the Drops by a union of their Color and shade. Color is taken from the Drop's group number. Shade is taken from the Drop's level.
+    map<pair<int, int>, unordered_set<Drop>> dropsPerGroupNumberAndShade;
+
+    for(auto& colorPerGroupNumber: _colorPerGroupNumber)
     {
-        int groupNum = groupNumberAndColor.first;
-        dropsPerShadePerGroupNumber.insert({groupNum, vector<vector<Drop>>(_numOfShadesPerGroupNumber[groupNum])});
-    }
-    for (const Drop& drop: drops)
-    {
-        int id = drop.getBoxId();
-        int groupId = boxes.at(id).getGroupId();
-        int level = boxes.at(id).getLevel();
-        if (level >= _colorPerGroupNumber.at(groupId).getNumberOfShades())
+        int groupNum = colorPerGroupNumber.first;
+        int numOfShades = _numOfShadesPerGroupNumber[groupNum];
+
+        for(int ii=0; ii<numOfShades; ++ii)
         {
-            dropsPerShadePerGroupNumber.at(groupId).at(_numOfShadesPerGroupNumber.at(groupId)-1).push_back(drop);
-        }
-        else
-        {
-            dropsPerShadePerGroupNumber.at(groupId).at(level).push_back(drop);
+            dropsPerGroupNumberAndShade[{groupNum, ii}] = unordered_set<Drop>{};
         }
     }
 
-    for(auto& groupNumberAndDropsPerShade : dropsPerShadePerGroupNumber)
+    for (const Drop& drop: drops)
     {
-        int groupNumber = groupNumberAndDropsPerShade.first;
-        vector<vector<Drop>>& vectorOfDropsPerShade = groupNumberAndDropsPerShade.second;
-        for(size_t ii=0; ii<vectorOfDropsPerShade.size(); ++ii)
-        {
-            Color& color = _colorPerGroupNumber.at(groupNumber);
-            for(Drop& drop : vectorOfDropsPerShade[ii])
-            {
-                SDL_Rect squareRect;
-                squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
-                squareRect.h = 3;
-                squareRect.x = drop.getPosition().getX();
-                squareRect.y = drop.getPosition().getY();
-                SDL_SetRenderDrawColor(_renderer, color.getRed(ii), color.getGreen(ii), color.getBlue(ii), 0xFF);
-                SDL_RenderFillRect(_renderer, &squareRect);
-            }
-        }
+        int id = drop.getBoxId();
+        int level = boxes.at(id).getLevel();
+        int groupId = boxes.at(id).getGroupId();
+    
+        // If the level is greater or equal to the number of shades, then set the shade to the last shade.
+        int numOfShades = _colorPerGroupNumber.at(groupId).getNumberOfShades();
+        int shade = (level >= numOfShades) ? (numOfShades-1) : (level);
+
+        dropsPerGroupNumberAndShade[{groupId, shade}].insert(drop);
     }
+
+    for(auto it=dropsPerGroupNumberAndShade.begin(); it!=dropsPerGroupNumberAndShade.end(); it++)
+    {
+        pair<int, int> groupIdAndShade = it->first;
+        Color color = _colorPerGroupNumber.at(groupIdAndShade.first);
+        int shade = groupIdAndShade.second;
+        unordered_set<Drop>& drops = it->second;
+        for(const Drop& drop : drops)
+        {
+            SDL_Rect squareRect;
+            squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
+            squareRect.h = 3;
+            squareRect.x = drop.getPosition().getX();
+            squareRect.y = drop.getPosition().getY();
+            SDL_SetRenderDrawColor(_renderer, color.getRed(shade), color.getGreen(shade), color.getBlue(shade), 0xFF);
+            SDL_RenderFillRect(_renderer, &squareRect);
+        }
+        
+    }
+
+    // Print End Rectangles
 
     for(const pair<Position, Position>& endPoint : _endRectangles)
     {

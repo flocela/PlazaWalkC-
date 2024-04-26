@@ -1,6 +1,7 @@
 #ifndef PRINTER__H
 #define PRINTER__H
 
+#include <shared_mutex>
 #include <unordered_map>
 
 #include "Color.h"
@@ -20,10 +21,11 @@ class Printer : public RecorderListener {
     Printer& operator=(Printer&& o) noexcept = delete;
     ~Printer() noexcept = default;
 
+    // These are rectangles where Boxes start and end at. They are printed as dark grey rectangles on the board.
     void addInOutBoundRectangle(Position topLeft, Position bottomRight);
     void addInOutBoundRectangles(std::vector<std::pair<Position, Position>> rectangles);
 
-    // Each color is a vector<vector<Uint8>>. Inside this vector is 
+    //  
     void setGroupColors(std::unordered_map<int, Color> colorPerGroupNumber);
 
     // Prints these Boxes on the Board.
@@ -34,8 +36,9 @@ class Printer : public RecorderListener {
     SDL_Renderer* _renderer;
     std::unordered_map<int, Color> _colorPerGroupNumber{};
     std::unordered_map<int, int> _numOfShadesPerGroupNumber{}; 
-    void print(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes);
     std::vector<std::pair<Position, Position>> _endRectangles{};
+
+    void print(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes);
     
 };
 
