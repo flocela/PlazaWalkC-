@@ -6,7 +6,8 @@
 
 class BroadcastAgent : public Agent
 {
-public:
+    public:
+
     BroadcastAgent(BoardProxy&& boardProxy);
     BroadcastAgent() = delete;
     BroadcastAgent(const BroadcastAgent& o) = delete;
@@ -15,10 +16,14 @@ public:
     BroadcastAgent& operator=(BroadcastAgent&& o) noexcept = delete;
     ~BroadcastAgent() noexcept = default;
 
-    // Calls BoardProxy's sendChanges() method, so that board can broadcast its changes.
+    /*
+    Calls BoardProxy's sendChanges() method, so that Board can broadcast its changes.
+    */
     void requestBroadcast() override;
 
-private:
+
+    private:
+
     BoardProxy _boardProxy;
 };
 
