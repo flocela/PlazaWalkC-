@@ -44,6 +44,7 @@ pair<int, bool> Spot::changeNote(BoardNote incomingNote)
         else
         {
             _boxId = incomingBoxId;
+            // this_thread::sleep_for(10ms); // Here for thread testing.
             _type = incomingType;
         }
     }

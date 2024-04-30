@@ -14,7 +14,6 @@
 #include "BoardProxy.h"
 #include "BroadcastAgent.h"
 #include "Box.h"
-#include "Decider_Safe.h"
 #include "MainSetup.h"
 #include "Mover_Reg.h"
 #include "Printer.h"
@@ -109,63 +108,15 @@ int main(int argc, char* argv[])
 
     // Create the printer and have it listen for changes from the recorder.
     Printer printer(renderer);
-    vector<vector<uint8_t>> red{
-    {0xFF, 0xCD, 0xD2},
-    {0xEF, 0x9A, 0x9A},
-    {0xE5, 0x73, 0x73},
-    {0xEF, 0x53, 0x50},
-    {0xF4, 0x43, 0x36},
-    {0xE5, 0x39, 0x35},
-    {0xD3, 0x2F, 0x2F},
-    {0xC6, 0x28, 0x28},
-    {0xB7, 0x1C, 0x1C}
-    };
-    vector<vector<uint8_t>> cyan{
-    //{0xE0, 0xF7, 0xFA},
-    {0xB2, 0xEB, 0xF2},
-    {0x80, 0xDE, 0xEA},
-    {0x4D, 0xD0, 0xE1},
-    {0x26, 0xC6, 0xDA},
-    {0x00, 0xBC, 0xD4},
-    {0x00, 0xAC, 0xC1},
-    {0x00, 0x97, 0xA7},
-    {0x00, 0x83, 0x8F},
-    {0x00, 0x60, 0x64},
-    };
-    vector<vector<uint8_t>> amber{
-    //{0xFF, 0xF8, 0xE1},
-    {0xFF, 0xEC, 0xB3},
-    {0xFF, 0xE0, 0x82},
-    {0xFF, 0xD5, 0x4F},
-    {0xFF, 0xCA, 0x28},
-    {0xFF, 0xC1, 0x07},
-    {0xFF, 0xB3, 0x00},
-    {0xFF, 0xA0, 0x00},
-    {0xFF, 0x8F, 0x00},
-    {0xFF, 0x6F, 0x00},
-    };
-    vector<vector<uint8_t>> purple{
-    //{0xF3, 0xE5, 0xF5},
-    {0xE1, 0xBE, 0xE7},
-    {0xCE, 0x93, 0xD8},
-    {0xBA, 0x68, 0xC8},
-    {0xAB, 0x47, 0xBC},
-    {0x9C, 0x27, 0xB0},
-    {0x8E, 0x24, 0xAA},
-    {0x7B, 0x1F, 0xA2},
-    {0x6A, 0x1B, 0x9A},
-    {0x4A, 0x14, 0x8C},
-    };
-
-    unordered_map<int, Color> colorPerGroupNumber{};
-    colorPerGroupNumber.insert({0, Color{red}});
-    colorPerGroupNumber.insert({1, Color{cyan}});
-    colorPerGroupNumber.insert({2, Color{amber}});
-    colorPerGroupNumber.insert({3, Color{purple}});
-   
-    printer.setGroupColors(colorPerGroupNumber); 
-    
     recorder.registerListener(&printer);
+
+    // Add Colors per group to Printer
+    unordered_map<int, Color> colorPerGroupNumber{};
+    colorPerGroupNumber.insert({0, MainSetup::red()});
+    colorPerGroupNumber.insert({1, MainSetup::cyan()});
+    colorPerGroupNumber.insert({2, MainSetup::amber()});
+    colorPerGroupNumber.insert({3, MainSetup::purple()});
+    printer.setGroupColors(colorPerGroupNumber); 
 
     // Add the in-bound and out-bound rectangles to printer (where the boxes start and end).
     printer.addInOutBoundRectangles(inOutBoundRectangles);
@@ -173,41 +124,17 @@ int main(int argc, char* argv[])
     // Event loop exit flag
     bool running = true;
 
-    vector<unique_ptr<thread>> thread{};
+    // Create threads vector and add a Thread for each box to it.
+    vector<unique_ptr<thread>> threads{};
 
     Threader threader{};
-   
-    // Add threads for boxes 0 through 1399. That's red, blue, yellow, and purple boxes.
-    // Box id comments refer to where the box starts at and what color its group is.
+ 
     threader.populateThreads(
-        thread,
-        MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT),
-        MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT),
+        threads,
+        200,
+        7,
+        inOutBoundRectangles,
         board,
-        vector<pair<int, int>>{
-            {0, 199},      // North wall, red boxes
-            {200, 399},    // West wall top, blue boxes
-            {400, 599},    // East wall top, blue boxes
-            {600, 799},    // West wall bottom, yellow boxes
-            {800, 999},    // East wall bottom, yellow boxes
-            {1000, 1199},  // South wall left, purple boxes
-            {1200, 1399}}, // South wall right, purple boxes
-        vector<PositionManagerType>{
-            PositionManagerType::slide,
-            PositionManagerType::slide,
-            PositionManagerType::slide,
-            PositionManagerType::slide,
-            PositionManagerType::slide,
-            PositionManagerType::slide,
-            PositionManagerType::slide},
-        vector<DeciderType>{
-            DeciderType::safe,
-            DeciderType::safe,
-            DeciderType::safe,
-            DeciderType::risk1,
-            DeciderType::risk1,
-            DeciderType::risk1,
-            DeciderType::risk1},
         running);
     
     // Event loop
@@ -227,9 +154,10 @@ int main(int argc, char* argv[])
         broadcastAgent.requestBroadcast();
     }
 
-    for(uint32_t ii=0; ii<thread.size(); ++ii)
+    // Join threads
+    for(uint32_t ii=0; ii<threads.size(); ++ii)
     {
-        thread[ii]->join();
+        threads[ii]->join();
     }
 
     // Destroy renderer

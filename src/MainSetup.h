@@ -40,6 +40,11 @@ public:
     static std::vector<std::pair<Position, Position>> deleteRect(
                 std::vector<std::pair<Position, Position>> rectangles,
                 std::pair<Position, Position> rectangle);
+    
+    static std::vector<std::vector<uint8_t>> red();
+    static std::vector<std::vector<uint8_t>> cyan();
+    static std::vector<std::vector<uint8_t>> amber();
+    static std::vector<std::vector<uint8_t>> purple();
 };
 
 #endif

@@ -24,24 +24,21 @@ public:
 
     void populateThreadsForOneGroup(
         std::vector<std::unique_ptr<std::thread>>& threads,
-        Position topLeftCornerOfStartPoint,
-        Position bottomRightCornerOfStartPoint,
-        std::vector<std::pair<Position, Position>> endRanges,
-        Board& board,
         int firstBoxId,
         int count,
+        std::pair<Position, Position> startRect,
+        std::vector<std::pair<Position, Position>> endRanges,
+        Board& board,
         PositionManagerType pmt,
         DeciderType dt,
         bool& running);
 
     void populateThreads(
         std::vector<std::unique_ptr<std::thread>>& threads,
-        std::vector<std::pair<Position, Position>> startPoints,
-        std::vector<std::pair<Position, Position>> endRanges,
+        int numOfBoxesPerGroup,
+        int numOfGroups,
+        const std::vector<std::pair<Position, Position>>& startEndRectangles,
         Board& board,
-        std::vector<std::pair<int, int>> boxIds,
-        std::vector<PositionManagerType> pmts,
-        std::vector<DeciderType> dts,
         bool& running);
 
     void populateRandomPoints(
@@ -51,7 +48,7 @@ public:
 
     std::unique_ptr<PositionManager> createPositionManager(
         PositionManagerType pmt,
-        Position endPoint,
+        std::pair<Position, Position> endRectangle,
         int boardMinX,
         int boardMaxX,
         int boardMinY,
