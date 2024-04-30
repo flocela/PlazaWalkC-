@@ -61,7 +61,7 @@ TEST_CASE("Board_core::")
         board.addNote(Position{5, 5}, BoardNote{0, SpotType::to_arrive});
         board.addNote(Position{6, 6}, BoardNote{0, SpotType::to_arrive});
 
-        board.sendChanges();
+        board.sendStateAndChanges();
 
         REQUIRE(listener._dropsPerPosition.size() == 2);
         REQUIRE(SpotType::to_arrive == listener._dropsPerPosition.at(Position{5, 5}).getSpotType());
@@ -72,7 +72,7 @@ TEST_CASE("Board_core::")
 
         board.addNote(Position{5, 5}, BoardNote{0, SpotType::arrive});
         board.addNote(Position{7, 7}, BoardNote{0, SpotType::to_arrive}); 
-        board.sendChanges();
+        board.sendStateAndChanges();
         
         REQUIRE(listener._dropsPerPosition.size() == 2);
         REQUIRE(SpotType::arrive == listener._dropsPerPosition.at(Position{5, 5}).getSpotType());
@@ -99,7 +99,7 @@ TEST_CASE("Board_core::")
         // successful should be false again, and both boxes' levels go up by 1 again.
         successful = board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive}); 
         REQUIRE(false == successful);
-        board.sendChanges();
+        board.sendStateAndChanges();
        
         REQUIRE(2 == listener._boxes.at(0).getLevel());
         REQUIRE(2 == listener._boxes.at(1).getLevel());

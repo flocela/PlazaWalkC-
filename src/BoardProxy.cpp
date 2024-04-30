@@ -5,5 +5,5 @@ BoardProxy::BoardProxy(Board& o) :_board{o}
 
 void BoardProxy::sendChanges()
 {
-    _board.sendChanges();
+    _board.sendStateAndChanges();
 }

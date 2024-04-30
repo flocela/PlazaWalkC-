@@ -16,7 +16,7 @@ void requestChanges(Board& board, int times)
 {
     for (int ii=0; ii<times; ++ii)
     {
-        board.sendChanges();
+        board.sendStateAndChanges();
     }
 }
 // Moves numOfBoxes into new Positions by adding BoardNotes with MovementType::to_arrive. Assumes Board initially has only empty Positions, all of MovementType::left.
