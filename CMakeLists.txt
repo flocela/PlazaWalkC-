@@ -112,6 +112,7 @@ src/PositionManager_Up.cpp
 src/NoteAccountant.cpp
 src/HelloWorld.cpp
 src/Recorder.cpp
+src/Rectangle.cpp
 src/Spot.cpp
 src/SpotType.cpp
 src/SpotListener.cpp
