@@ -1,17 +1,21 @@
 #ifndef BOARDPROXY__H
 #define BOARDPROXY__H
 
+class Board;
 #include "Board.h"
 
 class BoardProxy
 {
-public:
+    public:
+
     BoardProxy(Board& board);
 
     // Calls Board's sendChanges method.
     void sendChanges();
 
-private:
+
+    private:
+
     Board& _board;
 };
 

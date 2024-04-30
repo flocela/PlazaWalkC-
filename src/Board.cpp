@@ -168,3 +168,8 @@ void Board::registerNoteSubscriber(Position pos, NoteSubscriber& subscriber)
 {
     _noteSubscribersPerPos.insert({pos, subscriber});
 }
+
+BoardProxy Board::getBoardProxy()
+{
+    return BoardProxy(*this);
+}

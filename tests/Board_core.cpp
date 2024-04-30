@@ -138,4 +138,31 @@ TEST_CASE("Board_core::")
         // Board does not have a Box id of 100.
         REQUIRE_THROWS(board.addNote(Position{5, 5}, BoardNote{100, SpotType::to_arrive}));
     }
+    
+    SECTION("Returns a working BoardProxy.")
+    {
+        // Create boxes with id=0, id=1, and id=2.
+        vector<Box> boxes{Box{0, 0, 5, 5}, Box{1, 1, 5, 5}};
+
+        Board board{10, 10, std::move(boxes)};
+        BoardProxy boardProxy = board.getBoardProxy();
+        TempListener listener{};
+        board.registerListener(&listener);
+
+        board.addNote(Position{5, 5}, BoardNote{0, SpotType::to_arrive});
+        board.addNote(Position{6, 6}, BoardNote{1, SpotType::to_arrive});
+
+        boardProxy.sendChanges();
+
+        Drop dropForBox0 = listener._dropsPerPosition.at(Position{5, 5});
+        Drop dropForBox1 = listener._dropsPerPosition.at(Position{6, 6});
+
+        REQUIRE(listener._dropsPerPosition.size() == 2);
+
+        REQUIRE(SpotType::to_arrive == dropForBox0.getSpotType());
+        REQUIRE(0 == dropForBox0.getBoxId());
+
+        REQUIRE(SpotType::to_arrive == dropForBox1.getSpotType());
+        REQUIRE(1 == dropForBox1.getBoxId());
+    }
 }

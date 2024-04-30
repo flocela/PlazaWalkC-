@@ -6,7 +6,7 @@ using namespace std;
 
 TEST_CASE("BoardProxy_core::")
 {
-    SECTION("calling sendChanges() causes Board to call its sendChanges()")
+    SECTION("Verify that BoardProxy's sendChanges() method results in a call to Board's sendStateAndChanges() method. The events chain is BoardProxy's sendChanges() method calls Board's sendStateAndChanges() method, which calls BoardListener's receiveChanges() method. Check that BoardListener gets a call to receiveChanges() after BoardProxy's call to sendChanges().")
     {
         class SubListener : public BoardListener 
         {

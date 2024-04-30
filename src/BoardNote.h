@@ -1,16 +1,17 @@
 #ifndef BOARDNOTE__H
 #define BOARDNOTE__H
 
-#include "Position.h"
 #include "SpotType.h"
 
-// BoardNote contains a box id and SpotType.
-// Note box id and SpotType do not have any setters and the
-// assignment operators are deleted.
+/*
+BoardNote contains a box id and SpotType.
+Note boxId and SpotType do not have any setters and the assignment operators are deleted.
+*/
 class BoardNote
 {
 
-public:
+    public:
+    
     BoardNote(int boxId, SpotType type);
     BoardNote() = delete;
     BoardNote(const BoardNote& o) = default;
@@ -24,13 +25,14 @@ public:
 
     bool operator== (const BoardNote& o) const;
 
-private:
+
+    private:
+
     SpotType _type;
     int _boxId;
 
 };
 
-// TODO find out how to call a hash function and how to test it.
 namespace std
 {
     template<>

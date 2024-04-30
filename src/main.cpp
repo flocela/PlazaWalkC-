@@ -10,7 +10,6 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "Board.h"
 #include "BoardProxy.h"
 #include "BroadcastAgent.h"
 #include "Box.h"
@@ -100,7 +99,7 @@ int main(int argc, char* argv[])
     Board board{SCREEN_WIDTH, SCREEN_HEIGHT, std::move(boxes)};
 
     // Create BroadcastAgent. It will periodically ask Board (via BoardProxy) to send changes to recorder.
-    BroadcastAgent broadcastAgent{BoardProxy(board)};
+    BroadcastAgent broadcastAgent{board.getBoardProxy()};
 
     // Create Recorder, it will listen for changes from Board and send those changes to the printer.
     Recorder recorder{};

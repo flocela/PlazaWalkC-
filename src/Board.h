@@ -1,12 +1,14 @@
 #ifndef BOARD__H
 #define BOARD__H
 
+class BoardProxy;
 #include <memory>
 #include <shared_mutex>
 #include <vector>
 #include <unordered_map>
 
 #include "BoardListener.h"
+#include "BoardProxy.h"
 #include "Box.h"
 #include "Drop.h"
 #include "NoteSubscriber.h"
@@ -40,6 +42,8 @@ class Board
 
     int getWidth() const;
     int getHeight() const;
+    
+    BoardProxy getBoardProxy();
 
     /*  
     @position is the Position that is being requested to be updated.
