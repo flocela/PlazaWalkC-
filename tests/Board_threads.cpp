@@ -4,6 +4,10 @@
 
 using namespace std;
 
+/*
+Function used in threading.
+A @times number of times moves Box with boxId @id to Position @pos using a SpotType of SpotType::to_arrive.A
+*/
 void moveBoxToPosition(Board& board, int id, Position pos, int times)
 {
     for (int ii=0; ii<times; ++ii)
@@ -12,6 +16,11 @@ void moveBoxToPosition(Board& board, int id, Position pos, int times)
     }
 }
 
+
+/*
+Function used in threading.
+A @times number of times calls @board's sendStateAndChanges() method.
+*/
 void requestChanges(Board& board, int times)
 {
     for (int ii=0; ii<times; ++ii)
@@ -19,7 +28,10 @@ void requestChanges(Board& board, int times)
         board.sendStateAndChanges();
     }
 }
-// Moves numOfBoxes into new Positions by adding BoardNotes with MovementType::to_arrive. Assumes Board initially has only empty Positions, all of MovementType::left.
+
+
+/* Adds @numOfBoxes into different Positions by calling Board's addNote() method. Every additional Box moves into an empty Position. It is assumed that @board has all empty Spots at the beginning of the moveBoxesToArrive() mthod.
+*/
 void moveBoxesToArrive(Board& board, int numOfBoxes)
 {
     for (int ii=0; ii<numOfBoxes; ++ii)
@@ -30,11 +42,17 @@ void moveBoxesToArrive(Board& board, int numOfBoxes)
 
 TEST_CASE("Board_threads::")
 {
-    // The method sendChanges() contains a block of code protected with the unique_lock lockUq. In that block there is a for-loop that copies the BoxInfos into the copyOfBoxInfo map. To make this test fail, move that for-loop outside of the lockUq block.
-    SECTION("Two boxes collide (one box tries to enter the position of another box). Each box's level will increase by one. The state of the boxes will never be sent having one box's level increased while the other box's level is  yet to be increased. Before changes are sent in sendChanges() both boxes' levels will have been increased.")
+
+    /*
+    Test that there are no changes to the Board's Boxes while the sendStateAndChanges() method copies the Boxes information into a map to send to the BoardListeners. 
+    
+    The method sendChanges() contains a block of code protected with the unique_lock lockUq that uses the same mutex (_mux) that the addNote() method uses. In that block there is a for-loop that copies the BoxInfos into the copyOfBoxInfo map. To make this test fail, move that copying for-loop outside of the lockUq block.
+    */
+    SECTION("Box0 is stationed at a position. A second Box, Box1, repeatedly tries to enter that position. The two boxes collide resulting in each box's level increasing by one. The Boxes' information is never copied to be sent while these Boxes are in the middle of being updated. So, the state of the boxes will never be sent having one box's level increased while the other box's level is yet to be increased. The sent state of the Boxes always shows the Boxes have the same levels.")
     {
         // There are only two boxes. They only collide with each other, they both start with a collision level of zero, so their collision levels should always be reported as equal.
-        // Thread t1 repeatedly tries to move Box with id = 1 into the position where Box with id = 0 is already standing.
+
+        // Thread t1 repeatedly tries to move Box1 into the position where Box0 is already standing.
         // Thread t2 repeatedly calls to receive the state of the Boxes.
 
         // When TestListener receives the map of boxesPerId, it checks that both boxes have the same level. 
@@ -76,21 +94,20 @@ TEST_CASE("Board_threads::")
     }
 
             
-    // In order to fail this test: remove the unique_lock, lockUq, in sendChanges(). May also have to add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
+    /*
+    A complete Drop change has two-parts: a change to the boxId and a change to the SpotType. If the change in the Drop were to happen while the _receivingMatrix was being toggled then the first part of the change would be in one matrix, and the second part of the change would be in the other matrix. The _receivingMatrix is only toggled in the sendChanges() method, so adding a lock around this toggling and the addNote() method means that the _receivingMatrix will never be toggled during a change.
 
-    // A complete Drop change has two-parts: a change to the boxId and a change to the Movement::Type. If the change in the Drop were to happen while the _receivingMatrix was being toggled then the first part of the change would be in one matrix, and the second part of the change would be in the other matrix. The _receivingMatrix is only toggled in the sendChanges() method, so adding a lock around this toggling and the addNote() method means that the _receivingMatrix will never be toggled during a change.
+    If the first part of the change (say the BoxId) could be recorded in one drop matrix and the second part of the change (say the SpotType) were recorded in the second drop matrix, then the sent changes would have partially changed Drops. This would be noticeable because some Drops would have a SpotType::left with a BoxId of NOT -1; this is invalid.
 
-    // If the first part of the change (say the BoxId) could be recorded in one drop matrix and the second part of the change (say the MovementType) were recorded in the second drop matrix, then the sent changes would have partially changed Drops. This would be noticeable because some Drops would have a MovementType::left with a BoxId of not -1. This is invalid.
+    Thread t1 repeatedly changes Drops from a SpotType::left and BoxId=-1 to a SpotType::to_arrive and a BoxId of NOT -1.
 
-    // Thread t1 repeatedly changes Drops from a MovementType::left and BoxId=-1 to a MovementType::to_arrive and a BoxId of not -1.
+    Thread t2 repeatedly asks for changes to be sent. 
 
-    // Thread t2 repeatedly asks for changes to be sent. 
-
-    // The resulting changes never have a MovementType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges() is removed, then these invalid Drops are sent.
-
-    SECTION("Drops sent to BoardListeners are changed properly. Both their MovementType and BoxId have been changed.")
+    The resulting changes never have a SpotType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges() is removed, then these invalid Drops are sent. In order to fail this test: remove the unique_lock, lockUq, in sendChanges(). May also have to add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
+    */
+    SECTION("Drops sent to BoardListeners are changed properly. Both their SpotType and boxId have been changed.")
     {
-        // Checks that the Drops in receivedChanges are valid. The Drop has a MovementType::to_arrive and a BoxId that is not -1. Or the Drop has a MovementType::left and a BoxId of -1.
+        // Checks that the Drops in receivedChanges are valid. The Drop has a SpotType::to_arrive and a BoxId that is NOT -1. Or the Drop has a SpotType::left and a BoxId of -1.
         class BoardListener_Test : public BoardListener 
         {
         public: 
@@ -103,11 +120,11 @@ TEST_CASE("Board_threads::")
                     {
                         if (drop.getSpotType() == SpotType::left)
                         {
-                                REQUIRE(drop.getBoxId()== -1);
+                                REQUIRE(drop.getBoxId() == -1);
                         } 
                         if (drop.getSpotType() != SpotType::left)
                         {
-                                REQUIRE(drop.getBoxId()!= -1);
+                                REQUIRE(drop.getBoxId() != -1);
                         }
                     }
                     catch(...)
@@ -119,7 +136,7 @@ TEST_CASE("Board_threads::")
             
         };
 
-        // Vector of boxes with BoxId's from 0 to 1999.
+        // Vector of boxes with BoxId's from 0 to 999.
         vector<Box> boxes{};
         for(int ii=0; ii<1000; ++ii)
         {
@@ -130,7 +147,7 @@ TEST_CASE("Board_threads::")
         BoardListener_Test listener{};
         board.registerListener(&listener);
 
-        // t1 moves 1000 boxes into 1000 Positions. Each Position is originally MoveType::Left and BoxId=-1. But after the move, the MoveType is MoveType::to_arrive and the BoxId is equal to that particular Box's box id. 
+        // t1 moves 1000 boxes into 1000 Positions. Each Position is originally SpotType::Left and BoxId=-1. But after the move, the SpotType is SpotType::to_arrive and the BoxId is equal to that particular Box's box id. 
         std::thread t1(moveBoxesToArrive, std::ref(board), 1000);
         std::thread t2(requestChanges, std::ref(board), 1000);
 
