@@ -34,7 +34,7 @@ TEST_CASE("BoardProxy_core::")
         SubListener listener{};
         board.registerListener(&listener);
 
-        BoardProxy boardProxy{board};
+        BoardProxy boardProxy = board.getBoardProxy();
         
         boardProxy.sendChanges();
         boardProxy.sendChanges();

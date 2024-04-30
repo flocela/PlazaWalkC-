@@ -35,7 +35,7 @@ TEST_CASE("BroadcastAgent_core::")
         TestListener listener{};
         board.registerListener(&listener);
 
-        BoardProxy boardProxy{board};
+        BoardProxy boardProxy = board.getBoardProxy();
         BroadcastAgent agent{std::move(boardProxy)};
 
         agent.requestBroadcast();

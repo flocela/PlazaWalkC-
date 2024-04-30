@@ -8,14 +8,15 @@ class BoardProxy
 {
     public:
 
-    BoardProxy(Board& board);
-
     // Calls Board's sendChanges method.
     void sendChanges();
+    
+    friend class Board;
 
 
     private:
 
+    BoardProxy(Board& board);
     Board& _board;
 };
 
