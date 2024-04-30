@@ -39,23 +39,21 @@ namespace std
     struct hash<BoxInfo>
     {
         size_t operator()(const BoxInfo& b) const
-        {   
-            vector<int> v= {b.getId(), b.getGroupId(), b.getLevel(), b.getWidth(), b.getHeight()};
-            return hh(v, 0);
-        }
-
-        size_t hh(vector<int> v, int idx) const
         {
-            if(idx == static_cast<int>(v.size()-1))
-            {
-                return hash<int>()(v[idx]);
-            }
-            else
-            {
-                return (
-                        ((hash<int>()(v[idx])) ^ hh(v, idx+1))>>1
-                       );
-            }
+            // prime numbers
+            int A = 21859;
+            int B = 32059; 
+            int C = 54059;
+            int D = 76963;
+            int E = 86969;
+            
+            unsigned int h = 97;
+            h = (h) ^ (b.getId() * A);
+            h = (h) ^ (b.getGroupId() * B);
+            h = (h) ^ (b.getWidth() * C);
+            h = (h) ^ (b.getHeight() * D);
+            h = (h) ^ (b.getLevel() * E);
+            return h;
         }
     };
 }
