@@ -33,7 +33,8 @@ bool Box::operator== (const Box& o) const
 {
     return  _id == o._id &&
             _width == o._width &&
-            _height == o._height;
+            _height == o._height &&
+            _groupid == o._groupid;
 }
 
 int Box::getId() const
