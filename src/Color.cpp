@@ -32,7 +32,6 @@ uint8_t Color::getBlue(int level) const
     return _shades[level][2];
 }
 
-// TODO add to Color tests. If Color tests every work!
 int Color::getNumberOfShades() const
 {
     return _numOfShades;
