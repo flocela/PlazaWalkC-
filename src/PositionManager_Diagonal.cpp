@@ -107,7 +107,7 @@ double PositionManager_Diagonal::getDistSquared(Position a, Position b)
 }
 
 // TODO needs a test
-Rectangle PositionManager_Diagonal::getEndPoint() const
+Rectangle PositionManager_Diagonal::getEndRect() const
 {
     return Rectangle{Position{_topLeftX, _topLeftY}, Position{_botRightX, _botRightY}};
 }

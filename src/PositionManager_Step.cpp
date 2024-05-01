@@ -81,7 +81,7 @@ bool PositionManager_Step::atEnd(Position curPosition)
     return curPosition == _finalTarget;
 }
 
-Rectangle PositionManager_Step::getEndPoint() const
+Rectangle PositionManager_Step::getEndRect() const
 {
     return Rectangle{_finalTarget, _finalTarget};
 }

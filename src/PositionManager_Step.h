@@ -29,7 +29,7 @@ public:
     // When getFuturePositions is called a line is drawn from position to the finalTarget.  Not all points on the line are Positions because Positions are digital. If the current target already exists then it is not updated. If the current target has not been set a new current target is set. If position is at the current target, then a new current target is set. The first Position on the line is set as the current target. A vector of adjacent Positions from position is made and sorted by closest to the current target. The Positions at index 3 and above (if index 3 exists) are shuffled. It may be that the vector only has 3 Positions because there are only 3 valid adjacent Positions to position (position could be at a corner).
     std::vector<Position> getFuturePositions(Position position) override;
     bool atEnd(Position position) override;
-    Rectangle getEndPoint() const override;
+    Rectangle getEndRect() const override;
     
 
 private:

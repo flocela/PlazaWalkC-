@@ -20,7 +20,7 @@ class PositionManager_Down : public PositionManager
 
     bool atEnd(Position position) override;
 
-    Rectangle getEndPoint() const override;
+    Rectangle getEndRect() const override;
 
     private:
     int _endY;

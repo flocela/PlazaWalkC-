@@ -31,7 +31,7 @@ public:
     bool atEnd(Position position) override;
 
     
-    Rectangle getEndPoint() const override;
+    Rectangle getEndRect() const override;
 
 private:
     int _topLeftX = 0;

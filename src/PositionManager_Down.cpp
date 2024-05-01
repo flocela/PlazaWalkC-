@@ -52,7 +52,7 @@ bool PositionManager_Down::atEnd(Position position)
     return position.getY() >= _endY;
 }
 
-Rectangle PositionManager_Down::getEndPoint() const
+Rectangle PositionManager_Down::getEndRect() const
 {
     return Rectangle{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
 }
