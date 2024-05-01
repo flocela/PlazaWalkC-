@@ -2,23 +2,6 @@
 
 using namespace std;
 
-void MainSetup::addGroupsOfBoxes(
-    vector<Box>& boxes,
-    int firstBoxId,
-    int firstGroupNum,
-    int numOfGroups,
-    int groupSize)
-{
-    for(int ii=0; ii<numOfGroups; ++ii)
-    {
-        int groupNumber = firstGroupNum + ii;
-        int tempId = firstBoxId + (groupSize * ii);
-        for(int jj=0; jj<groupSize; ++jj)
-        {
-            boxes.push_back(Box{tempId+jj, groupNumber, 3, 3});
-        }
-    }
-}
 void MainSetup::addAGroupOfBoxes(
     vector<Box>& boxes,
     int firstBoxId,

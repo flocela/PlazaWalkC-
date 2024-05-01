@@ -8,19 +8,9 @@
 
 class MainSetup
 {
-public:
 
-    // Appends numOfGroups of Boxes to boxes.
-    // The first appended box has a boxId of firtBoxId and a group number of firstGroupNumber.
-    // Each group is of size groupSize.
-    // Each new box's id goes up by one.
-    // The group number of each group goes up by one also.    
-    static void addGroupsOfBoxes(
-        std::vector<Box>& boxes,
-        int firstBoxId,
-        int firstGroupNum,
-        int numOfGroups,
-        int groupSize);
+    public:
+
    
     // Appends one group of boxes to boxes.
     // The first appended box has a boxId of firstBoxId and groupId of groupId.
