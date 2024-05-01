@@ -48,7 +48,6 @@ bool Drop::hasChanged() const
     return _changed;
 }
 
-// Two Drops are equal if they have the same Position
 bool Drop::operator==(const Drop& o) const
 {
     return _position.getX() == o._position.getX() && _position.getY() == o._position.getY();

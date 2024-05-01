@@ -5,10 +5,14 @@ using namespace std;
 
 TEST_CASE("Drop_getters_setters::")
 {
-    SECTION("Drop position is set in the constructor.")
+    SECTION("Drop Position is set in the constructor. Other attributes are set to default.")
     {
         Drop dropSimpleConstructor{10, 20};
         REQUIRE(Position{10, 20} == dropSimpleConstructor.getPosition());
+        REQUIRE(-1 == dropSimpleConstructor.getBoxId());
+        REQUIRE(SpotType::left == dropSimpleConstructor.getSpotType());
+        REQUIRE(false == dropSimpleConstructor.hasChanged());
+        
     }
 
     SECTION("Drop attributes set in advanced constructor.")

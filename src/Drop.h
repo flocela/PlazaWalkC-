@@ -4,6 +4,9 @@
 #include "Position.h"
 #include "SpotType.h"
 
+/*
+Drop is a container for a Position, a boxId, and SpotType. It also contains a has changed bool, so the user can mark it as having had changed, or not.
+*/
 class Drop
 {
     public:
@@ -25,14 +28,26 @@ class Drop
     SpotType getSpotType() const;
     bool hasChanged() const;
 
+    /*
+    Two Drops are equal if they have the same Position.
+    */
     bool operator== (const Drop& o) const;
     friend std::ostream& operator<< (std::ostream& o, const Drop& d)
     {
-        o << "Drop: [" + std::to_string(d._position.getX()) + ", " + std::to_string(d._position.getY()) << "]";
+        std::string boolString = (d._changed) ? "true" : "false";
+        o << "Drop: [{" << 
+             std::to_string(d._position.getX()) << ", " << 
+             std::to_string(d._position.getY()) << "}, " <<
+             std::to_string(d._boxId) << ", " <<
+             d._type << ", " <<
+             boolString <<
+             "]";
         return o;
     }
 
+
     private:
+
     Position _position;
     int _boxId = -1;
     SpotType _type = SpotType::left;
@@ -47,7 +62,13 @@ namespace std
     {
         size_t operator()(const Drop& d) const
         {
-            return ( hash<int>()(d.getPosition().getX()) ^ (hash<int>()(d.getPosition().getY()) << 1) );
+            // prime numbers
+            int A = 32059; 
+            int B = 117989;
+            unsigned int h = 97;
+            h = (h) ^ (d.getPosition().getX() * A);
+            h = (h) ^ (d.getPosition().getY() * B);
+            return h;
         }
     };
 }

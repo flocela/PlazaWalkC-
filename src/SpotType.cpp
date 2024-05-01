@@ -8,16 +8,16 @@ ostream& operator<<(ostream& os, SpotType const& obj)
     switch(obj)
     {
         case SpotType::to_arrive:
-            typeString = "to_arrive";
+            typeString = "SpotType::to_arrive";
             break;
         case SpotType::arrive:
-            typeString = "arrive";
+            typeString = "SpotType::arrive";
             break;
         case SpotType::to_leave:
-            typeString = "to_leave";
+            typeString = "SpotType::to_leave";
             break;
         case SpotType::left:
-            typeString = "left";
+            typeString = "SpotType::left";
             break;
         default:
             typeString = "unknown";

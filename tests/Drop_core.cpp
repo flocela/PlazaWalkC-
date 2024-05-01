@@ -1,6 +1,9 @@
 #include "catch.hpp"
 #include "../src/Drop.h"
 
+#include <sstream>
+#include <unordered_set>
+
 using namespace std;
 
 TEST_CASE("Drop_core::")
@@ -69,5 +72,47 @@ TEST_CASE("Drop_core::")
         dropSame.setHasChanged(true);
 
         REQUIRE(drop == dropSame);
+    }
+    
+    SECTION("Identical Drops return the same hash")
+    {
+        hash<Drop> hasher;
+        Drop dropA{0, 0, 0, SpotType::left};
+        Drop dropB{0, 0, 0, SpotType::left};
+
+        REQUIRE(hasher(dropA) == hasher(dropB));
+        
+        Drop dropC{1, 1, 2, SpotType::to_arrive};
+        Drop dropD{1, 1, 2, SpotType::to_arrive};
+
+        REQUIRE(hasher(dropC) == hasher(dropD));
+    }
+
+    SECTION("Require that many Drops don't have the same hash")
+    {
+        hash<Drop> hasher;
+
+        unordered_set<size_t> hashNumbers{};
+        for(int ii=0; ii<100; ++ii)
+        {
+            for(int jj=0; jj<100; ++jj)
+            {
+                unsigned int hashNumber = hasher(Drop{jj, ii, 1, SpotType::left});
+                if(hashNumbers.find(hashNumber) != hashNumbers.end())
+                {
+                    cout << Drop{jj, ii, 1, SpotType::left} << endl;
+                }
+                REQUIRE(hashNumbers.find(hashNumber) == hashNumbers.end());
+                hashNumbers.insert(hashNumber);
+            }
+        }
+    }
+    
+    SECTION("test ostream operator")
+    {
+        Drop drop{10, 11, 5, SpotType::to_arrive};
+        stringstream out;
+        out << drop;
+        REQUIRE("Drop: [{10, 11}, 5, SpotType::to_arrive, false]" == out.str());
     }
 }
