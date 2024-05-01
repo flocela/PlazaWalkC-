@@ -33,7 +33,6 @@ West Walls |                    |  East Walls
                ______   ______
                   South Walls
 */
-
 vector<Rectangle> MainSetup::getInOutBoundRectangles(int bW, int bH)
 {
     vector<Rectangle> inOut{};
@@ -63,9 +62,9 @@ vector<Rectangle> MainSetup::deleteRect(
     return reduced;
 }
 
-vector<vector<uint8_t>> MainSetup::red()
+Color MainSetup::red()
 {
-    return vector<vector<uint8_t>>{
+    return Color{vector<vector<uint8_t>>{
     // {0xFF, 0xEB, 0xEE},
     {0xFF, 0xCD, 0xD2},
     {0xEF, 0x9A, 0x9A},
@@ -76,12 +75,12 @@ vector<vector<uint8_t>> MainSetup::red()
     {0xD3, 0x2F, 0x2F},
     {0xC6, 0x28, 0x28},
     {0xB7, 0x1C, 0x1C}
-    };
+    }};
 }
 
-vector<vector<uint8_t>> MainSetup::cyan()
+Color MainSetup::cyan()
 {
-    return vector<vector<uint8_t>> {
+    return Color{vector<vector<uint8_t>> {
     //{0xE0, 0xF7, 0xFA},
     {0xB2, 0xEB, 0xF2},
     {0x80, 0xDE, 0xEA},
@@ -92,12 +91,12 @@ vector<vector<uint8_t>> MainSetup::cyan()
     {0x00, 0x97, 0xA7},
     {0x00, 0x83, 0x8F},
     {0x00, 0x60, 0x64},
-    };
+    }};
 }
 
-vector<vector<uint8_t>> MainSetup::amber()
+Color MainSetup::amber()
 {
-    return vector<vector<uint8_t>> {
+    return Color{vector<vector<uint8_t>> {
     //{0xFF, 0xF8, 0xE1},
     {0xFF, 0xEC, 0xB3},
     {0xFF, 0xE0, 0x82},
@@ -108,12 +107,12 @@ vector<vector<uint8_t>> MainSetup::amber()
     {0xFF, 0xA0, 0x00},
     {0xFF, 0x8F, 0x00},
     {0xFF, 0x6F, 0x00},
-    };
+    }};
 }
 
-vector<vector<uint8_t>> MainSetup::purple()
+Color MainSetup::purple()
 {
-    return vector<vector<uint8_t>> {
+    return Color{vector<vector<uint8_t>> {
     //{0xF3, 0xE5, 0xF5},
     {0xE1, 0xBE, 0xE7},
     {0xCE, 0x93, 0xD8},
@@ -124,7 +123,6 @@ vector<vector<uint8_t>> MainSetup::purple()
     {0x7B, 0x1F, 0xA2},
     {0x6A, 0x1B, 0x9A},
     {0x4A, 0x14, 0x8C},
-    };
+    }};
 }
-
 

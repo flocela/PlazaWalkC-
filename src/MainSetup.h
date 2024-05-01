@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Box.h"
+#include "Color.h"
 #include "Position.h"
 #include "Rectangle.h"
 
@@ -40,10 +41,10 @@ class MainSetup
     /*
     Predefined vector<vector<uint8_t>> which can be used to make Colors.
     */ 
-    static std::vector<std::vector<uint8_t>> red();
-    static std::vector<std::vector<uint8_t>> cyan();
-    static std::vector<std::vector<uint8_t>> amber();
-    static std::vector<std::vector<uint8_t>> purple();
+    static Color red();
+    static Color cyan();
+    static Color amber();
+    static Color purple();
 };
 
 #endif
