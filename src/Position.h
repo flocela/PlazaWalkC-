@@ -4,7 +4,9 @@
 #include <iostream>
 #include <string>
 
-// Holds an x and y value.
+/*
+Holds an x and y value.
+*/
 class Position
 {
     public:
@@ -41,7 +43,13 @@ namespace std
     {
         size_t operator()(const Position& p) const
         {
-            return ( hash<int>()(p.getX()) ^ (hash<int>()(p.getY()) << 1) );
+            // prime numbers
+            int A = 32059; 
+            int B = 117989;
+            unsigned int h = 97;
+            h = (h) ^ (p.getX() * A);
+            h = (h) ^ (p.getY() * B);
+            return h;
         }
     };
 }
