@@ -19,6 +19,7 @@ TEST_CASE("MainSetup_core::")
         REQUIRE(10 == boxes[0].getGroupId());
         REQUIRE(10 == boxes[99].getGroupId());
     }
+
     SECTION("addAGroupOfBoxes() adds one group and then another.")
     {
         vector<Box> boxes{};

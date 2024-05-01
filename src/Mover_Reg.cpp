@@ -10,7 +10,6 @@ int Mover_Reg::getBoxId() const
     return _boxId;
 }
 
-// TODO this return value needs to be tested.
 bool Mover_Reg::addBox(Position position)
 {
     bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_arrive});
@@ -23,33 +22,17 @@ bool Mover_Reg::addBox(Position position)
    
     return success;
 }
-// TODO test exceptions
+
 bool Mover_Reg::removeBox(Position position)
 {
     bool success = false;
-    // Adding the extra information (that this was a call to remove the box) to the error string.
-    try
-    {
-        success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave});
-        success = _board->addNote(position, BoardNote{_boxId, SpotType::left});
-    }
-    catch(std::exception& e)
-    {
-        string invalidString = "Trying to remove box ";
-        invalidString.append(to_string(_boxId));
-        invalidString.append(", but Board would not accept SpotType::to_leave at position [");
-        invalidString.append(to_string(position.getX()));
-        invalidString.append(", ");
-        invalidString.append(to_string(position.getY()));
-        invalidString.append("].  ");
-        invalidString.append(e.what());
-        throw invalid_argument(invalidString);
-    }
+
+    success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave});
+    success = _board->addNote(position, BoardNote{_boxId, SpotType::left});
 
     return success;
 }
 
-// TODO this return value needs to be tested. Along with the order of these moves.
 bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
 {
     bool success = _board->addNote(newPosition, BoardNote{_boxId, SpotType::to_arrive});

@@ -3,9 +3,12 @@
 
 #include "Position.h"
 
-// Adds Boxes to a Board.
-// Removes Boxes from a Board.
-// Moves Boxes on Board.
+/*
+Adds Boxes to a Board.
+Removes Boxes from a Board.
+Moves Boxes on the Board.
+*/
+
 class Mover
 {
 
