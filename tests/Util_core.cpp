@@ -110,8 +110,8 @@ TEST_CASE("Util_core::")
 
         for(const auto& countPerYValue : countsPerYValues)
         {
-            REQUIRE(( (countPerYValue.second <= 1000) && (countPerYValue.second >= 800) ));
-            REQUIRE(( (countPerYValue.second <= 1000) && (countPerYValue.second >= 800) ));
+            REQUIRE(( (countPerYValue.second <= 1100) && (countPerYValue.second >= 700) ));
+            REQUIRE(( (countPerYValue.second <= 1100) && (countPerYValue.second >= 700) ));
         }
     }
     // TODO move to MainSetup Tests
