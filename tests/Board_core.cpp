@@ -1,5 +1,6 @@
 #include "catch.hpp"
 #include "../src/Board.h"
+#include "../src/NoteAccountant.h"
 
 using namespace std;
 
@@ -164,5 +165,25 @@ TEST_CASE("Board_core::")
 
         REQUIRE(SpotType::to_arrive == dropForBox1.getSpotType());
         REQUIRE(1 == dropForBox1.getBoxId());
+    }
+
+    SECTION("Adding a BoardNote to the board, should result in a callback message sent to the NoteSubscriber.")
+    {
+        Position pos0{0, 0};
+        Board board{10, 10, vector<Box>{Box{0, 0, 1, 1}}};
+        NoteAccountant callbackObject{};
+        board.registerNoteSubscriber(pos0, callbackObject);
+       
+        // box 0 is about to arrive. 
+        board.addNote(pos0, BoardNote{0, SpotType::to_arrive});
+
+        // box 0 arrives.
+        board.addNote(pos0, BoardNote{0, SpotType::arrive});
+
+        vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> callbackNotes = callbackObject.getNotes();
+
+        REQUIRE(2 == callbackNotes.size());
+        REQUIRE(BoardNote{0, SpotType::to_arrive} == callbackNotes[0].second);
+        REQUIRE(BoardNote{0, SpotType::arrive}  == callbackNotes[1].second);
     }
 }
