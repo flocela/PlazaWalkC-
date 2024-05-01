@@ -20,7 +20,7 @@ pair<Position, int> Decider_Risk1::getNext(
     // Take each position in possiblePositions
     for (const Position& position : possiblePositions)
     {
-        // BoardNote at position will tell us what box (if any) is currently at that position. 
+        // BoardNote at position will tell us what box (if any) is currently at that Position. 
         BoardNote boardNote = board.getNoteAt(position);
 
         if (boardNote.getType() == SpotType::left)

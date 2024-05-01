@@ -16,16 +16,17 @@ pair<Position, int> Decider_Safe::getNext(
 {
     for (const Position& position : possiblePositions)
     {
-        // BoardNote at position will if a Box is at that position. 
+        // BoardNote at position. 
         BoardNote boardNote = board.getNoteAt(position);
 
-        // If the BoardNote's type is empty, then return current position. 
+        // If the BoardNote's type is empty, then return position. 
         if (boardNote.getType() == SpotType::left)
         {
             return {position, 0};
         }       
     }
 
+    // @possiblePositions did not hold a Position with a SpotType of SpotType::left. Return an invalid Position and a time of -1.
     return {Position{-1, -1}, -1};
 } 
 

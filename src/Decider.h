@@ -7,13 +7,18 @@
 class Decider
 {
 
-public:
+    public:
+
     virtual ~Decider() = default;
 
-    // Returns whether this Decider suggests moving to the given Position. True means yes move, false means don't move.
+    /*
+    Returns whether given @position and @board, if the user should move to @position.
+    */
     virtual bool suggestMoveTo(Position position, const Board& board) = 0;
 
-    // Retuns this Decider's suggested Position to move to from the given vector of possiblePositions, and how long the Box should wait before moving to that Position.
+    /*
+    Retuns the suggested Position to move to given @possiblePositions and @board. Also returns the number of millisecondsto wait before moving to the returned Position.
+    */
     virtual std::pair<Position, int> getNext(
         const std::vector<Position>& possiblePositions,
         const Board& board) = 0;

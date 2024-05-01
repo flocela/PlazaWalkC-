@@ -12,14 +12,16 @@ TEST_CASE("Decider_Safe_core::")
     // Decider_Safe
     Decider_Safe decider{};
 
-    SECTION("Box1 is deciding to move to positionA, but Box0 is at positionA with a SpotType::arrive.")
+    // Each SECTION represents a Position with a different SpotType (arrive, to_arrive, _to_leave, and left)
+
+    SECTION("Box0 is at positionA with a SpotType::arrive.")
     {
 
         // Box0 arrives at positionA.
         board.addNote(positionA, BoardNote{0, SpotType::to_arrive});
         board.addNote(positionA, BoardNote{0, SpotType::arrive});
 
-        SECTION("SuggetMoveTo(positionA, ...) returns false since positionA has a SpotType that is not SpotType::left")
+        SECTION("Box1 is trying to move to positionA. suggetMoveTo(positionA, ...) returns false since positionA has a SpotType that is not SpotType::left")
         {
             REQUIRE_FALSE(decider.suggestMoveTo(positionA, board));
         }
@@ -38,7 +40,8 @@ TEST_CASE("Decider_Safe_core::")
         {
             vector<Position> possiblePositions = {positionA};
             pair<Position, int> next = decider.getNext(possiblePositions, board); 
-
+    
+            REQUIRE_FALSE(decider.suggestMoveTo(positionA, board));
             REQUIRE(Position{-1, -1} == next.first); 
             REQUIRE(-1 == next.second);
         }
@@ -48,13 +51,13 @@ TEST_CASE("Decider_Safe_core::")
     {
 
         // Box0 is to_arrive at positionA. 
-        BoardNote boardNoteToArrive{0, SpotType::to_arrive};
         board.addNote(positionA, BoardNote{0, SpotType::to_arrive});
 
         vector<Position> possiblePositions = {positionA};
 
         pair<Position, int> next = decider.getNext(possiblePositions, board);
 
+        REQUIRE_FALSE(decider.suggestMoveTo(positionA, board));
         REQUIRE(Position{-1, -1} == next.first);
         REQUIRE(-1 == next.second);
     }
@@ -69,7 +72,8 @@ TEST_CASE("Decider_Safe_core::")
         vector<Position> possiblePositions = {positionA};
 
         pair<Position, int> next = decider.getNext(possiblePositions, board);
-
+   
+        REQUIRE_FALSE(decider.suggestMoveTo(positionA, board));
         REQUIRE(Position{-1, -1} == next.first);
         REQUIRE(-1 == next.second);
     }

@@ -32,6 +32,8 @@ TEST_CASE("Decider_Risk1_core::")
     board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_arrive});
     board.addNote(positionTypeToLeave, BoardNote{2, SpotType::arrive});
     board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_leave});
+
+    // There is not Box at positionTypeLeft.
     
 
     // Decider_Risk1
@@ -75,7 +77,7 @@ TEST_CASE("Decider_Risk1_core::")
         {
             REQUIRE(decider.suggestMoveTo(positionTypeToLeave, board));
         }
-        SECTION("possiblePositions starts with positionTypeToLeave. It is the first possiblePosition that is SpotType::to_leave or SpotType::left, so it will be returned.")
+        SECTION("possiblePositions starts with positionTypeToLeave. It is the first possiblePosition that is SpotType::to_leave or SpotType::left, so it is returned.")
         {
             vector<Position> possiblePositions = {positionTypeToLeave, positionTypeLeft, positionTypeToLeave};
             pair<Position, int> next = decider.getNext(possiblePositions, board);
@@ -89,7 +91,7 @@ TEST_CASE("Decider_Risk1_core::")
         {
             REQUIRE(decider.suggestMoveTo(positionTypeLeft, board));
         }
-        SECTION("possiblePositions starts with positionTypeLeft. It is the first possiblePosition that is SpoteType::to_leave or SpotType::left, so it will be returnd.")
+        SECTION("possiblePositions starts with positionTypeLeft. It is the first possiblePosition that is SpoteType::to_leave or SpotType::left, so it is returnd.")
         {
             vector<Position> possiblePositions = {positionTypeLeft, positionTypeLeft, positionTypeToLeave};
             pair<Position, int> next = decider.getNext(possiblePositions, board);
