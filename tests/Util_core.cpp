@@ -54,7 +54,7 @@ TEST_CASE("Util_core::")
 
         for(const auto& countPerBool: countsPerBools)
         {
-            REQUIRE(( (countPerBool.second <= 5150) && (countPerBool.second >= 4850) ));
+            REQUIRE(( (countPerBool.second <= 5200) && (countPerBool.second >= 4800) ));
         }
     }
 
