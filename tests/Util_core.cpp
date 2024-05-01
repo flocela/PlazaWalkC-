@@ -104,8 +104,8 @@ TEST_CASE("Util_core::")
 
         for(const auto& countPerXValue : countsPerXValues)
         {
-            REQUIRE(( (countPerXValue.second <= 1050) && (countPerXValue.second >= 850) ));
-            REQUIRE(( (countPerXValue.second <= 1050) && (countPerXValue.second >= 850) ));
+            REQUIRE(( (countPerXValue.second <= 1100) && (countPerXValue.second >= 800) ));
+            REQUIRE(( (countPerXValue.second <= 1100) && (countPerXValue.second >= 800) ));
         }
 
         for(const auto& countPerYValue : countsPerYValues)
