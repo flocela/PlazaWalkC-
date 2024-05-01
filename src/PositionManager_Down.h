@@ -20,7 +20,7 @@ class PositionManager_Down : public PositionManager
 
     bool atEnd(Position position) override;
 
-    std::pair<Position, Position> getEndPoint() const override;
+    Rectangle getEndPoint() const override;
 
     private:
     int _endY;

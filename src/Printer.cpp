@@ -67,10 +67,10 @@ void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes
 
     // Print End Rectangles
 
-    for(const pair<Position, Position>& endPoint : _endRectangles)
+    for(const Rectangle& endRectangle : _endRectangles)
     {
-        Position topLeft = endPoint.first;
-        Position bottomRight = endPoint.second;
+        Position topLeft = endRectangle.getTopLeft();
+        Position bottomRight = endRectangle.getBottomRight();
         
         SDL_Rect endRect;
         endRect.x = topLeft.getX();
@@ -86,12 +86,12 @@ void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes
 
 }
 
-void Printer::addInOutBoundRectangle(Position topLeft, Position bottomRight)
+void Printer::addInOutBoundRectangle(Rectangle rectangle)
 {
-    _endRectangles.push_back({topLeft, bottomRight});
+    _endRectangles.push_back(rectangle);
 }
 
-void Printer::addInOutBoundRectangles(vector<pair<Position, Position>> rectangles)
+void Printer::addInOutBoundRectangles(vector<Rectangle> rectangles)
 {
     for(const auto& rect : rectangles)
     {

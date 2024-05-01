@@ -15,4 +15,8 @@ Position Rectangle::getBottomRight() const
     return _bottomRight;
 }
 
-     
+bool Rectangle::operator== (const Rectangle& o) const
+{
+    return _topLeft == o._topLeft &&
+           _bottomRight == o._bottomRight;
+} 

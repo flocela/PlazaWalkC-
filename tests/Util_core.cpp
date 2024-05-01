@@ -61,7 +61,7 @@ TEST_CASE("Util_core::")
 
     SECTION("Returns Positions that are in the rectangle outlined by the given corners")
     {
-        vector<Position> insideRectangle = Util::getRandomPositionsInRectangle(Position{0, 0}, Position{10, 10}, 10000);
+        vector<Position> insideRectangle = Util::getRandomPositionsInRectangle(Rectangle{Position{0, 0}, Position{10, 10}}, 10000);
        
         unordered_map<int, int> countsPerXValues{};
         unordered_map<int, int> countsPerYValues{}; 
@@ -94,7 +94,7 @@ TEST_CASE("Util_core::")
 
         for(int ii=0; ii<10000; ++ii)
         {
-            Position randomPosition = Util::getRandomPositionInRectangle(Position{0, 0}, Position{10, 10});
+            Position randomPosition = Util::getRandomPositionInRectangle(Rectangle{Position{0, 0}, Position{10, 10}});
             ++countsPerXValues[randomPosition.getX()];
             ++countsPerYValues[randomPosition.getY()];
         }
@@ -104,8 +104,8 @@ TEST_CASE("Util_core::")
 
         for(const auto& countPerXValue : countsPerXValues)
         {
-            REQUIRE(( (countPerXValue.second <= 1000) && (countPerXValue.second >= 800) ));
-            REQUIRE(( (countPerXValue.second <= 1000) && (countPerXValue.second >= 800) ));
+            REQUIRE(( (countPerXValue.second <= 1050) && (countPerXValue.second >= 850) ));
+            REQUIRE(( (countPerXValue.second <= 1050) && (countPerXValue.second >= 850) ));
         }
 
         for(const auto& countPerYValue : countsPerYValues)

@@ -18,43 +18,44 @@ void MainSetup::addAGroupOfBoxes(
 /* Placement of entrances and exits to plaza
 
                 North Wall
-              -----    ------
+                  ------
             --------------------
            |                    |  
           ||                    ||
           ||                    ||
           ||                    ||
-West Wall  |                    |  East Wall
+West Walls |                    |  East Walls
           ||                    ||
           ||                    ||
           ||                    ||
            |                    |
             --------------------
                ______   ______
-                  South Wall
+                  South Walls
 */
 
-vector<pair<Position, Position>> MainSetup::getEndRectangles(int bW, int bH)
+vector<Rectangle> MainSetup::getInOutBoundRectangles(int bW, int bH)
 {
-    vector<pair<Position, Position>> endRanges{};
-    endRanges.push_back({Position{bW/2-50, 0},   Position{bW/2+50, 10}});         // North wall at center
-    endRanges.push_back({Position{0, bW/4-25},   Position{10, bW/4+25}});         // West wall at top 
-    endRanges.push_back({Position{bW-11, bH/4-25}, Position{bW-1, bH/4+25}});     // East wall at top 
-    endRanges.push_back({Position{0, bW*3/4-25},   Position{10, bW*3/4+25}});     // West wall at bottom 
-    endRanges.push_back({Position{bW-11, bH*3/4-25}, Position{bW-1, bH*3/4+25}}); // East wall at bottom 
-    endRanges.push_back({Position{bW*3/4-25, bH-11}, Position{bW*3/4+25, bH-1}}); // South wall at left
-    endRanges.push_back({Position{bW/4-25, bH-11}, Position{bW/4+25, bH-1}});     // South wall at right 
-    return endRanges;
+    vector<Rectangle> inOut{};
+    inOut.push_back(Rectangle{Position{bW/2-50, 0},       Position{bW/2+50, 10}});     // North wall at center
+    inOut.push_back(Rectangle{Position{0, bW/4-25},       Position{10, bW/4+25}});     // West wall at top 
+    inOut.push_back(Rectangle{Position{bW-11, bH/4-25},   Position{bW-1, bH/4+25}});   // East wall at top 
+    inOut.push_back(Rectangle{Position{0, bW*3/4-25},     Position{10, bW*3/4+25}});   // West wall at bottom 
+    inOut.push_back(Rectangle{Position{bW-11, bH*3/4-25}, Position{bW-1, bH*3/4+25}}); // East wall at bottom
+    inOut.push_back(Rectangle{Position{bW*3/4-25, bH-11}, Position{bW*3/4+25, bH-1}}); // South wall at left
+    inOut.push_back(Rectangle{Position{bW/4-25, bH-11},   Position{bW/4+25, bH-1}});   // South wall at right 
+
+    return inOut;
 }
 
-vector<pair<Position, Position>> MainSetup::deleteRect(
-    vector<pair<Position, Position>> rectangles,
-    pair<Position, Position> rectangle)
+vector<Rectangle> MainSetup::deleteRect(
+    vector<Rectangle> rectangles,
+    Rectangle discardR)
 {
-    vector<pair<Position, Position>> reduced{};
-    for(pair<Position, Position> rect : rectangles)
+    vector<Rectangle> reduced{};
+    for(const Rectangle& rect : rectangles)
     {
-        if(!(rect == rectangle))
+        if(!(rect == discardR))
         {
             reduced.push_back(rect);
         }

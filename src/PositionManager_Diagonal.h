@@ -3,6 +3,7 @@
 
 #include "Position.h"
 #include "PositionManager.h"
+#include "Rectangle.h"
 
 class PositionManager_Diagonal : public PositionManager
 {
@@ -11,8 +12,7 @@ public:
     // topLeft is the top left corner of the destination rectangle.
     // botRight is the bottom right corner of the destination rectangle.
     PositionManager_Diagonal(
-        Position topLeft,
-        Position botRight,
+        Rectangle destinationRectangle,
         int boardMinX,
         int boardMaxX,
         int boardMinY,
@@ -31,7 +31,7 @@ public:
     bool atEnd(Position position) override;
 
     
-    std::pair<Position, Position> getEndPoint() const override;
+    Rectangle getEndPoint() const override;
 
 private:
     int _topLeftX = 0;

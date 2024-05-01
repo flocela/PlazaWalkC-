@@ -14,6 +14,9 @@ class Rectangle
     Position getTopLeft() const;
     Position getBottomRight() const;
 
+    // TODO test
+    bool operator== (const Rectangle& o) const;
+
 
     private:
 

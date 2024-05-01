@@ -4,6 +4,7 @@
 #include <vector>
 #include "Box.h"
 #include "Position.h"
+#include "Rectangle.h"
 
 class PositionManager
 {
@@ -25,7 +26,7 @@ public:
     virtual std::vector<Position> getFuturePositions(Position position) = 0;
 
     // Returns the final destination of the PositionManager as a rectangle. The rectangle is represented as a pair of Positions, where the first Position is the top left corner of the rectangle and the second Position is the bottom right corner.
-    virtual std::pair<Position, Position> getEndPoint() const = 0;
+    virtual Rectangle getEndPoint() const = 0;
 };
 
 #endif

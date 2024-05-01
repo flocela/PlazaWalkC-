@@ -39,12 +39,12 @@ bool Util::getRandomBool()
     return static_cast<bool>(distribution(gen));
 }
 
-vector<Position> Util::getRandomPositionsInRectangle(Position cornerA, Position cornerB, int count)
+vector<Position> Util::getRandomPositionsInRectangle(Rectangle rectangle, int count)
 {
-    int x1 = cornerA.getX();
-    int x2 = cornerB.getX();
-    int y1 = cornerA.getY();
-    int y2 = cornerB.getY();
+    int x1 = rectangle.getTopLeft().getX();
+    int x2 = rectangle.getBottomRight().getX();
+    int y1 = rectangle.getTopLeft().getY();
+    int y2 = rectangle.getBottomRight().getY();
 
     vector<int> randomXs = getRandomInt(x1, x2, count);
     vector<int> randomYs = getRandomInt(y1, y2, count);
@@ -58,12 +58,12 @@ vector<Position> Util::getRandomPositionsInRectangle(Position cornerA, Position 
     return positions;
 }
 
-Position Util::getRandomPositionInRectangle(Position cornerA, Position cornerB)
+Position Util::getRandomPositionInRectangle(Rectangle rectangle)
 {
-    int x1 = cornerA.getX();
-    int x2 = cornerB.getX();
-    int y1 = cornerA.getY();
-    int y2 = cornerB.getY();
+    int x1 = rectangle.getTopLeft().getX();
+    int x2 = rectangle.getBottomRight().getX();
+    int y1 = rectangle.getTopLeft().getY();
+    int y2 = rectangle.getBottomRight().getY();
 
     return Position{getRandomInt(x1, x2), getRandomInt(y1, y2)};
 }

@@ -7,6 +7,7 @@
 #include "Color.h"
 #include "RecorderListener.h"
 #include "Recorder.h"
+#include "Rectangle.h"
 #include "SDL.h"
 
 class Printer : public RecorderListener {
@@ -22,8 +23,8 @@ class Printer : public RecorderListener {
     ~Printer() noexcept = default;
 
     // These are rectangles where Boxes start and end at. They are printed as dark grey rectangles on the board.
-    void addInOutBoundRectangle(Position topLeft, Position bottomRight);
-    void addInOutBoundRectangles(std::vector<std::pair<Position, Position>> rectangles);
+    void addInOutBoundRectangle(Rectangle rectangle);
+    void addInOutBoundRectangles(std::vector<Rectangle> rectangles);
 
     //  
     void setGroupColors(std::unordered_map<int, Color> colorPerGroupNumber);
@@ -36,7 +37,7 @@ class Printer : public RecorderListener {
     SDL_Renderer* _renderer;
     std::unordered_map<int, Color> _colorPerGroupNumber{};
     std::unordered_map<int, int> _numOfShadesPerGroupNumber{}; 
-    std::vector<std::pair<Position, Position>> _endRectangles{};
+    std::vector<Rectangle> _endRectangles{};
 
     void print(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes);
     

@@ -42,20 +42,20 @@ TEST_CASE("MainSetup_core::")
 
     SECTION("deleteRect() deletes rectangle from vector.")
     {
-        vector<pair<Position, Position>> rectangles{};
+        vector<Rectangle> rectangles{};
         rectangles.push_back({Position{0, 0}, Position{10, 10}}); 
         rectangles.push_back({Position{10, 10}, Position{20, 20}}); 
         rectangles.push_back({Position{20, 20}, Position{30, 30}}); 
         rectangles.push_back({Position{30, 30}, Position{40, 40}}); 
 
         
-        vector<pair<Position, Position>> reducedRectangles{};
-        reducedRectangles.push_back({Position{0, 0}, Position{10, 10}}); 
-        reducedRectangles.push_back({Position{10, 10}, Position{20, 20}}); 
-        reducedRectangles.push_back({Position{30, 30}, Position{40, 40}}); 
+        vector<Rectangle> reducedRectangles{};
+        reducedRectangles.push_back(Rectangle{Position{0, 0}, Position{10, 10}}); 
+        reducedRectangles.push_back(Rectangle{Position{10, 10}, Position{20, 20}}); 
+        reducedRectangles.push_back(Rectangle{Position{30, 30}, Position{40, 40}}); 
 
         REQUIRE(reducedRectangles ==
-                      MainSetup::deleteRect(rectangles, {Position{20, 20}, Position{30, 30}}) );
+                      MainSetup::deleteRect(rectangles, rectangles[2]));
     }
         
 }

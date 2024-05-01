@@ -81,9 +81,9 @@ bool PositionManager_Step::atEnd(Position curPosition)
     return curPosition == _finalTarget;
 }
 
-std::pair<Position, Position> PositionManager_Step::getEndPoint() const
+Rectangle PositionManager_Step::getEndPoint() const
 {
-    return pair<Position, Position>{_finalTarget, _finalTarget};
+    return Rectangle{_finalTarget, _finalTarget};
 }
 
 void PositionManager_Step::setCurrentTarget(Position curPosition)

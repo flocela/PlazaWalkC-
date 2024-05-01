@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     /* SDL, TTF, window, and renderer work! */
 
     // In-bound and out-bound rectangles are where the boxes start from and terminate at. A box can not start and end at the same rectangle in inOutBoundRectangles.
-    auto inOutBoundRectangles = MainSetup::getEndRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
+    auto inOutBoundRectangles = MainSetup::getInOutBoundRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
     
     // Create Boxes
     // Group0 with 200 boxes (red) will tread safely. Boxes start at north wall.

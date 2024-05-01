@@ -39,8 +39,8 @@ TEST_CASE("PositionManager_Step_core::")
             20,
             0,
             20};
-        REQUIRE(Position{5, 5} == pm.getEndPoint().first);
-        REQUIRE(Position{5, 5} == pm.getEndPoint().second);
+        REQUIRE(Position{5, 5} == pm.getEndPoint().getTopLeft());
+        REQUIRE(Position{5, 5} == pm.getEndPoint().getBottomRight());
     }
 
     // Target is north of original position.

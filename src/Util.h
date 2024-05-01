@@ -5,6 +5,7 @@
 #include <vector>
 #include "Box.h"
 #include "Position.h"
+#include "Rectangle.h"
 
 class Util
 {
@@ -19,10 +20,10 @@ public:
     static bool getRandomBool();
 
     // Returns count number of random Positions in the rectangle made by @a and @b. Positions on the edge of the rectangle are valid and could be returned. If @a is {ax, ay} and @b is {bx, by}, then a Position {ax, by} could be returned.
-    static std::vector<Position> getRandomPositionsInRectangle(Position a, Position b, int count);
+    static std::vector<Position> getRandomPositionsInRectangle(Rectangle, int count);
 
     // Returns a random Position in the rectangle made by Positions cornerA and cornerB. Positions on the edge of the rectangle are valid and could be returned. If @a is {ax, ay} and @b is {bx, by}, then a Position {ax, by} could be returned.
-    static Position getRandomPositionInRectangle(Position cornerA, Position cornerB);
+    static Position getRandomPositionInRectangle(Rectangle rectangle);
 
     // Suffles a vector of any type.
     template<typename T>

@@ -6,16 +6,15 @@
 using namespace std;
 
 PositionManager_Diagonal::PositionManager_Diagonal(
-    Position topLeft,
-    Position botRight,
+    Rectangle destinationRectangle,
     int boardMinX,
     int boardMaxX,
     int boardMinY,
     int boardMaxY)
-  : _topLeftX{topLeft.getX()},
-    _topLeftY{topLeft.getY()},
-    _botRightX{botRight.getX()},
-    _botRightY{botRight.getY()},
+  : _topLeftX{destinationRectangle.getTopLeft().getX()},
+    _topLeftY{destinationRectangle.getTopLeft().getY()},
+    _botRightX{destinationRectangle.getBottomRight().getX()},
+    _botRightY{destinationRectangle.getBottomRight().getY()},
     _targetX{(_topLeftX + _botRightX)/2},
     _targetY{(_topLeftY + _botRightY)/2},
     _boardMinX{boardMinX},
@@ -108,9 +107,9 @@ double PositionManager_Diagonal::getDistSquared(Position a, Position b)
 }
 
 // TODO needs a test
-std::pair<Position, Position> PositionManager_Diagonal::getEndPoint() const
+Rectangle PositionManager_Diagonal::getEndPoint() const
 {
-    return pair<Position, Position>{Position{_topLeftX, _topLeftY}, Position{_botRightX, _botRightY}};
+    return Rectangle{Position{_topLeftX, _topLeftY}, Position{_botRightX, _botRightY}};
 }
 
 bool PositionManager_Diagonal::isValid(Position& p) const

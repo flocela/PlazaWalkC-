@@ -4,12 +4,13 @@
 #include <memory>
 #include <thread>
 #include "Board.h"
+#include "Decider.h"
 #include "DeciderType.h"
 #include "Mover.h"
 #include "Position.h"
 #include "PositionManager.h"
 #include "PositionManagerType.h"
-#include "Decider.h"
+#include "Rectangle.h"
 
 class Threader
 {
@@ -26,8 +27,8 @@ public:
         std::vector<std::unique_ptr<std::thread>>& threads,
         int firstBoxId,
         int count,
-        std::pair<Position, Position> startRect,
-        std::vector<std::pair<Position, Position>> endRanges,
+        Rectangle startRect,
+        std::vector<Rectangle> endRanges,
         Board& board,
         PositionManagerType pmt,
         DeciderType dt,
@@ -37,18 +38,18 @@ public:
         std::vector<std::unique_ptr<std::thread>>& threads,
         int numOfBoxesPerGroup,
         int numOfGroups,
-        const std::vector<std::pair<Position, Position>>& startEndRectangles,
+        const std::vector<Rectangle>& startEndRectangles,
         Board& board,
         bool& running);
 
     void populateRandomPoints(
         std::vector<Position>& randomPositions,
-        std::vector<std::pair<Position, Position>> rects,
+        std::vector<Rectangle> rects,
         int numOfPoints);
 
     std::unique_ptr<PositionManager> createPositionManager(
         PositionManagerType pmt,
-        std::pair<Position, Position> endRectangle,
+        Rectangle endRectangle,
         int boardMinX,
         int boardMaxX,
         int boardMinY,
@@ -60,7 +61,7 @@ public:
         std::vector<std::unique_ptr<std::thread>>& threads,
         Position topLeftCornerOfStartPoint,
         Position bottomRightCornerOfStartPoint,
-        std::vector<std::pair<Position, Position>> endRanges,
+        std::vector<Rectangle> endRanges,
         Board& board,
         int firstBoxId,
         int count,

@@ -93,8 +93,8 @@ void Threader::populateThreadsForOneGroup(
     vector<unique_ptr<thread>>& threads,
     int firstBoxId,
     int count,
-    std::pair<Position, Position> startRectangle,
-    vector<pair<Position, Position>> endRects, 
+    Rectangle startRectangle,
+    vector<Rectangle> endRects, 
     Board& board,
     PositionManagerType pmt,
     DeciderType dt,
@@ -102,8 +102,7 @@ void Threader::populateThreadsForOneGroup(
 
 {
     vector<Position> startPoints = Util::getRandomPositionsInRectangle(
-        startRectangle.first,
-        startRectangle.second,
+        startRectangle,
         count);
 
     for(int ii=0; ii<count; ++ii)
@@ -134,7 +133,7 @@ void Threader::populateThreads(
     vector<unique_ptr<thread>>& threads,
     int numOfBoxesPerGroup,
     int numOfGroups,
-    const vector<pair<Position, Position>>& startEndRectangles,
+    const vector<Rectangle>& startEndRectangles,
     Board& board,
     bool& running)
 {
@@ -162,15 +161,14 @@ void Threader::populateThreads(
 // The Positions are shuffled in @randomPositions. Taking an index in @randomPosition, which rectangle it comes from in @rects is random.
 void Threader::populateRandomPoints(
     vector<Position>& randomPositions,
-    vector<pair<Position, Position>> rects,
+    vector<Rectangle> rects,
     int numOfPointsFromEachRect)
 {
     for(size_t ii=0; ii<rects.size(); ++ii)
     {
         // vector of random positions to append to randomPositions.
         vector<Position> toAppend = Util::getRandomPositionsInRectangle(
-            rects[ii].first,
-            rects[ii].second,
+            rects[ii],
             numOfPointsFromEachRect);
 
         randomPositions.insert(randomPositions.end(), toAppend.begin(), toAppend.end());
@@ -181,7 +179,7 @@ void Threader::populateRandomPoints(
 
 unique_ptr<PositionManager> Threader::createPositionManager(
     PositionManagerType pmt,
-    pair<Position, Position> endRectangle,
+    Rectangle endRectangle,
     int boardMinX,
     int boardMaxX,
     int boardMinY,
@@ -190,8 +188,7 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     if(pmt == PositionManagerType::diagonal)
     {
         return make_unique<PositionManager_Diagonal>(
-            endRectangle.first,
-            endRectangle.second,
+            endRectangle,
             boardMinX,
             boardMaxX,
             boardMinY,
@@ -199,8 +196,8 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     }
     else if (pmt == PositionManagerType::down)
     {
-        int minY = std::min(endRectangle.first.getY(), endRectangle.second.getY());
-        int maxY = std::max(endRectangle.first.getY(), endRectangle.second.getY());
+        int minY = std::min(endRectangle.getTopLeft().getY(), endRectangle.getBottomRight().getY());
+        int maxY = std::max(endRectangle.getTopLeft().getY(), endRectangle.getBottomRight().getY());
         return make_unique<PositionManager_Down>(
             minY + ((maxY - minY)/2),
             boardMinX,
@@ -210,8 +207,8 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     }
     else if (pmt == PositionManagerType::up)
     {
-        int minY = std::min(endRectangle.first.getY(), endRectangle.second.getY());
-        int maxY = std::max(endRectangle.first.getY(), endRectangle.second.getY());
+        int minY = std::min(endRectangle.getTopLeft().getY(), endRectangle.getBottomRight().getY());
+        int maxY = std::max(endRectangle.getTopLeft().getY(), endRectangle.getBottomRight().getY());
         return make_unique<PositionManager_Up>(
             minY + ((maxY - minY)/2),
             boardMinX,
@@ -222,7 +219,7 @@ unique_ptr<PositionManager> Threader::createPositionManager(
     else
     {
         return make_unique<PositionManager_Step>(
-            Util::getRandomPositionInRectangle(endRectangle.first, endRectangle.second), 
+            Util::getRandomPositionInRectangle(endRectangle),
             boardMinX,
             boardMaxX,
             boardMinY,

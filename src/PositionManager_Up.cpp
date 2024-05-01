@@ -53,9 +53,9 @@ bool PositionManager_Up::atEnd(Position position)
     return position.getY() <= _endY;
 }
     
-std::pair<Position, Position> PositionManager_Up::getEndPoint() const
+Rectangle PositionManager_Up::getEndPoint() const
 {
-    return pair<Position, Position>{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
+    return Rectangle{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
 }
 
 bool PositionManager_Up::isValid(Position& p) const

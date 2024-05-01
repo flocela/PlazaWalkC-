@@ -8,8 +8,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::atEnd() return false if position is outside ending box")
     {
         PositionManager_Diagonal pm{
-            Position{70, 50},
-            Position{75, 80},
+            Rectangle{Position{70, 50},Position{75, 80}},
             0,
             99,
             0,
@@ -21,8 +20,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::atEnd() return true if position is inside ending box")
     {
         PositionManager_Diagonal pm{
-            Position{70, 50},
-            Position{75, 80},
+            Rectangle{Position{70, 50}, Position{75, 80}},
             0,
             99,
             0,
@@ -36,8 +34,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is east of box")
     {
         PositionManager_Diagonal pm{
-            Position{50, 50},
-            Position{55, 70},
+            Rectangle{Position{50, 50}, Position{55, 70}},
             0,
             99,
             0,
@@ -58,8 +55,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is southeast of box")
     {
         PositionManager_Diagonal pm{
-            Position{50, 70},
-            Position{55, 80},
+            Rectangle{Position{50, 70}, Position{55, 80}},
             0,
             99,
             0,
@@ -95,8 +91,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is south of box")
     {
         PositionManager_Diagonal pm{
-            Position{50, 50},
-            Position{55, 70},
+            Rectangle{Position{50, 50}, Position{55, 70}},
             0,
             99,
             0,
@@ -120,8 +115,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is southwest of box")
     {
         PositionManager_Diagonal pm{
-            Position{50, 70},
-            Position{55, 80},
+            Rectangle{Position{50, 70}, Position{55, 80}},
             0,
             99,
             0,
@@ -155,8 +149,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is west of box")
     {
         PositionManager_Diagonal pm{
-            Position{20, 50},
-            Position{30, 70},
+            Rectangle{Position{20, 50}, Position{30, 70}},
             0,
             99,
             0,
@@ -177,8 +170,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is northwest of box")
     {
         PositionManager_Diagonal pm{
-            Position{20, 70},
-            Position{30, 80},
+            Rectangle{Position{20, 70}, Position{30, 80}},
             0,
             99,
             0,
@@ -212,8 +204,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is north of box")
     {
         PositionManager_Diagonal pm{
-            Position{50, 50},
-            Position{55, 70},
+            Rectangle{Position{50, 50}, Position{55, 70}},
             0,
             99,
             0,
@@ -237,8 +228,7 @@ TEST_CASE("PositionManager_Diagonal_core::")
     SECTION("PositionManager_Diagonal::target is northeast of box")
     {
         PositionManager_Diagonal pm{
-            Position{70, 50},
-            Position{80, 55},
+            Rectangle{Position{70, 50}, Position{80, 55}},
             0,
             99,
             0,
