@@ -44,7 +44,7 @@ TEST_CASE("Position_core::")
     SECTION("toString()")
     {
         Position p{101, 202};
-        REQUIRE("[101, 202]" == p.toString());
+        REQUIRE("{101, 202}" == p.toString());
     }
 
     SECTION("ostream operator")
@@ -53,7 +53,7 @@ TEST_CASE("Position_core::")
        
         ostringstream oss;
         oss << p; 
-        REQUIRE(oss.str() == "[1000, 1200]");
+        REQUIRE(oss.str() == "{1000, 1200}");
     }
     
     SECTION("Identical Positions return the same hash")

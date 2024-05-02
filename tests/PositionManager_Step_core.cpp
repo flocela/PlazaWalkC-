@@ -6,7 +6,7 @@ using namespace std;
 TEST_CASE("PositionManager_Step_core::")
 {
 
-    SECTION("atEnd() returns false if given position is not final position.")
+    SECTION("atEnd() returns false if the given Position is not the final Position.")
     {
         PositionManager_Step pm{
             Position{5, 5}, 
@@ -20,7 +20,7 @@ TEST_CASE("PositionManager_Step_core::")
         REQUIRE(false == pm.atEnd(Position{6, 5}));
     }
 
-    SECTION("atEnd() returns true if given position is at final position.")
+    SECTION("atEnd() returns true if given the Position is at final Position.")
     {
         PositionManager_Step pm{
         Position{5, 5}, 
@@ -31,7 +31,7 @@ TEST_CASE("PositionManager_Step_core::")
         REQUIRE(true == pm.atEnd(Position{5, 5}));
     }
 
-    SECTION("getEndRect() returns the final position.")
+    SECTION("getEndRect() returns the final Position as a Rectangle.")
     {
         PositionManager_Step pm{
             Position{5, 5}, 
@@ -39,12 +39,11 @@ TEST_CASE("PositionManager_Step_core::")
             20,
             0,
             20};
-        REQUIRE(Position{5, 5} == pm.getEndRect().getTopLeft());
-        REQUIRE(Position{5, 5} == pm.getEndRect().getBottomRight());
+        REQUIRE(Rectangle{Position{5, 5}, Position{5, 5}} == pm.getEndRect());
     }
 
-    // Target is north of original position.
-    SECTION("Target is at {0, 0}. Original position is at {0, 10}. The first positions from calls to getFuturePositions() will be a straight north heading line.")
+    // Target is north of original Position.
+    SECTION("Target is at {0, 0}. Original Position is at {0, 10}. The Positions at index zero from calls to getFuturePositions() will be a straight line heading north.")
     {
         PositionManager_Step pm{
             Position{0, 0},
@@ -60,8 +59,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is north east of original position.
-    SECTION("Target is at {5, 0}. Original position is at {0, 25}. Slope (y/x) is -5. Every fifth call to getFuturePositions() will be on the line with x increased by 1 and y decreased by 5.")
+    // Target is north east of original Position.
+    SECTION("Target is at {5, 0}. Original Position is at {0, 25}. Slope (y/x) is -5. Every fifth call to getFuturePositions() will be on the line with x increased by 1 and y decreased by 5.")
     {
         PositionManager_Step pm{
             Position{5, 0},
@@ -84,8 +83,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is east of original position.
-    SECTION("Target is at {10, 0}. Original position is at {0, 0}. Calls to getFuturePositions are along the line heading east.")
+    // Target is east of original Position.
+    SECTION("Target is at {10, 0}. Original Position is at {0, 0}. Calls to getFuturePositions are along the line heading east.")
     {
         PositionManager_Step pm{
             Position{10, 0},
@@ -101,8 +100,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is south east of original position.
-    SECTION("Target is at {5, 25}. Original position is at {0, 0}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x increased by 1 and y increased by 5.")
+    // Target is south east of original Position.
+    SECTION("Target is at {5, 25}. Original Position is at {0, 0}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x increased by 1 and y increased by 5.")
     {
         PositionManager_Step pm{
             Position{5, 25},
@@ -125,8 +124,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is south of original position.
-    SECTION("Target is at {0, 10}. Original position is at {0, 0}. Calls to getFuturePositions() are along the line heading south.")
+    // Target is south of original Position.
+    SECTION("Target is at {0, 10}. Original Position is at {0, 0}. Calls to getFuturePositions() are along the line heading south.")
     {
         PositionManager_Step pm{
             Position{0, 10},
@@ -142,8 +141,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is south west of original position.
-    SECTION("Target is at {0, 25}. Original position is at {5, 0}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x decreased by 1 and y increased by 5.")
+    // Target is south west of original Position.
+    SECTION("Target is at {0, 25}. Original Position is at {5, 0}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x decreased by 1 and y increased by 5.")
     {
         PositionManager_Step pm{
             Position{0, 25},
@@ -166,8 +165,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is west of original position.
-    SECTION("Target is at {0, 0}. Original position is at {10, 0}. Calls to getFuturePositions are along the line heading west.")
+    // Target is west of original Position.
+    SECTION("Target is at {0, 0}. Original Position is at {10, 0}. Calls to getFuturePositions are along the line heading west.")
     {
         PositionManager_Step pm{
             Position{0, 0},
@@ -183,8 +182,8 @@ TEST_CASE("PositionManager_Step_core::")
         }
     }
 
-    // Target is north west of original position.
-    SECTION("Target is at {0, 0}. Original position is at {5, 25}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x decreased by 1 and y decreased by 5.")
+    // Target is north west of original Position.
+    SECTION("Target is at {0, 0}. Original Position is at {5, 25}. Slope (y/x) is 5. Every fifth call to getFuturePositions() will be on the line with x decreased by 1 and y decreased by 5.")
     {
         PositionManager_Step pm{
             Position{0, 0},
@@ -205,6 +204,54 @@ TEST_CASE("PositionManager_Step_core::")
                 REQUIRE(requiredPosition == currentPosition);
             }
         }
+    }
+
+    SECTION("getFuturePositions() throws an exception if @position is off the Board.")
+    {
+        PositionManager_Step pm{
+            Position{0, 0},
+            0,
+            30,
+            0,
+            30};
+
+        REQUIRE_THROWS(pm.getFuturePositions(Position{31, 9}));
+    }
+    
+    SECTION("getFuturePositions() returns an empty vector if @position is at the final target.")
+    {
+        PositionManager_Step pm{
+            Position{0, 0},
+            0,
+            30,
+            0,
+            30};
+
+        REQUIRE(vector<Position>{} == pm.getFuturePositions(Position{0, 0}));
+    }
+    
+    SECTION("getEndRect() returns the final target as a Rectangle.")
+    {
+        PositionManager_Step pm{
+            Position{6, 7},
+            0,
+            30,
+            0,
+            30};
+
+        REQUIRE( Rectangle{Position{6, 7}, Position{6, 7}} == pm.getEndRect());
+    }
+
+    SECTION("getTargetRect() returns the final target as a Rectangle.")
+    {
+        PositionManager_Step pm{
+            Position{6, 7},
+            0,
+            30,
+            0,
+            30};
+
+        REQUIRE( Rectangle{Position{6, 7}, Position{6, 7}} == pm.getTargetRect());
     }
 
 } // TEST_CASE("PositionManager_Step")

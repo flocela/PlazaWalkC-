@@ -32,6 +32,7 @@ class Drop
     Two Drops are equal if they have the same Position.
     */
     bool operator== (const Drop& o) const;
+
     friend std::ostream& operator<< (std::ostream& o, const Drop& d)
     {
         std::string boolString = (d._changed) ? "true" : "false";

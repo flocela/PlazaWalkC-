@@ -25,10 +25,10 @@ bool Position::operator== (const Position& o) const
 
 std::string Position::toString() const
 {
-    string str{"["};
+    string str{"{"};
     str.append(to_string(_x));
     str.append(", ");
     str.append(to_string(_y));
-    str.append("]");
+    str.append("}");
     return str;
 }

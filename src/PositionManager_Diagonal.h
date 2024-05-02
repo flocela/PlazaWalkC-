@@ -5,14 +5,20 @@
 #include "PositionManager.h"
 #include "Rectangle.h"
 
+/*
+Evaluates all Positions adjacent to the Box's current Position and suggests the closest Position to the target Posiiton. This results in the Box moving diagonally until it is parallel to the target Position. Then it moves horizontally or vertically to reach the target Position.
+*/
 class PositionManager_Diagonal : public PositionManager
 {
 
-public:
-    // topLeft is the top left corner of the destination rectangle.
-    // botRight is the bottom right corner of the destination rectangle.
+    public:
+
+    /*
+    @endRectangle is the Rectangle at which point atEnd() returns true. @targetPosition is the Position PositionManager_Diagonal targets, this is the target destination.
+    */ 
     PositionManager_Diagonal(
-        Rectangle destinationRectangle,
+        Rectangle endRectangle,
+        Position targetPosition,
         int boardMinX,
         int boardMaxX,
         int boardMinY,
@@ -24,23 +30,35 @@ public:
     PositionManager_Diagonal& operator= (const PositionManager_Diagonal& o) = default;
     PositionManager_Diagonal& operator= (PositionManager_Diagonal&& o) = default;
 
-    // In a vector, collects the all valid, adjacent Positions. Then sorts the vector by shortest distance to the middle of the destination rectangle. Then shuffles Positions after index 2. The resulting vector will have the first 3 Positions in order by shortest distance to the destination rectangle. The rest of the  Positions will be in a random order.
+    /* 
+     Collects the all Positions adjacent to @position in a vector. Then sorts the vector by shortest distance to targetPosition. Then shuffles Positions after index 2. The resulting vector will have the first 3 Positions in order by shortest distance to the target Position. The rest of the  Positions will be in a random order. If @position is at targetPosition, then returns an empty vector.
+    */
     std::vector<Position> getFuturePositions(Position position) override;
 
-    // If position is within (perimeter is within) the topLeft corner and botRight corner of the destination rectangle given in the constructor, then returns true.  Otherwise returns false
-    bool atEnd(Position position) override;
-
     
+    /*
+    If @position is within the topLeft corner and botRight corner of the end rectangle given in the constructor, then returns true.  Otherwise returns false. 'Within' means inclusively in the x and y ranges of the end rectangle's top left and bottom right corners.
+    */
+    bool atEnd(Position position) const override;
+
+
+    /*
+    Returns the end Rectangle.
+    */
     Rectangle getEndRect() const override;
 
-private:
-    int _topLeftX = 0;
-    int _topLeftY = 0;
-    int _botRightX = 0;
-    int _botRightY = 0;
 
-    int _targetX = 0;
-    int _targetY = 0;
+    /*
+    Returns the target position as a Rectangle. The returned Rectangle's top left and bottomr right corners are both the target Position. Note, the returned Rectangle has a height and width of zero.
+    */
+    Rectangle getTargetRect() const override;
+
+
+    private:
+
+    Rectangle _endRectangle;
+
+    Position _targetPosition;
 
     int _boardMinX = 0;
     int _boardMaxX = 0;

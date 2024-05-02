@@ -22,22 +22,28 @@ class PositionManager
 
 
     public:
-    virtual ~PositionManager() noexcept = default;
 
-    /*
-    Returns true if @position is at the PositionManager's final destination.
-    */ 
-    virtual bool atEnd(Position position) = 0;
+    virtual ~PositionManager() noexcept = default;
 
     /*
     Returns a vector of Positions that are recomended for the Box at Position @position. The Positions are in order of most recommended to least recommended. If no Position is recommended, then returns an empty vector.
     */
     virtual std::vector<Position> getFuturePositions(Position position) = 0;
+    
+    /*
+    Returns true if @position is at the PositionManager's end destination.
+    */ 
+    virtual bool atEnd(Position position) const = 0;
 
     /*
-    Returns the final destination of the PositionManager as a Rectangle. It could be that the Rectangle has an area of zero. Then the final destination is just one Position.
+    Returns the Rectangle that if a Box was inside this Rectangle it would be at its end Position. It could be that the Rectangle has an area of zero. Then the end Rectangle is just one Position. Being inside a Rectangle means inclusively in the x and y ranges that the top left corner and bottom right corner make.
     */
     virtual Rectangle getEndRect() const = 0;
+
+    /*
+    Returns the final target of the PositionManager. This is the Position the Box is targeting. It may very well reach the end rectangle before reaching its target destination.
+    */
+    virtual Rectangle getTargetRect() const = 0;
 };
 
 #endif

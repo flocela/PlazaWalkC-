@@ -5,10 +5,33 @@ using namespace std;
 
 TEST_CASE("PositionManager_Diagonal_core::")
 {
-    SECTION("PositionManager_Diagonal::atEnd() return false if position is outside ending box")
+    SECTION("In constructor, passing a target Position that is outside of the end Rectangle results in an exception.")
+    {
+        REQUIRE_THROWS(PositionManager_Diagonal{
+            Rectangle{Position{70, 50},Position{75, 80}},
+            Position{69, 50},
+            0,
+            99,
+            0,
+            99});
+    }
+        
+    SECTION("In constructor, passing a targetPosition that is on the edge of endRectangle does not result in an exception. The allowable ranges from endRectangle for the targetPosition are inclusive.")
+    {
+        REQUIRE_NOTHROW(PositionManager_Diagonal{
+            Rectangle{Position{70, 50},Position{75, 80}},
+            Position{70,50},
+            0,
+            99,
+            0,
+            99});
+    }
+
+    SECTION("atEnd() return false if Position is outside end Rectangle")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{70, 50},Position{75, 80}},
+            Position{72, 65},
             0,
             99,
             0,
@@ -17,10 +40,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
         REQUIRE(false == pm.atEnd(Position{69, 70}));
     }
 
-    SECTION("PositionManager_Diagonal::atEnd() return true if position is inside ending box")
+    SECTION("atEnd() return true if position is inside ending box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{70, 50}, Position{75, 80}},
+            Position{72, 65},
             0,
             99,
             0,
@@ -31,10 +55,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
         REQUIRE(pm.atEnd(Position{72, 80}));
     }
 
-    SECTION("PositionManager_Diagonal::target is east of box")
+    SECTION("target Position is east of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{50, 50}, Position{55, 70}},
+            Position{52, 60},
             0,
             99,
             0,
@@ -52,10 +77,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
         }
     }
 
-    SECTION("PositionManager_Diagonal::target is southeast of box")
+    SECTION("target Position is southeast of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{50, 70}, Position{55, 80}},
+            Position{52, 75},
             0,
             99,
             0,
@@ -88,10 +114,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
          REQUIRE(70 == ii);
     }
 
-    SECTION("PositionManager_Diagonal::target is south of box")
+    SECTION("target Position is south of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{50, 50}, Position{55, 70}},
+            Position{52, 60},
             0,
             99,
             0,
@@ -112,10 +139,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
          } 
     }
 
-    SECTION("PositionManager_Diagonal::target is southwest of box")
+    SECTION("target Position is southwest of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{50, 70}, Position{55, 80}},
+            Position{52, 75},
             0,
             99,
             0,
@@ -146,10 +174,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
          REQUIRE(70 == ii);
     }
 
-    SECTION("PositionManager_Diagonal::target is west of box")
+    SECTION("target Position is west of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{20, 50}, Position{30, 70}},
+            Position{25, 60},
             0,
             99,
             0,
@@ -167,10 +196,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
         }
     }
 
-    SECTION("PositionManager_Diagonal::target is northwest of box")
+    SECTION("target Position is northwest of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{20, 70}, Position{30, 80}},
+            Position{25, 75},
             0,
             99,
             0,
@@ -201,10 +231,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
          REQUIRE(69 == ii);
     }
 
-    SECTION("PositionManager_Diagonal::target is north of box")
+    SECTION("target Position is north of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{50, 50}, Position{55, 70}},
+            Position{52, 60},
             0,
             99,
             0,
@@ -225,10 +256,11 @@ TEST_CASE("PositionManager_Diagonal_core::")
          }
     }
 
-    SECTION("PositionManager_Diagonal::target is northeast of box")
+    SECTION("target Position is northeast of box")
     {
         PositionManager_Diagonal pm{
             Rectangle{Position{70, 50}, Position{80, 55}},
+            Position{75, 52},
             0,
             99,
             0,
@@ -256,6 +288,30 @@ TEST_CASE("PositionManager_Diagonal_core::")
             ++ii;
          }
          REQUIRE( 70 == ii);
+    }
+
+    SECTION("getEndRect() returns end rectangle that was given in the constructor.")
+    {
+        PositionManager_Diagonal pm{
+            Rectangle{Position{70, 50}, Position{80, 55}},
+            Position{71, 51},
+            0,
+            99,
+            0,
+            99};
+        REQUIRE(Rectangle{Position{70, 50}, Position{80, 55}} == pm.getEndRect());
+    }
+        
+    SECTION("getTargetRect() returns the center of the target rectangle that was given in the constructor.")
+    {
+        PositionManager_Diagonal pm{
+            Rectangle{Position{70, 50}, Position{80, 55}},
+            Position{71, 51},
+            0,
+            99,
+            0,
+            99};
+        REQUIRE(Rectangle{Position{71, 51}, Position{71, 51}} == pm.getTargetRect());
     }
 }
 

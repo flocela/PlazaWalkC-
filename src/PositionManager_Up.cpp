@@ -48,12 +48,17 @@ vector<Position> PositionManager_Up::getFuturePositions(Position position)
     return newPositions;
 }
 
-bool PositionManager_Up::atEnd(Position position)
+bool PositionManager_Up::atEnd(Position position) const
 {
     return position.getY() <= _endY;
 }
     
 Rectangle PositionManager_Up::getEndRect() const
+{
+    return Rectangle{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
+}
+
+Rectangle PositionManager_Up::getTargetRect() const
 {
     return Rectangle{Position{_boardMinX, _endY}, Position{_boardMaxX, _endY}};
 }

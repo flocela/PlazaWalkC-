@@ -187,8 +187,10 @@ unique_ptr<PositionManager> Threader::createPositionManager(
 {
     if(pmt == PositionManagerType::diagonal)
     {
+        Position randomP = Util::getRandomPositionInRectangle(endRectangle);
         return make_unique<PositionManager_Diagonal>(
             endRectangle,
+            randomP,
             boardMinX,
             boardMaxX,
             boardMinY,

@@ -24,9 +24,13 @@ class Position
     std::string toString() const;
 
     bool operator== (const Position& o) const;
+   
+    // TODO needs test. 
     friend std::ostream& operator<< (std::ostream& o, const Position& p)
     {
-        o << "[" + std::to_string(p.getX()) + ", " + std::to_string(p.getY()) << "]";
+        o << "{" << 
+             std::to_string(p._x) << ", " << 
+             std::to_string(p._y) << "}";
         return o;
     }
     

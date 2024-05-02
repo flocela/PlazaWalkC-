@@ -23,6 +23,7 @@ vector<Position> PositionManager_Step::getFuturePositions(Position curPosition)
        throw invalid_argument(invalidPositionErrorString(curPosition));
     }    
 
+    // TODO test returns empty vector
     if (atEnd(curPosition))
     {
         return vector<Position>{};
@@ -33,7 +34,7 @@ vector<Position> PositionManager_Step::getFuturePositions(Position curPosition)
     int curX = curPosition.getX();
     int curY = curPosition.getY();
 
-    // Populate parisOfPositionsAndDistSq with positions that are adjacent to curPosition.
+    // Populate pairsOfPositionsAndDistSq with positions that are adjacent to curPosition.
     // The distance is the distance from _curTarget to curPosition.
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
     Position n  = Position{curX, curY-1};
@@ -76,12 +77,17 @@ vector<Position> PositionManager_Step::getFuturePositions(Position curPosition)
     return netPositions;
 }
 
-bool PositionManager_Step::atEnd(Position curPosition)
+bool PositionManager_Step::atEnd(Position curPosition) const
 {
     return curPosition == _finalTarget;
 }
 
 Rectangle PositionManager_Step::getEndRect() const
+{
+    return Rectangle{_finalTarget, _finalTarget};
+}
+
+Rectangle PositionManager_Step::getTargetRect() const
 {
     return Rectangle{_finalTarget, _finalTarget};
 }
@@ -94,6 +100,7 @@ void PositionManager_Step::setCurrentTarget(Position curPosition)
     {
         int deltaX = _finalTarget.getX() - curPosition.getX();
         int deltaY = _finalTarget.getY() - curPosition.getY();
+
         // If the _curTarget is close to the _finalTarget then set the _curTarget to _finalTarget.
         // Or if target has the same X or Y value as curPosition.
         if( ( ( (deltaX*deltaX)+(deltaY*deltaY) ) < 100 ) ||
@@ -102,7 +109,7 @@ void PositionManager_Step::setCurrentTarget(Position curPosition)
         {
             _curTarget = _finalTarget;
         }
-        // Else set the _currentTarget to a point close to the line connecting the curPosition and the _finalTarget.
+        // Else set the _currentTarget to the first Position on the line connecting the curPosition and the _finalTarget.
         else
         {  
             // Move one point over on the x axis and find the corresponding point on the y axis.

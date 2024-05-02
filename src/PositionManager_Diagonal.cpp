@@ -2,36 +2,37 @@
 #include <algorithm>
 #include <iterator>
 #include <random>
+#include <sstream>
+
+#include "Util.h"
 
 using namespace std;
 
 PositionManager_Diagonal::PositionManager_Diagonal(
-    Rectangle destinationRectangle,
+    Rectangle endRectangle,
+    Position targetPosition,
     int boardMinX,
     int boardMaxX,
     int boardMinY,
     int boardMaxY)
-  : _topLeftX{destinationRectangle.getTopLeft().getX()},
-    _topLeftY{destinationRectangle.getTopLeft().getY()},
-    _botRightX{destinationRectangle.getBottomRight().getX()},
-    _botRightY{destinationRectangle.getBottomRight().getY()},
-    _targetX{(_topLeftX + _botRightX)/2},
-    _targetY{(_topLeftY + _botRightY)/2},
+  : _endRectangle{endRectangle},
+    _targetPosition{targetPosition},
     _boardMinX{boardMinX},
     _boardMaxX{boardMaxX},
     _boardMinY{boardMinY},
     _boardMaxY{boardMaxY}
-{}
-
-bool PositionManager_Diagonal::atEnd(Position position)
 {
-    return position.getX() >= _topLeftX && position.getX() <= _botRightX &&
-           position.getY() >= _topLeftY && position.getY() <= _botRightY;
+    if (!_endRectangle.isInside(_targetPosition))
+    {   
+        stringstream ss;
+        ss << "Target position " << _targetPosition << " is not within end rectangle " << endRectangle << ". ";    
+        throw invalid_argument(ss.str());
+    }
 }
 
 vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
 {
-    if (atEnd(position))
+    if (position == _targetPosition)
     {
         return vector<Position>{};
     }
@@ -49,17 +50,16 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     Position se = Position{curX - 1, curY - 1};
     Position e  = Position{curX - 1, curY};
     Position ne = Position{curX - 1, curY + 1};
-    Position target = Position{_targetX, _targetY};
 
     // Calculate distance to each of the new Positions.
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(n, target), n}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(nw, target), nw}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(w, target), w}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(sw, target), sw}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(s, target), s}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(se, target), se}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(e, target), e}); 
-    pairsOfPositionsAndDistSq.push_back({getDistSquared(ne, target), ne}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(n, _targetPosition), n}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(nw, _targetPosition), nw}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(w, _targetPosition), w}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(sw, _targetPosition), sw}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(s, _targetPosition), s}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(se, _targetPosition), se}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(e, _targetPosition), e}); 
+    pairsOfPositionsAndDistSq.push_back({getDistSquared(ne, _targetPosition), ne}); 
    
     // Remove Positions that are outside of the Board. 
     vector<pair<double,Position>> netPositionPairs{};
@@ -76,7 +76,7 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
         }
     }
 
-    // Sort the vector by closes to center of destination rectangle.
+    // Sort the vector by closest to _targetPosition.
     sort(netPositionPairs.begin(), netPositionPairs.end(), [](const pair<double, Position>& a, const pair<double, Position>& b){return a.first < b.first;});
 
     random_device rd;
@@ -98,18 +98,27 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     
 }
 
+bool PositionManager_Diagonal::atEnd(Position position) const
+{
+    return _endRectangle.isInside(position);
+}
+
+Rectangle PositionManager_Diagonal::getEndRect() const
+{
+    return _endRectangle;
+}
+
+Rectangle PositionManager_Diagonal::getTargetRect() const
+{
+    return Rectangle{_targetPosition, _targetPosition};
+}
+
 double PositionManager_Diagonal::getDistSquared(Position a, Position b)
 {
     double x = std::abs(static_cast<double>(a.getX()) - b.getX());
     double y = std::abs(static_cast<double>(a.getY()) - b.getY());
 
     return (x * x) + (y * y);
-}
-
-// TODO needs a test
-Rectangle PositionManager_Diagonal::getEndRect() const
-{
-    return Rectangle{Position{_topLeftX, _topLeftY}, Position{_botRightX, _botRightY}};
 }
 
 bool PositionManager_Diagonal::isValid(Position& p) const
