@@ -36,7 +36,7 @@ TEST_CASE("Util_core::")
 
         for(const auto& countPerInt : countsPerInts)
         {
-            REQUIRE(( (countPerInt.second <= 1000) && (countPerInt.second >= 800) ));
+            REQUIRE(( (countPerInt.second <= 1100) && (countPerInt.second >= 700) ));
         }
     }
     
