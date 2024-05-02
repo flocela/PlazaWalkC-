@@ -4,7 +4,9 @@
 
 using namespace std;
 
-// A RecorderListener that will listen for the Recorder's broadcasts and save the most recent data from the broadcast. The data is saved in public attributes _drops and _boxes. The tests access these attributes to verify what the Recorder broadcasted.
+/*
+A RecorderListener that will listen for the Recorder's broadcasts and save the most recent data from the broadcast. The data is saved in public attributes _drops and _boxes. The tests access these attributes to verify what the Recorder broadcasted.
+*/
 class SubRecorderListener : public RecorderListener
 {
 
@@ -12,7 +14,7 @@ class SubRecorderListener : public RecorderListener
 
     void receiveAllDropsAllBoxes(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes) override
     {
-        // Clear the saved attributes. They should contain only the most recent broadcast data.
+        // Clear the saved attributes. _drops and _boxes should contain only the most recent broadcast data.
         _drops.clear();
         _boxes.clear();
 
@@ -28,7 +30,9 @@ class SubRecorderListener : public RecorderListener
 
 };
 
-// Returns the number of Drops per each SpotType.
+/*
+Returns the number of Drops per each SpotType.
+*/
 unordered_map<SpotType, int> getCountPerSpotType(unordered_set<Drop> drops)
 {
 
@@ -63,7 +67,7 @@ unordered_map<SpotType, int> getCountPerSpotType(unordered_set<Drop> drops)
 
 TEST_CASE("Recorder_core::")
 {
-    SECTION("Recorder receives the Drops that have changed. It broadcasts current state of all the Drops to the listener.")
+    SECTION("Recorder receives the Drops that have changed. Verify that Recorder broadcasts current state of all the Drops to the listener.")
     {
         Recorder recorder{};
         SubRecorderListener subRecorderListener;
@@ -79,7 +83,7 @@ TEST_CASE("Recorder_core::")
         dropB.setBoxId(0);
         dropB.setSpotType(SpotType::to_arrive);
 
-        // Receive the set changedDrops with two drops with different positions and the same SpotType.
+        // Recorder receives changedDrops containing two drops with different Positions and the same SpotType.
         unordered_set<Drop> changedDrops{};
         changedDrops.insert(dropA);
         changedDrops.insert(dropB);
@@ -97,7 +101,7 @@ TEST_CASE("Recorder_core::")
         REQUIRE(actual.find(dropA) != actual.end());
         REQUIRE(actual.find(dropB) != actual.end());
         
-        // recorder receives one drop that replaces the existing Drop, dropB.
+        // Recorder receives one drop that replaces the existing Drop, dropB.
         // dropA is SpotType::to_arrive, no change.
         // dropB is SpotType::arrive.
         actual.clear();
@@ -120,6 +124,7 @@ TEST_CASE("Recorder_core::")
         // dropB is set to SpotType::to_arrive.
         actual.clear();
         changedDrops.clear();
+
         dropA.setSpotType(SpotType::arrive);
         dropB.setSpotType(SpotType::to_leave);
         changedDrops.insert(dropA);
@@ -136,7 +141,7 @@ TEST_CASE("Recorder_core::")
         REQUIRE(actual.find(dropB) != actual.end());
     }
 
-    SECTION ("Recorder receives current state of Boxes and broadcasts that state.")
+    SECTION ("Recorder receives current state of Boxes. Verify that Recorder broadcasts that state.")
     {
         Recorder recorder{};
         SubRecorderListener subRecorderListener;

@@ -6,8 +6,11 @@
 #include "BoardListener.h"
 #include "RecorderListener.h"
 
-// Receives changes to Drops and current state of the Boxes, processes the data, then broadcasts the current state of all the Drops and Boxes.
-// Since it only receives changes to Drops, it must keeping a running state of all the Drops and add the changes as they are received.
+/*
+Receives changes to Drops and current state of the Boxes, processes the data, then broadcasts the current state of all the Drops and all the Boxes.
+
+Since Recorder only receives changes to Drops, it must keeping a running state of all the Drops and add the changes as they are received.
+*/
 class Recorder : public BoardListener
 {
 
