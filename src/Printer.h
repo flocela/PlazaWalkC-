@@ -1,15 +1,17 @@
 #ifndef PRINTER__H
 #define PRINTER__H
 
-#include <shared_mutex>
 #include <unordered_map>
 
 #include "Color.h"
 #include "RecorderListener.h"
-#include "Recorder.h"
 #include "Rectangle.h"
 #include "SDL.h"
 
+
+/*
+Uses SDL_Renderer to render Boxes and in-and-out bound rectangles on screen.
+*/
 class Printer : public RecorderListener {
 
 
@@ -22,14 +24,20 @@ class Printer : public RecorderListener {
     Printer& operator=(Printer&& o) noexcept = delete;
     ~Printer() noexcept = default;
 
-    // These are rectangles where Boxes start and end at. They are printed as dark grey rectangles on the board.
+    /*
+    These are rectangles where Boxes start and end at. They are printed as dark grey rectangles on the board.
+    */
     void addInOutBoundRectangle(Rectangle rectangle);
     void addInOutBoundRectangles(std::vector<Rectangle> rectangles);
 
-    //  
+    /*
+    Set the Color for each group of Boxes.
+    */  
     void setGroupColors(std::unordered_map<int, Color> colorPerGroupNumber);
 
-    // Prints these Boxes on the Board.
+    /*
+    Prints these Boxes and in-and-out bound rectangles on the Board.
+    */
     void receiveAllDropsAllBoxes(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes) override;
 
 

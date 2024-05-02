@@ -1,6 +1,7 @@
 #include "Printer.h"
 #include <iostream>
 #include <map>
+
 using namespace std;
 
 
@@ -17,9 +18,27 @@ void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(_renderer);
 
-    // Print Boxes
+    /* Print In-And-Out Bound Rectangles */
 
-    // Need to group the Drops by a union of their Color and shade. Color is taken from the Drop's group number. Shade is taken from the Drop's level.
+    for(const Rectangle& endRectangle : _endRectangles)
+    {
+        Position topLeft = endRectangle.getTopLeft();
+        Position bottomRight = endRectangle.getBottomRight();
+        
+        SDL_Rect endRect;
+        endRect.x = topLeft.getX();
+        endRect.y = topLeft.getY();
+        endRect.w = bottomRight.getX() - topLeft.getX();
+        endRect.h = bottomRight.getY() - topLeft.getY();
+        SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x30);
+        SDL_RenderFillRect(_renderer, &endRect);
+    }
+
+
+    /* Print Boxes */
+    
+    //Group the Drops by their Color and shade. Color is taken from the Drop's group number. Shade is taken from the Drop's level.
     map<pair<int, int>, unordered_set<Drop>> dropsPerGroupNumberAndShade;
 
     for(auto& colorPerGroupNumber: _colorPerGroupNumber)
@@ -49,37 +68,25 @@ void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes
     for(auto it=dropsPerGroupNumberAndShade.begin(); it!=dropsPerGroupNumberAndShade.end(); it++)
     {
         pair<int, int> groupIdAndShade = it->first;
+        unordered_set<Drop>& drops = it->second;
         Color color = _colorPerGroupNumber.at(groupIdAndShade.first);
         int shade = groupIdAndShade.second;
-        unordered_set<Drop>& drops = it->second;
         for(const Drop& drop : drops)
         {
             SDL_Rect squareRect;
-            squareRect.w = 3;// TODO width and height is taken from box width and height not hardcoded
-            squareRect.h = 3;
+            squareRect.w = boxes.at(drop.getBoxId()).getWidth();
+            squareRect.h = boxes.at(drop.getBoxId()).getHeight();
             squareRect.x = drop.getPosition().getX();
             squareRect.y = drop.getPosition().getY();
-            SDL_SetRenderDrawColor(_renderer, color.getRed(shade), color.getGreen(shade), color.getBlue(shade), 0xFF);
+            SDL_SetRenderDrawColor(
+                _renderer,
+                color.getRed(shade),
+                color.getGreen(shade),
+                color.getBlue(shade),
+                0xFF);
             SDL_RenderFillRect(_renderer, &squareRect);
         }
         
-    }
-
-    // Print End Rectangles
-
-    for(const Rectangle& endRectangle : _endRectangles)
-    {
-        Position topLeft = endRectangle.getTopLeft();
-        Position bottomRight = endRectangle.getBottomRight();
-        
-        SDL_Rect endRect;
-        endRect.x = topLeft.getX();
-        endRect.y = topLeft.getY();
-        endRect.w = bottomRight.getX() - topLeft.getX();
-        endRect.h = bottomRight.getY() - topLeft.getY();
-        SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
-        SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x30);
-        SDL_RenderFillRect(_renderer, &endRect);
     }
 
     SDL_RenderPresent(_renderer);
