@@ -13,11 +13,6 @@
 
 using namespace std;
 
-// Moves Box from @position to final position given in @posManager.
-// Assumes Box is not originally on the board.
-// First repeatedly tries to add Box to @board at @position.
-// Once the Box is on the Board, then continually moves box closer to final position in @posManager.
-// Note @breaker is a reference that is checked between Position moves. If false, the function ends.
 void Threader::funcMoveBox(
         Position position,
         Board& board,
@@ -29,7 +24,8 @@ void Threader::funcMoveBox(
 {  
     Position curPosition = position;
 
-    // Move Box on to @board. 
+    /* Move Box on to @board. */
+
     int n = 1;
     while(breaker)
     {
@@ -45,6 +41,9 @@ void Threader::funcMoveBox(
         this_thread::sleep_for(n * 10ms);
         ++n;
     }
+
+
+    /* Move Box to final Position */
    
     // While the box is not at the end position, keep moving the box closer. 
     while (!posManager->atEnd(curPosition) && breaker)
@@ -60,13 +59,14 @@ void Threader::funcMoveBox(
            this_thread::sleep_for(chrono::milliseconds(nextPosition.second));
         }
         
-        // @decider may return an invalid Position, signaling to simply sleep for now.
+        // If @decider returned an invalid Position, then sleep for now. Otherwise try to move to nextPosition.
         if((nextPosition.first != Position{-1, -1}) && 
            (mover->moveBox(curPosition, nextPosition.first)))
         {
             // Move was successful. Update curPosition.
             curPosition = nextPosition.first;
         }
+
         // Always sleep between movements.
         this_thread::sleep_for(10ms);
     }
@@ -83,12 +83,6 @@ void Threader::funcMoveBox(
     }
 }
 
-// Creates threads using funcMoveBox() and places them in @threads. Each thread represents a Box moving on @board.  There will be @count Boxes starting at firstBoxId.
-// All Boxes start at a random point inside of the rectangle created from tlStartPoint and brStartPoint
-// A PositionManager is created for each thread based on @pmt.
-// A random endpoint is given to the PositionManager. The endpoint is made by randomly selecting a rectangle in @endRects and then randomly choosing a point in that rectangle.
-// The thread is given @dt so it can make decisions on whether it should move and which Position to choose from the positions given by the PositionManager.
-// A breaking reference @running is checked between Position moves. If it is false, the thread returns.
 void Threader::populateThreadsForOneGroup(
     vector<unique_ptr<thread>>& threads,
     int firstBoxId,
@@ -125,10 +119,6 @@ void Threader::populateThreadsForOneGroup(
     }
 } 
 
-// Creates threads using funcMoveBox() and places them in @threads. Each thread represents a Box moving on @board.
-// The maps @boxIdsAndCountsPerGroup, @rectsPerGroup, and @pmtsPerGroup must all have the same number of items. Thread information from each of the maps is used to make each of the groups of threads.
-// Each pair of ints in @boxIdsAndCountsPerGroup represents the first boxId of the group(pair's first int) and the number of boxes in the group (second int).
-// Each rectangle in @rectsPerGroup represents the starting rectangle for the group. The rest of the rectangles in @rectsPerGroup represent the group's end rectangles.
 void Threader::populateThreads(
     vector<unique_ptr<thread>>& threads,
     int numOfBoxesPerGroup,
@@ -137,11 +127,17 @@ void Threader::populateThreads(
     Board& board,
     bool& running)
 {
+    // Each thread contains one boxId.
+    // Get number of required Boxes per group from numOfBoxesPerGroup. Then create that many threads per group.
     for(int ii=0; ii<numOfGroups; ++ii)
     {
+        // PositionManagerType is random.
         PositionManagerType pmType = 
             (Util::getRandomBool()) ? (PositionManagerType::step) : (PositionManagerType::diagonal);
+
+        // DeciderType is random.
         DeciderType dType = (Util::getRandomBool()) ? (DeciderType::safe) : (DeciderType::risk1);
+
         populateThreadsForOneGroup(
             threads,
             ii*numOfBoxesPerGroup,
@@ -153,28 +149,6 @@ void Threader::populateThreads(
             dType,
             running);
     }
-}
-
-// Adds Positions from the rectangles in @rects to @randomPositions.
-// The number of Positions that are added from each rectangle is @numOfPointsFromEachRectangle.
-// The Positions are chosen radomly from inside each rectangle.
-// The Positions are shuffled in @randomPositions. Taking an index in @randomPosition, which rectangle it comes from in @rects is random.
-void Threader::populateRandomPoints(
-    vector<Position>& randomPositions,
-    vector<Rectangle> rects,
-    int numOfPointsFromEachRect)
-{
-    for(size_t ii=0; ii<rects.size(); ++ii)
-    {
-        // vector of random positions to append to randomPositions.
-        vector<Position> toAppend = Util::getRandomPositionsInRectangle(
-            rects[ii],
-            numOfPointsFromEachRect);
-
-        randomPositions.insert(randomPositions.end(), toAppend.begin(), toAppend.end());
-    };
-
-    Util::utilShuffle(randomPositions);
 }
 
 unique_ptr<PositionManager> Threader::createPositionManager(
