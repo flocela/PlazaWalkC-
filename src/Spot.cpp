@@ -1,6 +1,6 @@
 #include "Spot.h"
-#include <iostream>
 #include <chrono>
+#include <sstream>
 #include <thread>
 
 using namespace std;
@@ -114,7 +114,7 @@ void Spot::updateStateString()
 {
         _stateString= "B";
         _stateString.append(to_string(_boxId));
-        _stateString.append(",T");
+        _stateString.append(", T");
         _stateString.append(to_string((int)(_type)));
 }
 
@@ -133,6 +133,16 @@ void Spot::notifyListeners()
 }
 
 string Spot::errorString(BoardNote incomingNote)
-{ return "At {" + to_string(_position.getX()) + ", " + to_string(_position.getY()) + "} "  + " can not accept the received BoardNote with boxId of " + to_string(incomingNote.getBoxId()) + " and type of "  + to_string(static_cast<int>(incomingNote.getType())) + ". Current boxId and type are " + to_string(_boxId) + " and " + to_string(static_cast<int>(_type)) + ".";
+{ 
+    stringstream ss;
+    ss << "At {" << to_string(_position.getX()) + ", " +
+        to_string(_position.getY()) + "} "  +
+        " can not accept the received BoardNote with boxId of " +
+        to_string(incomingNote.getBoxId()) + " and type of "  +
+        to_string(static_cast<int>(incomingNote.getType())) +
+        ". Current boxId and type are " +
+        to_string(_boxId) + " and " +
+        to_string(static_cast<int>(_type)) + ".";
+    return ss.str();
 }
 

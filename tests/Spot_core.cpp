@@ -1,10 +1,8 @@
 #include "catch.hpp"
-#include <iostream>
 #include "../src/Spot.h"
-#include <regex>
-#include <thread>
 
 using namespace std;
+
 TEST_CASE("Spot_core::")
 {
 
@@ -34,7 +32,6 @@ TEST_CASE("Spot_core::")
 
     SECTION("Spot is constructed and should be in a default state.")
     {
-        // Construct Spot.
         Position pos{3, 4};
         Spot spot{pos};
 
@@ -364,4 +361,18 @@ TEST_CASE("Spot_core::")
 
         }
     }
+
+    SECTION("Verify that SpotListeners are notified when there is a successful changeNote()")
+    {
+        Spot spot{Position{100, 200}};
+        SpotListener spotListener{};
+        spot.registerListener(&spotListener);
+        spot.changeNote(BoardNote{10, SpotType::to_arrive});
+        spot.changeNote(BoardNote{10, SpotType::arrive});
+
+        vector<string> successfulNotes =spotListener.getCombinedStrings();
+        REQUIRE("B10, T1" == successfulNotes[0]);
+        REQUIRE("B10, T2" == successfulNotes[1]);
+    }
+         
 }
