@@ -19,7 +19,6 @@ Position Rectangle::getBottomRight() const
     return _bottomRight;
 }
 
-// TODO needs test
 string Rectangle::toString() const
 {
     stringstream ss;
@@ -27,14 +26,12 @@ string Rectangle::toString() const
     return ss.str(); 
 }
 
-// TODO needs test
 Position Rectangle::getCenter() const
 {
     return Position{_topLeft.getX() + ((_bottomRight.getX() - _topLeft.getX())/2),
                     _topLeft.getY() + ((_bottomRight.getY() - _topLeft.getY())/2)};
 }
 
-// TODO needs test
 bool Rectangle::isInside(Position p) const
 {
     return p.getX() >= _topLeft.getX() && p.getX() <= _bottomRight.getX() &&
