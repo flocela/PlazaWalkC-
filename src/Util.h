@@ -3,7 +3,6 @@
 
 #include <random>
 #include <vector>
-#include "Box.h"
 #include "Position.h"
 #include "Rectangle.h"
 
@@ -11,28 +10,31 @@ class Util
 {
 public:
 
-    // Returns a random int in the range [start, end].
+    /*
+    Returns a random int in the range [@start, @end].
+    */
     static int getRandomInt(int start, int end);
    
-    // Returns count number of random ints in the range [start, end]. 
+    /*
+    Returns @count number of random ints in the range [@start, @end].
+    */
     static std::vector<int>  getRandomInt(int start, int end, int count);
 
+    /*
+    Randomly returns true or false.
+    */
     static bool getRandomBool();
 
-    // Returns count number of random Positions in the rectangle made by @a and @b. Positions on the edge of the rectangle are valid and could be returned. If @a is {ax, ay} and @b is {bx, by}, then a Position {ax, by} could be returned.
-    static std::vector<Position> getRandomPositionsInRectangle(Rectangle, int count);
+    /*
+    Returns @count number of random Positions from inside the Rectangle @rectangle. Positions on the edge of the Rectangle are valid and could be returned. If the top left corner is Position{ax, ay} and the bottom right corner is Position{bx, by}, then a Position {ax, by} could be returned.
+    */
+    static std::vector<Position> getRandomPositionsInRectangle(Rectangle rectangle, int count);
 
-    // Returns a random Position in the rectangle made by Positions cornerA and cornerB. Positions on the edge of the rectangle are valid and could be returned. If @a is {ax, ay} and @b is {bx, by}, then a Position {ax, by} could be returned.
+    /*
+    Returns a random Position from the inside of the Rectangle @rectangle. If the top left corner is Position{ax, ay} and the bottom right corner is Position{bx, by}, then a Position {ax, by} could be returned.
+    */
     static Position getRandomPositionInRectangle(Rectangle rectangle);
 
-    // Suffles a vector of any type.
-    template<typename T>
-    static void utilShuffle(std::vector<T>& v)
-    {
-        std::random_device rd;
-        std::mt19937 g(rd());
-        std::shuffle(v.begin(), v.end(), g);
-    }
 };
 
 #endif
