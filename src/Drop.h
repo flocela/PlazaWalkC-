@@ -33,6 +33,10 @@ class Drop
     */
     bool operator== (const Drop& o) const;
 
+    /*
+    Prints out the Position, boxId, SpotType, and hasChanged.
+    For instance a Drop{1, 2, 4, SpotType::to_arrive} with a _hasChanged atttribute of false would print out as Drop: [{1, 2}, 4, SpotType::to_arrive, false].
+    */
     friend std::ostream& operator<< (std::ostream& o, const Drop& d)
     {
         std::string boolString = (d._changed) ? "true" : "false";
