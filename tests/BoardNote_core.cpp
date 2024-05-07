@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include "../src/BoardNote.h"
+#include <unordered_set>
 
 using namespace std;
 
@@ -38,4 +39,40 @@ TEST_CASE("BoardNote_core::")
         BoardNote note2{22, SpotType::to_arrive}; 
         REQUIRE_FALSE(note1 == note2);
     }
+    
+    SECTION("Identical BoardNotes return the same hash")
+    {
+        hash<BoardNote> hasher;
+        BoardNote boardInfoA{0, SpotType::to_arrive};
+        BoardNote boardInfoB{0, SpotType::to_arrive};
+
+        REQUIRE(hasher(boardInfoA) == hasher(boardInfoB));
+        
+        BoardNote boardInfoC{1, SpotType::arrive};
+        BoardNote boardInfoD{1, SpotType::arrive};
+
+        REQUIRE(hasher(boardInfoC) == hasher(boardInfoD));
+        
+        BoardNote boardInfoE{10, SpotType::to_leave};
+        BoardNote boardInfoF{10, SpotType::to_leave};
+
+        REQUIRE(hasher(boardInfoE) == hasher(boardInfoF));
+    }
+
+    SECTION("Require that many BoardNotes don't have the same hash")
+    {
+        hash<BoardNote> hasher;
+
+        unordered_set<size_t> hashNumbers{};
+        for(int ii=0; ii<2000; ++ii)
+        {
+            for(int jj=1; jj<=1; ++jj)
+            {
+                unsigned int hashNumber = hasher(BoardNote{ii, static_cast<SpotType>(jj)});
+                REQUIRE(hashNumbers.find(hashNumber) == hashNumbers.end());
+                hashNumbers.insert(hashNumber);
+            }
+        }
+    }
+
 }

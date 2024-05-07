@@ -4,7 +4,7 @@
 #include "SpotType.h"
 
 /*
-BoardNote contains a box id and SpotType.
+BoardNote contains a boxId and SpotType.
 Note boxId and SpotType do not have any setters and the assignment operators are deleted.
 */
 class BoardNote
@@ -39,7 +39,15 @@ namespace std
     struct hash<BoardNote>
     {
         size_t operator()(const BoardNote& b) const
-        {   return  (hash<int>()(static_cast<int>(b.getType())) ^ (hash<int>()(b.getBoxId()) << 1));
+        {
+            // prime numbers
+            int A = 21859;
+            int B = 86969;
+            
+            unsigned int h = 97;
+            h = (h) ^ (b.getBoxId() * A);
+            h = (h) ^ (static_cast<int>(b.getType()) * B);
+            return h;
         }
     };
 }
