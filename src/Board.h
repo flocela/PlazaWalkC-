@@ -2,7 +2,7 @@
 #define BOARD__H
 
 class BoardProxy;
-#include <memory>
+
 #include <shared_mutex>
 #include <vector>
 #include <unordered_map>
@@ -18,11 +18,11 @@ class BoardProxy;
 /*  
 Conceptually a plane where Boxes are placed and can move in the x and y directions.
 
-The Board class contains a matrix of Spots, and each Spot contains a Position that matches the Spot's x,y position on the Board. In the matrix of Spots's, x-direction runs from left to right. The y-direction runs from top to bottom. The origin is in the top left corner of the Board. A Spot at Position {2, 4} is over two to the right and down four from the origin.
+The Board class contains a matrix of Spots, and each Spot contains a Position that matches the Spot's x,y position on the Board. In the matrix, the x-direction runs from left to right. The y-direction runs from top to bottom. The origin is in the top left corner of the Board. A Spot at Position {2, 4} is over two to the right and down four from the origin.
 
 When a Box is placed on the Board, removed from the Board, or moves along the Board, the Board keeps track of these movements by updating its matrix of Spots. Requests to Box movements on the Board are done through the addNote() method.
 
-    The Board also keeps track of the Boxes and their state.
+The Board also keeps track of the Boxes and their state.
 */
 
 class Board
@@ -30,7 +30,7 @@ class Board
     public:
     
     /*
-    @boxes contains all the Boxes that Board will every be in charge of.
+    @boxes contains all the Boxes that Board will every be on the Board. Board is resposible for returning the state of these Boxes in sendStateAndChanges().
     */    
     Board(int width, int height, std::vector<Box>&& boxes);
 
@@ -46,11 +46,11 @@ class Board
     BoardProxy getBoardProxy();
 
     /*  
-    @position is the Position that is being requested to be updated.
+    The Spot located at @position is the Spot that is being requested to be updated.
 
     @boardNote contains the boxId and SpotType that the Spot at @position should be updated to.
 
-    If the movement is successful (See Spot's rules.) then the Spot at @positiont will contain the new BoardNote. If the movement is not successful (say because another box is already at that position) then the Spot does not change and both boxes' levels will go up by one. This symbolizing the incoming box running into the box standing at @position.
+    If the movement is successful (See Spot's rules.) then the Spot at @position will contain the new BoardNote. If the movement is not successful (say because another Box is already at that position) then the Spot does not change and both Boxes' levels will go up by one. This symbolizes the incoming Box running into the Box standing at @position.
     */
     bool addNote(Position position, BoardNote boardNote);
 
@@ -61,12 +61,12 @@ class Board
     void registerNoteSubscriber(Position pos, NoteSubscriber& callBack);
 
     /*
-    Register a BoardListener. BoardListeners receive updates sendChanges() is called. See sendChanges() for more info on those sent changes.
+    Register a BoardListener. BoardListeners receive updates when sendStateAndChanges() is called. See sendStateAndChanges() for more info on those sent changes and state.
     */
     void registerListener(BoardListener* listener);
 
     /*
-    Sends 1) the current state of the Boxes and 2) changes to the Spots. The current state of the Boxes is in the form of an unordered_map<int, BoxInfo> of boxIds to Boxes. All Boxes are included, even Boxes that have not entered the Board yet or have been removed because they reached their final destination. Changes to Spots are in the form of an unordered_set of Drops. This set contains only the changes since the last time sendStateAndChanges() was called.
+    Sends 1) the current state of the Boxes and 2) changes to the Spots. The current state of the Boxes is in the form of an unordered_map<int, BoxInfo> of boxIds to Boxes. All Boxes given in the constructor are included. This includes Boxes that have not entered the Board yet or have been removed because they reached their final destination. Changes to Spots are in the form of an unordered_set of Drops. This set contains only the changes since the last time sendStateAndChanges() was called.
     */
     void sendStateAndChanges();
 
@@ -87,7 +87,7 @@ private:
     std::vector<std::vector<Drop>> _dropMatrix1;
     std::vector<std::vector<Drop>> _dropMatrix2;
     
-    /*_receivingMatrix points to either _dropMatrix1 or _dropMatrix2. When sendChanges() is called the matrix that _receivingMatrix points to is toggled from _dropMatrix1 to _dropMatrix2 or vice versa.  Changes are recorded in the matrix that _receivingMatrix currenlty points to.
+    /*_receivingMatrix points to either _dropMatrix1 or _dropMatrix2. When sendChangesAndState() is called the matrix that _receivingMatrix points to is toggled from _dropMatrix1 to _dropMatrix2 or vice versa.  Changes are recorded in the matrix that _receivingMatrix currenlty points to.
     */
     std::vector<std::vector<Drop>>* _receivingMatrix = nullptr;
 
@@ -101,7 +101,7 @@ private:
     std::unordered_set<BoardListener*> _listeners;
     
     mutable std::shared_mutex _mux;
-    mutable std::shared_mutex _sendChangesMutex;
+    mutable std::shared_mutex _enteringMethodMutex;
      
 };
 

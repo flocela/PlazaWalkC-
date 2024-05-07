@@ -4,186 +4,186 @@
 
 using namespace std;
 
+/* 
+TempListener is a BoardListener that saves the last Drops and Boxes that were received in the last call to receiveChanges().
+When receiveChanges() is called, TempListener 1) receives and saves changes to Spots, 2) receives and saves the BoxInfos. Note, changes to Spots are in fact changes since the last time receivedChanges() was called. The BoxInfos received are the current state of the Boxes.
+*/
+class TempListener : public BoardListener 
+{
+    public: 
+
+    void receiveChanges(
+        unordered_set<Drop> drops,
+        unordered_map<int, BoxInfo> boxes) override
+    {
+        _dropsPerPosition.clear();
+        _boxes.clear();
+
+        for(const auto& p: boxes)
+        {
+            _boxes.insert({p.second.getId(), p.second});
+        }
+
+        for(auto& drop : drops)
+        {
+            _dropsPerPosition.insert({drop.getPosition(), drop});
+        }
+    }
+    
+    unordered_map<Position, Drop> _dropsPerPosition{};
+    unordered_map<int, BoxInfo> _boxes{};
+};
+
 TEST_CASE("Board_core::")
 {
-    SECTION("Insert BoardNotes with different types to Position{5, 5}. The getNoteAt() method should return the new BoardNote after each insertion.")
+    // BoxId's 0, 1, and 2.    
+    int boxId_0 = 0;
+    int boxId_1 = 1;
+    int boxId_2 = 2;
+
+    // Create Boxes with id=0, id=1, and id=2.
+    vector<Box> boxes{
+        Box{boxId_0, 0, 5, 5},
+        Box{boxId_1, 1, 5, 5},
+        Box{boxId_2, 2, 5, 5}};
+
+    // Create Board.
+    Board board{20, 20, std::move(boxes)};
+
+    // Add Listener.
+    TempListener listener{};
+    board.registerListener(&listener);
+    
+    // Positions.    
+    Position posA{Position{5, 5}};
+    Position posB{Position{6, 6}};
+    Position posC{Position{7, 7}};
+    
+    SECTION("Insert BoardNotes with different types at posA. Verifty the getNoteAt() method returns the new BoardNote after each insertion.")
     {  
-        int boxId = 0;
-        vector<Box> boxes(1,Box{0, 0, 1, 1,});
-        Board board{20, 10, std::move(boxes)};
-        
-        board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::to_arrive});
-        REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        REQUIRE(board.getNoteAt(posA) == BoardNote{boxId_0, SpotType::to_arrive});
 
-        board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::arrive});
-        REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive});
+        REQUIRE(board.getNoteAt(posA) == BoardNote{boxId_0, SpotType::arrive});
 
-        board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::to_leave});
-        REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{boxId, SpotType::to_leave});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_leave});
+        REQUIRE(board.getNoteAt(posA) == BoardNote{boxId_0, SpotType::to_leave});
 
-        board.addNote(Position{5, 5}, BoardNote{boxId, SpotType::left});
-        REQUIRE(board.getNoteAt(Position{5, 5}) == BoardNote{-1, SpotType::left});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::left});
+        REQUIRE(board.getNoteAt(posA) == BoardNote{-1, SpotType::left});
 
     }
 
-    /* 
-    TempListener is a BoardListener that saves the last drops and boxes that were received in the last call to receiveChanges().
-    When receiveChanges() is called, TempListener 1) receives and saves changes to Spots, 2) receives and saves the BoxInfos. Note, changes to Spots are in fact changes since the last time receivedChanges() was called. The BoxInfos received are the current state of the Boxes.
-    */
-    class TempListener : public BoardListener 
+
+    SECTION("Verify changes to Board's Spots are sent to the BoardListener when board.sendStateAndChanges() is called.")
     {
-        public: 
 
-        void receiveChanges(
-            unordered_set<Drop> drops,
-            unordered_map<int, BoxInfo> boxes) override
-        {
-            _dropsPerPosition.clear();
-            _boxes.clear();
-            for(const auto& p: boxes)
-            {
-                _boxes.insert({p.second.getId(), p.second});
-            }
-
-            for(auto& drop : drops)
-            {
-                _dropsPerPosition.insert({drop.getPosition(), drop});
-            }
-        }
-        
-        unordered_map<Position, Drop> _dropsPerPosition{};
-        unordered_map<int, BoxInfo> _boxes{};
-    };
-
-    SECTION("Verify changes to Board's Spots are sent to the BoardListener. Use TempListener which saves the changed Spots and state of the Boxes it receives. Make changes to Board. Request that Board send changes to the BoardListener. Verify that the BoardListener received the changes.")
-    {
-        // Create boxes with id=0, id=1, and id=2.
-        vector<Box> boxes{Box{0, 0, 5, 5}, Box{1, 1, 5, 5}, Box{2, 2, 5, 5}};
-
-        Board board{10, 10, std::move(boxes)};
-        TempListener listener{};
-        board.registerListener(&listener);
-
-        board.addNote(Position{5, 5}, BoardNote{0, SpotType::to_arrive});
-        board.addNote(Position{6, 6}, BoardNote{1, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posB, BoardNote{boxId_1, SpotType::to_arrive});
 
         board.sendStateAndChanges();
-
-        Drop dropForBox0 = listener._dropsPerPosition.at(Position{5, 5});
-        Drop dropForBox1 = listener._dropsPerPosition.at(Position{6, 6});
-
+        
         REQUIRE(listener._dropsPerPosition.size() == 2);
 
-        REQUIRE(SpotType::to_arrive == dropForBox0.getSpotType());
-        REQUIRE(0 == dropForBox0.getBoxId());
+        Drop drop0 = listener._dropsPerPosition.at(posA);
+        Drop drop1 = listener._dropsPerPosition.at(posB);
 
-        REQUIRE(SpotType::to_arrive == dropForBox1.getSpotType());
-        REQUIRE(1 == dropForBox1.getBoxId());
+        REQUIRE(SpotType::to_arrive == drop0.getSpotType());
+        REQUIRE(boxId_0 == drop0.getBoxId());
 
-        // Again, add BoardNotes to Board, request Board send changes. Verify BoardListener received changes.
+        REQUIRE(SpotType::to_arrive == drop1.getSpotType());
+        REQUIRE(boxId_1 == drop1.getBoxId());
 
-        board.addNote(Position{5, 5}, BoardNote{0, SpotType::arrive});
-        board.addNote(Position{7, 7}, BoardNote{2, SpotType::to_arrive}); 
+        // Again,
+        // add BoardNotes to Board, request Board send changes. Verify BoardListener received changes.
+        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive});
+        board.addNote(posC, BoardNote{boxId_2, SpotType::to_arrive}); 
+
         board.sendStateAndChanges();
-        
-        Drop dpForBox0 = listener._dropsPerPosition.at(Position{5, 5});
-        Drop dropForBox2 = listener._dropsPerPosition.at(Position{7, 7});
         
         REQUIRE(listener._dropsPerPosition.size() == 2);
         
-        REQUIRE(SpotType::arrive == dpForBox0.getSpotType());
-        REQUIRE(0 == dpForBox0.getBoxId());
+        Drop dp0 = listener._dropsPerPosition.at(posA);
+        Drop drop2 = listener._dropsPerPosition.at(posC);
+        
+        REQUIRE(SpotType::arrive == dp0.getSpotType());
+        REQUIRE(boxId_0 == dp0.getBoxId());
 
-        REQUIRE(SpotType::to_arrive == dropForBox2.getSpotType());
-        REQUIRE(2 == dropForBox2.getBoxId());
+        REQUIRE(SpotType::to_arrive == drop2.getSpotType());
+        REQUIRE(boxId_2 == drop2.getBoxId());
     }
 
-    SECTION("Verify 1) addNotes() returns false when unsuccessful and 2) BoardListener receives changed Boxes. Using the addNote() method, a box with id of 20 attempts to move to position where a box with id 10 is at. Both boxes' levels go up.")
+    SECTION("When addNotes() is unsuccessful verify 1) addNotes() returns false and 2) both Boxes' levels go up. ")
     {
-        int boxId_0 = 0;
-        int boxId_1 = 1;
-        
-        vector<Box> boxes{Box{boxId_0, 0, 1, 1}, Box{boxId_1, 0, 1, 1}};
-        Board board{20, 20, std::move(boxes)};
-        
-        TempListener listener{};
-        board.registerListener(&listener);
-     
-        // Add Box0 at Position{5, 5}. 
-        board.addNote(Position{5, 5}, BoardNote{boxId_0, SpotType::to_arrive});
+        // Add Box0 to posA.
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
 
-        // Add Box1 to Position{5, 5}.
-        // successful should be false and both boxes' levels go up by 1.
-        bool successful = board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive});
-        REQUIRE(false == successful);
+        // Try to add Box1 to posA.
+        bool isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive});
+
+        // Verify isSuccessful. Note both boxes' levels go up by 1.
+        REQUIRE(false == isSuccessful);
         
-        // Again add Box1 to Position{5, 5}.
-        // successful should be false again, and both boxes' levels go up by 1 again.
-        successful = board.addNote(Position{5, 5}, BoardNote{boxId_1, SpotType::to_arrive}); 
-        REQUIRE(false == successful);
+        // Again, try to add Box1 to posA.
+        isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive}); 
+
+        // Verify isSuccessful is false again. Both Boxes' levels go up by one again.
+        REQUIRE(false == isSuccessful);
+
+        // Call Board's sendStateAndChanges method().
         board.sendStateAndChanges();
-       
+
+        // Verify Boxes' levels are 2.
         REQUIRE(2 == listener._boxes.at(0).getLevel());
         REQUIRE(2 == listener._boxes.at(1).getLevel());
     }
 
 
-    SECTION("Adding a BoardNote with an unknown BoxId results in an exception.")
+    SECTION("Verifty adding a BoardNote with an unknown BoxId results in an exception.")
     {
-        int boxId_0 = 0;
-        int boxId_1 = 1;
-        
-        vector<Box> boxes{Box{boxId_0, 0, 1, 1}, Box{boxId_1, 0, 1, 1}};
-        Board board{20, 20, std::move(boxes)};
-
         // Board does not have a Box id of 100.
-        REQUIRE_THROWS(board.addNote(Position{5, 5}, BoardNote{100, SpotType::to_arrive}));
+        REQUIRE_THROWS(board.addNote(posA, BoardNote{100, SpotType::to_arrive}));
     }
     
-    SECTION("Returns a working BoardProxy.")
+    SECTION("Verifty getBoardProxy() returns a working BoardProxy.")
     {
-        // Create boxes with id=0, id=1, and id=2.
-        vector<Box> boxes{Box{0, 0, 5, 5}, Box{1, 1, 5, 5}};
-
-        Board board{10, 10, std::move(boxes)};
         BoardProxy boardProxy = board.getBoardProxy();
-        TempListener listener{};
-        board.registerListener(&listener);
 
-        board.addNote(Position{5, 5}, BoardNote{0, SpotType::to_arrive});
-        board.addNote(Position{6, 6}, BoardNote{1, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posB, BoardNote{boxId_1, SpotType::to_arrive});
 
+        // BoardProxy calls Board's sendStateAndChanges() method.
         boardProxy.sendChanges();
 
-        Drop dropForBox0 = listener._dropsPerPosition.at(Position{5, 5});
-        Drop dropForBox1 = listener._dropsPerPosition.at(Position{6, 6});
+        Drop drop0 = listener._dropsPerPosition.at(posA);
+        Drop drop1 = listener._dropsPerPosition.at(posB);
 
         REQUIRE(listener._dropsPerPosition.size() == 2);
 
-        REQUIRE(SpotType::to_arrive == dropForBox0.getSpotType());
-        REQUIRE(0 == dropForBox0.getBoxId());
+        REQUIRE(SpotType::to_arrive == drop0.getSpotType());
+        REQUIRE(boxId_0 == drop0.getBoxId());
 
-        REQUIRE(SpotType::to_arrive == dropForBox1.getSpotType());
-        REQUIRE(1 == dropForBox1.getBoxId());
+        REQUIRE(SpotType::to_arrive == drop1.getSpotType());
+        REQUIRE(boxId_1 == drop1.getBoxId());
     }
 
-    SECTION("Adding a BoardNote to the board, should result in a callback message sent to the NoteSubscriber.")
+    SECTION("Verify NoteSubscribers receive changes to the Spot they are associatd with.")
     {
-        Position pos0{0, 0};
-        Board board{10, 10, vector<Box>{Box{0, 0, 1, 1}}};
-        NoteAccountant callbackObject{};
-        board.registerNoteSubscriber(pos0, callbackObject);
+        NoteAccountant noteSubscriber{};
+        board.registerNoteSubscriber(posA, noteSubscriber);
        
         // box 0 is about to arrive. 
-        board.addNote(pos0, BoardNote{0, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
 
         // box 0 arrives.
-        board.addNote(pos0, BoardNote{0, SpotType::arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive});
 
-        vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> callbackNotes = callbackObject.getNotes();
+        vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> callbackNotes = noteSubscriber.getNotes();
 
         REQUIRE(2 == callbackNotes.size());
         REQUIRE(BoardNote{0, SpotType::to_arrive} == callbackNotes[0].second);
         REQUIRE(BoardNote{0, SpotType::arrive}  == callbackNotes[1].second);
     }
+
 }

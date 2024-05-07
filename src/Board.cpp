@@ -1,5 +1,4 @@
 #include "Board.h"
-#include "BoardListener.h"
 
 using namespace std;
 
@@ -10,8 +9,8 @@ Board::Board(
 :   _width{width},
     _height{height}
 {
-    // _spots contains height x width number of Spots.
-    // _dropMatrix1 and _dropMatrix2 contain height x width number of Drops.
+    // The number of Spots that _spots contains is height times width.
+    // The number of Drops that both _dropMatrix1 and _dropMatrix2 contain is height x width.
     _spots = vector<vector<Spot>>(height,vector<Spot>{});
     _dropMatrix1 = vector<vector<Drop>>(height, vector<Drop>{});
     _dropMatrix2 = vector<vector<Drop>>(height, vector<Drop>{});
@@ -26,7 +25,7 @@ Board::Board(
         }
     }
 
-    // set _receivingMatrix to one of the Drop matrices.
+    // Set _receivingMatrix to one of the Drop matrices.
     _receivingMatrix = &_dropMatrix1;
 
     // Move the Boxes from boxes to _boxes.
@@ -37,18 +36,18 @@ Board::Board(
 }
 
 /*
-Spots, Drops, and Boxes are only updated in the addNote() method. These updates are stopped while collecting the data to send in the sendStateAndChanges() method. The addNote() method is protected by a shared_lock using the mutex _mux.
+Spots, Drops, and Boxes are only updated in the addNote() method. These updates are paused while the data collection is done in the sendStateAndChanges() method. The addNote() method is protected by a shared_lock using the mutex _mux. The data collection is uniquely and entirely done in the the sendStateAndChanges() method, and the task for collecting that data is surrounded by a unique_lock that also uses the _mux mutex. The task for collecting that data is the toggling of the _receivingMatrix and the copying of _boxes.
 
-The toggling of _receivingMatrix and the copying of _boxes sendStateAndChanges() is protected by a unique_lock.  This unique_lock shares the same mutex (_mux) as the shared_lock that protects all of addNote().
+Note, addNote() allows multiple threads to use it at the same time; It is protected by a shard_lock.
 
-Note, addNote() allows multiple threads to use it at the same time.
-
-
-A particular Spot and its corresponding Drop in _recevingMatrix should be changing in unison. Spot's changes are protected with locks inside Spot's methods. Drop doesn't have any protections. However, threads (through their contained PositionManager) contain a particular boxId. Once a thread has successfully changed a Spot with the "to arrive" type and a particular boxId, the Spot is essentially stamped with that particular boxId. Only that particular thread can change that Spot because only that particular thread has that boxId. At that point only that particular thread changes the corresponding Drop's attributes. Not until that particular thread changes the Spot's type to "left" and finishes the addNote() method can another thread change that particular Spot or its corresponding Drop.
+A particular Spot and its corresponding Drop in _recevingMatrix should be changing in unison. Spot's changes are protected with locks inside Spot's methods. Drop doesn't have any protections. However, threads (through their contained Mover) contain a particular boxId. Once a thread has successfully changed a Spot with the "to arrive" type and a particular boxId, the Spot is essentially stamped with that particular boxId. Only that particular thread can change that Spot because only that particular thread has that boxId. At that point only that particular thread changes the corresponding Drop's attributes. Not until that particular thread changes the Spot's type to "left" and finishes the addNote() method can another thread change that particular Spot or its corresponding Drop.
 */
 bool Board::addNote(Position position, BoardNote newNote)
 {
     shared_lock<shared_mutex> shLock(_mux);
+
+    int posX = position.getX();
+    int posY = position.getY();
 
     // Only allow Boxes that are in the _boxes vector to be added to the Board.
     if(_boxes.find(newNote.getBoxId()) == _boxes.end())
@@ -59,21 +58,27 @@ bool Board::addNote(Position position, BoardNote newNote)
         throw(invalid_argument(str));
     }
 
-    // See Spot class' rules that determine if a Box with this boxId and SpotType at @position is allowed. Put basically, @position has to be empty in order for a Box to enter the Spot. And only a BoardNote with the Spot's current boxId can move the Box out of the Spot.
-    pair<int, bool> success = _spots[position.getY()][position.getX()].changeNote(newNote);
+    // Try to update Spot at @position.
+    // See Spot class' rules to determine if a Box with this boxId and SpotType at @position is allowed. Hint: Put basically, @position has to be empty in order for a Box to enter the Spot. And only a BoardNote with the Spot's current boxId can move the Box out of the Spot.
+    pair<int, bool> success = _spots[posY][posX].changeNote(newNote);
     
     if (success.second)
     {
-        // Record changed boxId and type at @position in _receivingMatrix.
-        BoardNote currentBoardNote = _spots[position.getY()][position.getX()].getBoardNote();
-        Drop& drop = (*_receivingMatrix)[position.getY()][position.getX()];
-        drop.setHasChanged(true);
-        drop.setBoxId(currentBoardNote.getBoxId());
+        // Record changes to Spot in _receivedMatrix, which is a matrix of Drops.
+        BoardNote changedBoardNote = _spots[posY][posX].getBoardNote();
+        Drop& drop = (*_receivingMatrix)[posY][posX];
 
-        // In order to fail a test, Add a sleep time here.
+        // Record that this Drop has changed.
+        drop.setHasChanged(true);
+
+        // Record changed boxId.
+        drop.setBoxId(changedBoardNote.getBoxId());
+
+        // In order to fail a threading test, Add a sleep time here.
         // std::this_thread::sleep_for(1ms);
 
-        drop.setSpotType(currentBoardNote.getType());
+        // Record changed SpotType.
+        drop.setSpotType(changedBoardNote.getType());
 
         // Move was successful. Notify all NoteSubscribers.
         if (_noteSubscribersPerPos.find(position) != _noteSubscribersPerPos.end())
@@ -95,15 +100,19 @@ bool Board::addNote(Position position, BoardNote newNote)
 
 void Board::sendStateAndChanges()
 {   
-    // The sendChangesLock prevents two threads entering sendChanges() method at the same time.
-    unique_lock<shared_mutex> sendChangesLock(_sendChangesMutex);
+    // The uniqueLock, enteringMethodLock, prevents two threads entering the sendStateAndChanges() method at the same time. No other method uses the _enteringMethodMutex.
+    unique_lock<shared_mutex> enteringMethodLock(_enteringMethodMutex);
+
 
     // changedBoard will point to the current _receivingMatrix.
     vector<vector<Drop>>* changedBoard = nullptr;
     unordered_map<int, BoxInfo> copyOfBoxInfo{};
+
+    // Braces encapsulate the task of data collection. The data does not change during this task. While 1) toggling _receivedMatrix, 2) assigning changedBoard, and 3) copying _boxes' boxInfos, no new notes are being added due to addNote() sharing the _mux mutex that collectDataLock is using.
     {
-        // While 1) toggling _receivedMatrix, 2) assigning changedBoard, and 3) copying _boxes boxInfos, no new notes are being added. addNote() shares the _mux mutex that lockUq is using.
-        unique_lock<shared_mutex> lockUq(_mux);
+        unique_lock<shared_mutex> collectDataLock(_mux);
+
+
         changedBoard = _receivingMatrix;
         _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
         

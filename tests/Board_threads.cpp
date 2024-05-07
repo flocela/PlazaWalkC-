@@ -6,7 +6,7 @@ using namespace std;
 
 /*
 Function used in threading.
-A @times number of times moves Box with boxId @id to Position @pos using a SpotType of SpotType::to_arrive.A
+For a @times number of times moves Box with boxId @id to Position @pos using a SpotType of SpotType::to_arrive.
 */
 void moveBoxToPosition(Board& board, int id, Position pos, int times)
 {
@@ -19,7 +19,7 @@ void moveBoxToPosition(Board& board, int id, Position pos, int times)
 
 /*
 Function used in threading.
-A @times number of times calls @board's sendStateAndChanges() method.
+For a @times number of times calls @board's sendStateAndChanges() method.
 */
 void requestChanges(Board& board, int times)
 {
@@ -44,18 +44,18 @@ TEST_CASE("Board_threads::")
 {
 
     /*
-    Test that there are no changes to the Board's Boxes while the sendStateAndChanges() method copies the Boxes information into a map to send to the BoardListeners. 
+    Test that there are no changes to the Board's Boxes while the sendStateAndChanges() method copies the Boxes' information into a map to send to the BoardListeners. 
     
-    The method sendChanges() contains a block of code protected with the unique_lock lockUq that uses the same mutex (_mux) that the addNote() method uses. In that block there is a for-loop that copies the BoxInfos into the copyOfBoxInfo map. To make this test fail, move that copying for-loop outside of the lockUq block.
+    The method sendStateAndChanges() contains a block of code protected with the unique_lock collectDataLock that uses the same mutex (_mux) that the addNote() method uses. In that block there is a for-loop that copies the BoxInfos into the copyOfBoxInfo map. To make this test fail, move that copying-for-loop outside of the collectDataLock block.
     */
-    SECTION("Box0 is stationed at a position. A second Box, Box1, repeatedly tries to enter that position. The two boxes collide resulting in each box's level increasing by one. The Boxes' information is never copied to be sent while these Boxes are in the middle of being updated. So, the state of the boxes will never be sent having one box's level increased while the other box's level is yet to be increased. The sent state of the Boxes always shows the Boxes have the same levels.")
+    SECTION("Box0 is stationed at posA. Box1 repeatedly tries to enter posA. Each time the two Boxes collide their levels increase by one. The Boxes' information is copied to be sent, but never while the Boxes are being updated. So, the sent state of the Boxes will never be that one Box's level is increased while the other Box's level is yet to be increased. Verifty the sent Boxes' levels are always equal.")
     {
         // There are only two boxes. They only collide with each other, they both start with a collision level of zero, so their collision levels should always be reported as equal.
 
-        // Thread t1 repeatedly tries to move Box1 into the position where Box0 is already standing.
+        // Thread t1 repeatedly tries to move Box1 into the Position where Box0 is already standing.
         // Thread t2 repeatedly calls to receive the state of the Boxes.
 
-        // When TestListener receives the map of boxesPerId, it checks that both boxes have the same level. 
+        // When TestListener receives the map of boxesPerId, it checks that both Boxes have the same level. 
         class TestListener : public BoardListener 
         {
         public: 
@@ -77,15 +77,16 @@ TEST_CASE("Board_threads::")
 
         int boxId_0 = 0;
         int boxId_1 = 1;
+        Position posA = Position{5, 5};
         
         vector<Box> boxes{Box{boxId_0, 0, 1, 1}, Box{boxId_1, 0, 1, 1}};
         Board board{20, 20, std::move(boxes)};
         TestListener listener{};
         board.registerListener(&listener);
       
-        board.addNote(Position{5, 5}, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
 
-        std::thread t1(moveBoxToPosition, std::ref(board), boxId_1, Position{5, 5}, 100);
+        std::thread t1(moveBoxToPosition, std::ref(board), boxId_1, posA, 100);
         std::thread t2(requestChanges, std::ref(board), 100);
 
         t1.join();
@@ -103,7 +104,7 @@ TEST_CASE("Board_threads::")
 
     Thread t2 repeatedly asks for changes to be sent. 
 
-    The resulting changes never have a SpotType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges() is removed, then these invalid Drops are sent. In order to fail this test: remove the unique_lock, lockUq, in sendChanges(). May also have to add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
+    The resulting changes never have a SpotType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges() is removed, then invalid Drops are sent. In order to fail this test: remove the unique_lock, collectDataLock, in sendChanges(). May also have to add a this_thread::sleep_for(1ms) in addNote (after drop._boxId has been updated, but before drop._type has been updated).
     */
     SECTION("Drops sent to BoardListeners are changed properly. Both their SpotType and boxId have been changed.")
     {
