@@ -30,13 +30,4 @@ TEST_CASE("Box::threads")
         // level ups from t2.
         REQUIRE(2000 == box.getLevel());
     }
-
-    // getInfo() has a shared lock, which does not allow getInfo() to access _level while it is 
-    // being changed in the upLevel() method, which is protected by getLevel(). This isn't tested,
-    // but true by definition.
-
-    SECTION("hash function should return the ")
-    {
-        // TODO need a hash function test!!!
-    }
 }

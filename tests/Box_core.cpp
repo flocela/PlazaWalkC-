@@ -86,12 +86,14 @@ TEST_CASE("Box_core::")
         Box boxB{0, 0, 0, 0};
 
         REQUIRE(hasher(boxA) == hasher(boxB));
+
         
         Box boxC{1, 1, 2, 2};
         Box boxD{1, 1, 2, 2};
 
         REQUIRE(hasher(boxC) == hasher(boxD));
-        
+       
+ 
         Box boxE{10, 11, 12, 13};
         Box boxF{10, 11, 12, 13};
 

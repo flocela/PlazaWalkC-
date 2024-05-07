@@ -5,19 +5,19 @@ using namespace std;
 
 TEST_CASE("Box_getters_setters::")
 {
-    SECTION("Box:: id is set in constructor")
+    SECTION("id is set in constructor")
     {
         Box box{10, 0, 1, 2};
         REQUIRE(10 == box.getId());
     }
 
-    SECTION("Box:: group is set in constructor")
+    SECTION("group is set in constructor")
     {
         Box box{10, 12, 1, 2};
         REQUIRE(12 == box.getGroupId());
     }
 
-    SECTION("Box:: width and height is declared in the constructor")
+    SECTION("width and height are declared in the constructor")
     {
         Box box{0, 0, 8, 7};
 
