@@ -6,7 +6,7 @@ using namespace std;
 
 TEST_CASE("BroadcastAgent_core::")
 {
-    SECTION("Calling requestBroadcast() causes BoardProxy to call its sendChanges(). This is verified because the BoardListener registered to BoardProxy's Board receives the changes.")
+    SECTION("Calling requestBroadcast() causes BoardProxy to call its sendChanges() method. The chain of evens is: BroadcastAgent's requestBroadcast() method is called. Inside requestBroadcast(), BoardProxy's sendChanges() method is called. Inside the sendChanges() method, Board's sendStateAndChanges() method is called. Inside sendStateAndChages() BoardListener's receiveChanges is called. Verify BoardListener receives changes when BoardProxy's requestBroadcast() method is called.")
     {
 
         class TestListener : public BoardListener 
