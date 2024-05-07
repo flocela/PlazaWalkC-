@@ -25,7 +25,7 @@ TEST_CASE("BoardProxy_core::")
                 }
             }
        
-            // counts how many times receivedChanges is called. 
+            // Counts how many times receivedChanges is called. 
             int _count = 0;
             
         };
