@@ -4,7 +4,7 @@
 #include "Decider.h"
 
 /*
-Named a safe Decider because it will only suggest moving to Positions that do not have a Box currently in them. It will only suggest Positions that are empty on the Board.
+Named a safe Decider because it will only suggest moving to Positions that do not have a Box currently in them. In other words it will only suggest Positions that are empty on the Board.
 */
 class Decider_Safe : public Decider
 {
@@ -15,7 +15,8 @@ class Decider_Safe : public Decider
     */
     bool suggestMoveTo(Position position, const Board& board) override;
 
-    /* Will return the first Position in @possiblePositions that has a SpotType of SpotType::left. With the Position will return a time to wait of zero. If no Position has a SpotType of SpotType::left, then returns a Position of {-1, -1} and a time of -1.
+    /*
+    Will return the first Position in @possiblePositions that has a SpotType of SpotType::left. Along with the Position will return a time to wait of zero. If no Position has a SpotType of SpotType::left, then returns a Position of {-1, -1} and a time of -1.
     */
     std::pair<Position, int> getNext(
         const std::vector<Position>& possiblePositions,
