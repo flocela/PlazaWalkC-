@@ -5,97 +5,96 @@ using namespace std;
 
 TEST_CASE("Decider_Risk1_core::")
 {
+    // Decider_Risk1
+    Decider_Risk1 decider{};
 
     // Vector of Boxes 
     vector<Box> boxes{
-        Box{0, 0, 10, 10}, // boxId = 0
-        Box{1, 1, 10, 10}, // boxId = 1
-        Box{2, 2, 10, 10}}; // boxId = 1
+        Box{0, 0, 10, 10},  // boxId = 0
+        Box{1, 1, 10, 10},  // boxId = 1
+        Box{2, 2, 10, 10}}; // boxId = 2
 
     // Positions with different SpotTypes.
-    Position positionTypeToArrive{0, 0};
-    Position positionTypeArrive{1, 1};
-    Position positionTypeToLeave{2, 2};
-    Position positionTypeLeft{3, 3};
+    Position posTypeToArrive{0, 0};
+    Position posTypeArrive{1, 1};
+    Position posTypeToLeave{2, 2};
+    Position posTypeLeft{3, 3};
 
     // Board
     Board board{10, 10, std::move(boxes)};
 
-    // Box at index 0, at Position{0, 0} has a SpotType of SpotType::to_arrive. 
-    board.addNote(positionTypeToArrive, BoardNote{0, SpotType::to_arrive}, true);
+    // Position{0, 0} has SpotType::to_arrive and Box0. 
+    board.addNote(posTypeToArrive, BoardNote{0, SpotType::to_arrive}, true);
 
-    // Box at index 1, at Position{1, 1} has a SpotType of SpotType::arrive.
-    board.addNote(positionTypeArrive, BoardNote{1, SpotType::to_arrive}, true);
-    board.addNote(positionTypeArrive, BoardNote{1, SpotType::arrive}, true);
+    // Position{1, 1} has SpotType::arrive and Box1.
+    board.addNote(posTypeArrive, BoardNote{1, SpotType::to_arrive}, true);
+    board.addNote(posTypeArrive, BoardNote{1, SpotType::arrive}, true);
     
-    // Box at index 2, at Position{2, 2} has a SpotType of SpotType::to_leave.
-    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_arrive}, true);
-    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::arrive}, true);
-    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_leave}, true);
+    // Position{2, 2} has SpotTYpe::to_leave and Box2.
+    board.addNote(posTypeToLeave, BoardNote{2, SpotType::to_arrive}, true);
+    board.addNote(posTypeToLeave, BoardNote{2, SpotType::arrive}, true);
+    board.addNote(posTypeToLeave, BoardNote{2, SpotType::to_leave}, true);
 
-    // There is not Box at positionTypeLeft.
-    
+    // There is no Box at posTypeLeft.
 
-    // Decider_Risk1
-    Decider_Risk1 decider{};
-    SECTION("Box3 is deciding to move to positionTypeToArrive which has a SpotType::to_arrive.")
+    SECTION("Box3 is deciding to move to posTypeToArrive which has a SpotType::to_arrive.")
     {
-        SECTION("suggestMoveTo() returns false")
+        SECTION("verify suggestMoveTo() returns false")
         {
-            REQUIRE_FALSE(decider.suggestMoveTo(positionTypeToArrive, board));
+            REQUIRE_FALSE(decider.suggestMoveTo(posTypeToArrive, board));
         }
-        SECTION("getNext() returns the first possiblePositions that is SpotType::to_leave or SpotType::left")
+        SECTION("verify getNext() returns the first possiblePositions that is SpotType::to_leave or SpotType::left")
         {
-            vector<Position> possiblePositions = {positionTypeToArrive, positionTypeLeft, positionTypeToLeave};
+            vector<Position> possiblePositions = {posTypeToArrive, posTypeLeft, posTypeToLeave};
             pair<Position, int> next = decider.getNext(possiblePositions, board);
-            REQUIRE(positionTypeLeft == next.first);
+            REQUIRE(posTypeLeft == next.first);
             REQUIRE(0 == next.second);
 
-            possiblePositions = {positionTypeToArrive, positionTypeToLeave, positionTypeLeft};
+            possiblePositions = {posTypeToArrive, posTypeToLeave, posTypeLeft};
             next = decider.getNext(possiblePositions, board);
-            REQUIRE(positionTypeToLeave == next.first);
+            REQUIRE(posTypeToLeave == next.first);
             REQUIRE(7 == next.second);
         }
     }
-    SECTION("Box3 is deciding to move to positionTypeArrive which has a SpotType::arrive.")
+    SECTION("Box3 is deciding to move to posTypeArrive which has a SpotType::arrive.")
     {
-        SECTION("suggestMoveTo() returns false")
+        SECTION("verify suggestMoveTo() returns false")
         {
-            REQUIRE_FALSE(decider.suggestMoveTo(positionTypeArrive, board));
+            REQUIRE_FALSE(decider.suggestMoveTo(posTypeArrive, board));
         }
-        SECTION("getNext() returns the first possiblePositions that is SpotType::to_leave or SpotType::left")
+        SECTION("verify getNext() returns the first possiblePositions that is SpotType::to_leave or SpotType::left")
         {
-            vector<Position> possiblePositions = {positionTypeArrive, positionTypeLeft, positionTypeToLeave};
+            vector<Position> possiblePositions = {posTypeArrive, posTypeLeft, posTypeToLeave};
             pair<Position, int> next = decider.getNext(possiblePositions, board);
-            REQUIRE(positionTypeLeft == next.first);
+            REQUIRE(posTypeLeft == next.first);
             REQUIRE(0 == next.second);
         }
     }
-    SECTION("Box3 is deciding to move to positionTypeToLeave which has a SpotType::toLeave.")
+    SECTION("Box3 is deciding to move to posTypeToLeave which has a SpotType::toLeave.")
     {
-        SECTION("suggestMoveTo() returns true")
+        SECTION("verify suggestMoveTo() returns true")
         {
-            REQUIRE(decider.suggestMoveTo(positionTypeToLeave, board));
+            REQUIRE(decider.suggestMoveTo(posTypeToLeave, board));
         }
-        SECTION("possiblePositions starts with positionTypeToLeave. It is the first possiblePosition that is SpotType::to_leave or SpotType::left, so it is returned.")
+        SECTION("possiblePositions starts with posTypeToLeave. It is the first possiblePosition that is SpotType::to_leave or SpotType::left, verify it is returned.")
         {
-            vector<Position> possiblePositions = {positionTypeToLeave, positionTypeLeft, positionTypeToLeave};
+            vector<Position> possiblePositions = {posTypeToLeave, posTypeLeft, posTypeToLeave};
             pair<Position, int> next = decider.getNext(possiblePositions, board);
-            REQUIRE(positionTypeToLeave == next.first);
+            REQUIRE(posTypeToLeave == next.first);
             REQUIRE(7 == next.second);
         }
     }
-    SECTION("Box3 is deciding to move to positionTypeLeft which has a SpotType::Left.")
+    SECTION("Box3 is deciding to move to posTypeLeft which has a SpotType::Left.")
     {
-        SECTION("suggestMoveTo() returns true")
+        SECTION("verify suggestMoveTo() returns true")
         {
-            REQUIRE(decider.suggestMoveTo(positionTypeLeft, board));
+            REQUIRE(decider.suggestMoveTo(posTypeLeft, board));
         }
-        SECTION("possiblePositions starts with positionTypeLeft. It is the first possiblePosition that is SpoteType::to_leave or SpotType::left, so it is returnd.")
+        SECTION("possiblePositions starts with posTypeLeft. It is the first possiblePosition that is SpoteType::to_leave or SpotType::left, verifty it is returnd.")
         {
-            vector<Position> possiblePositions = {positionTypeLeft, positionTypeLeft, positionTypeToLeave};
+            vector<Position> possiblePositions = {posTypeLeft, posTypeLeft, posTypeToLeave};
             pair<Position, int> next = decider.getNext(possiblePositions, board);
-            REQUIRE(positionTypeLeft == next.first);
+            REQUIRE(posTypeLeft == next.first);
             REQUIRE(0 == next.second);
         }
     }

@@ -4,6 +4,9 @@
 #include <vector>
 #include "Board.h"
 
+/*
+Returns a decision on whether a Box should move to Position, or chooses which is the best Position to move to.
+*/
 class Decider
 {
 
@@ -12,7 +15,7 @@ class Decider
     virtual ~Decider() = default;
 
     /*
-    Returns whether given @position and @board, if the user should move to @position.
+    Returns a decistion on whether the user should move to @position, given @position and @board.
     */
     virtual bool suggestMoveTo(Position position, const Board& board) = 0;
 
