@@ -22,9 +22,19 @@ protected:
 public:
 
     virtual ~Mover () noexcept = default;
+
+    /*
+    Adds a Box to the Board at @position. If this addition is unsuccessful, neither Boxes' levels go up.
+    */
     virtual bool addBox(Position position) = 0;
+
     virtual bool removeBox(Position position) = 0;
+
+    /*
+    Moves a Box on the Board from @oldPosition to @newPosition. If the move is unsuccessful, both Boxes' levels to up by one.
+    */
     virtual bool moveBox(Position oldPosition, Position newPosition) = 0;
+
     virtual int getBoxId() const = 0;
 };
 

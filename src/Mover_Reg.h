@@ -6,11 +6,11 @@
 #include "Mover.h"
 
 /*
-Requirements for a Box to take up a new Position on the Board: The Board must receive a BoardNote with the boxId, the new Position, and a SpotType of SpotType::to_arrive. Then the Board must receive a BoardNote with the boxId, the new Position, and a SpotType of SpotType::arrive.
+Requirements for a Box to take up a new Position on the Board: 1)The Board must receive a BoardNote with the boxId, the new Position, and a SpotType::to_arrive. 2)Then the Board must receive a BoardNote with the boxId, the new Position, and a SpotType::arrive.
 
-For a Box to leave a Position. The Board must receive a BoardNote with the boxId, the old Position, and the SpotType SpotType::to_leave. Then the Board must receve a BoardNote with the boxId, the old Position, and the SpotType SpotType::left.
+For a Box to leave a Position. 1)The Board must receive a BoardNote with the boxId, the old Position, and the SpotType::to_leave. 1)Then the Board must receve a BoardNote with the boxId, the old Position, and the SpotType::left.
 
-Mover_Reg assures that these steps are taken in a particular order. First the Board receives the BoardNote with SpotType::to_arrive, then with SpotType::to_leave, then SpotType::arrive, and finally with SpotType::left. Notice that the Box will be occupying two Positions from SpotType::to_arrive to until SpotType::left.
+Mover_Reg assures that these steps are taken in a particular order. First the Board receives the BoardNote with SpotType::to_arrive, then with SpotType::to_leave, then SpotType::arrive, and finally SpotType::left. Notice that the Box will be occupying two Positions from SpotType::to_arrive to until SpotType::left.
 
 Mover_Reg holds one boxId, so it can only ever move one Box.
 */
@@ -38,7 +38,7 @@ public:
     bool addBox(Position position) override;
 
     /*
-     Calls the Board's addNote() method. Each call uses the contained boxId. The first call uses @newPosition and SpotType::to_arrive. If this is not successful the method returns false. (May not be successful if @newPosition has a SpotType other than SpotType::left.) If it is successful, addNote() is called with the oldPosition and SpotType::to_leave. Then the current thread sleeps for 14ms if the move is diagonal and 10ms if the move is horizontal or vertical. Then addNote() is called with the @newPosition and SpotType::arrive. Lastly boardNote() is called with the @oldPosition and SpotType::left. If all the addNote() calls are successful, returns true.
+     Calls the Board's addNote() method. Each call uses the contained boxId. The first call uses @newPosition and SpotType::to_arrive. If this is not successful the method returns false. (It will not be successful if @newPosition has a SpotType other than SpotType::left.) If it is successful, addNote() is called with the oldPosition and SpotType::to_leave. Then the current thread sleeps for 14ms if the move is diagonal and 10ms if the move is horizontal or vertical. Then addNote() is called with the @newPosition and SpotType::arrive. Lastly boardNote() is called with the @oldPosition and SpotType::left. If all the addNote() calls are successful, returns true.
     */
     bool moveBox(Position oldPosition, Position newPosition) override;
 

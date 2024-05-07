@@ -4,6 +4,37 @@
 
 using namespace std;
 
+
+/* 
+TempListener is a BoardListener that saves the last Drops and Boxes that were received in the last call to receiveChanges().
+When receiveChanges() is called, TempListener 1) receives and saves changes to Spots, 2) receives and saves the BoxInfos. Note, changes to Spots are in fact changes since the last time receivedChanges() was called. The BoxInfos received are the current state of the Boxes.
+*/
+class TempListener : public BoardListener 
+{
+    public: 
+
+    void receiveChanges(
+        unordered_set<Drop> drops,
+        unordered_map<int, BoxInfo> boxes) override
+    {
+        _dropsPerPosition.clear();
+        _boxes.clear();
+
+        for(const auto& p: boxes)
+        {
+            _boxes.insert({p.second.getId(), p.second});
+        }
+
+        for(auto& drop : drops)
+        {
+            _dropsPerPosition.insert({drop.getPosition(), drop});
+        }
+    }
+    
+    unordered_map<Position, Drop> _dropsPerPosition{};
+    unordered_map<int, BoxInfo> _boxes{};
+};
+
 TEST_CASE("Mover_Reg_core::")
 {
     SECTION("In addBox() and moveBox(), Mover_Reg adds BoardNotes to Board in the correct order.")
@@ -92,22 +123,31 @@ TEST_CASE("Mover_Reg_core::")
         REQUIRE(true == mover.removeBox(startPosition));
         REQUIRE(BoardNote{-1, SpotType::left} ==  board.getNoteAt(startPosition));
     } 
-
-    SECTION("Adding Box to a Position that already has a Box returns false.")
+    
+    SECTION("Adding Box to a Position that already has a Box returns false and will not increase the Boxes' levels.")
     {
         Position position = {5, 5};
        
         // Two boxes. 
         vector<Box> boxes{Box{0, 0,  10, 10}, Box{1, 0, 10, 10}};
         Board board{10, 10, std::move(boxes)};
+        TempListener listener{};
+        board.registerListener(&listener);
+
         Mover_Reg mover0{boxes[0].getId(), &board};
         Mover_Reg mover1{boxes[1].getId(), &board};
         
         mover0.addBox(position);
+
         REQUIRE_FALSE(mover1.addBox(position));
+        board.sendStateAndChanges();
+
+        REQUIRE(0 == listener._boxes.at(0).getLevel());
+        REQUIRE(0 == listener._boxes.at(1).getLevel());
+        
     }
          
-    SECTION("Moving Box to a Position that already has a Box returns false.")
+    SECTION("Moving Box to a Position that already has a Box returns false and will increase the Boxes' levels.")
     {
         Position positionA = {5, 5};
         Position positionB = {6, 6};
@@ -115,6 +155,9 @@ TEST_CASE("Mover_Reg_core::")
         // Two boxes. 
         vector<Box> boxes{Box{0, 0,  10, 10}, Box{1, 0, 10, 10}};
         Board board{10, 10, std::move(boxes)};
+        TempListener listener{};
+        board.registerListener(&listener);
+
         Mover_Reg mover0{boxes[0].getId(), &board};
         Mover_Reg mover1{boxes[1].getId(), &board};
         
@@ -122,6 +165,11 @@ TEST_CASE("Mover_Reg_core::")
         mover1.addBox(positionB);
 
         REQUIRE_FALSE(mover0.moveBox(positionA, positionB));
+
+        board.sendStateAndChanges();
+
+        REQUIRE(1 == listener._boxes.at(0).getLevel());
+        REQUIRE(1 == listener._boxes.at(1).getLevel());
     }
 }
     
