@@ -12,12 +12,12 @@ int Mover_Reg::getBoxId() const
 
 bool Mover_Reg::addBox(Position position)
 {
-    bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_arrive});
+    bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_arrive}, false);
 
     if (success)
     {
         this_thread::sleep_for(5ms);
-        _board->addNote(position, BoardNote{_boxId, SpotType::arrive});
+        _board->addNote(position, BoardNote{_boxId, SpotType::arrive}, true);
     }
    
     return success;
@@ -27,18 +27,18 @@ bool Mover_Reg::removeBox(Position position)
 {
     bool success = false;
 
-    success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave});
-    success = _board->addNote(position, BoardNote{_boxId, SpotType::left});
+    success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave}, true);
+    success = _board->addNote(position, BoardNote{_boxId, SpotType::left}, true);
 
     return success;
 }
 
 bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
 {
-    bool success = _board->addNote(newPosition, BoardNote{_boxId, SpotType::to_arrive});
+    bool success = _board->addNote(newPosition, BoardNote{_boxId, SpotType::to_arrive}, true);
     if (success)
     {
-        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::to_leave});
+        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::to_leave}, true);
 
         int deltaX = oldPosition.getX() - newPosition.getX();
         int deltaY = oldPosition.getY() - newPosition.getY(); 
@@ -51,8 +51,8 @@ bool Mover_Reg::moveBox(Position oldPosition, Position newPosition)
             this_thread::sleep_for(10ms);
         }
 
-        _board->addNote(newPosition, BoardNote{_boxId, SpotType::arrive});
-        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::left});
+        _board->addNote(newPosition, BoardNote{_boxId, SpotType::arrive}, true);
+        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::left}, true);
     
     }
    

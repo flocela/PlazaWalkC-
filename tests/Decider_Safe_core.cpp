@@ -18,8 +18,8 @@ TEST_CASE("Decider_Safe_core::")
     {
 
         // Box0 arrives at positionA.
-        board.addNote(positionA, BoardNote{0, SpotType::to_arrive});
-        board.addNote(positionA, BoardNote{0, SpotType::arrive});
+        board.addNote(positionA, BoardNote{0, SpotType::to_arrive}, true);
+        board.addNote(positionA, BoardNote{0, SpotType::arrive}, true);
 
         SECTION("Box1 is trying to move to positionA. suggetMoveTo(positionA, ...) returns false since positionA has a SpotType that is not SpotType::left")
         {
@@ -51,7 +51,7 @@ TEST_CASE("Decider_Safe_core::")
     {
 
         // Box0 is to_arrive at positionA. 
-        board.addNote(positionA, BoardNote{0, SpotType::to_arrive});
+        board.addNote(positionA, BoardNote{0, SpotType::to_arrive}, true);
 
         vector<Position> possiblePositions = {positionA};
 
@@ -65,9 +65,9 @@ TEST_CASE("Decider_Safe_core::")
     SECTION("Box1 is deciding to move to postionA. Box0 is at positionA with a SpotType::to_leave. The possible Positions vector has only one position, positionA. Decider returns an invalid Position and time to departure.")
     {
         // Box0 arrives, but is about to leave.
-        board.addNote(positionA, BoardNote{0, SpotType::to_arrive});
-        board.addNote(positionA, BoardNote{0, SpotType::arrive});
-        board.addNote(positionA, BoardNote{0, SpotType::to_leave});
+        board.addNote(positionA, BoardNote{0, SpotType::to_arrive}, true);
+        board.addNote(positionA, BoardNote{0, SpotType::arrive}, true);
+        board.addNote(positionA, BoardNote{0, SpotType::to_leave}, true);
 
         vector<Position> possiblePositions = {positionA};
 

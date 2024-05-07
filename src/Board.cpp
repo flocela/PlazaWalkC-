@@ -42,7 +42,7 @@ Note, addNote() allows multiple threads to use it at the same time; It is protec
 
 A particular Spot and its corresponding Drop in _recevingMatrix should be changing in unison. Spot's changes are protected with locks inside Spot's methods. Drop doesn't have any protections. However, threads (through their contained Mover) contain a particular boxId. Once a thread has successfully changed a Spot with the "to arrive" type and a particular boxId, the Spot is essentially stamped with that particular boxId. Only that particular thread can change that Spot because only that particular thread has that boxId. At that point only that particular thread changes the corresponding Drop's attributes. Not until that particular thread changes the Spot's type to "left" and finishes the addNote() method can another thread change that particular Spot or its corresponding Drop.
 */
-bool Board::addNote(Position position, BoardNote newNote)
+bool Board::addNote(Position position, BoardNote newNote, bool upLevel)
 {
     shared_lock<shared_mutex> shLock(_mux);
 
@@ -90,10 +90,12 @@ bool Board::addNote(Position position, BoardNote newNote)
     }
     else
     {
-        // Movement was not successful. Both boxes' levels are increased by one.
-        _boxes[success.first].upLevel();
-        _boxes[newNote.getBoxId()].upLevel();
-
+        if(upLevel)
+        {
+            // Movement was not successful. Both boxes' levels are increased by one.
+            _boxes[success.first].upLevel();
+            _boxes[newNote.getBoxId()].upLevel();
+        }
         return false; 
     }
 }

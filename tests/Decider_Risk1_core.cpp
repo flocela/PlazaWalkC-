@@ -22,16 +22,16 @@ TEST_CASE("Decider_Risk1_core::")
     Board board{10, 10, std::move(boxes)};
 
     // Box at index 0, at Position{0, 0} has a SpotType of SpotType::to_arrive. 
-    board.addNote(positionTypeToArrive, BoardNote{0, SpotType::to_arrive});
+    board.addNote(positionTypeToArrive, BoardNote{0, SpotType::to_arrive}, true);
 
     // Box at index 1, at Position{1, 1} has a SpotType of SpotType::arrive.
-    board.addNote(positionTypeArrive, BoardNote{1, SpotType::to_arrive});
-    board.addNote(positionTypeArrive, BoardNote{1, SpotType::arrive});
+    board.addNote(positionTypeArrive, BoardNote{1, SpotType::to_arrive}, true);
+    board.addNote(positionTypeArrive, BoardNote{1, SpotType::arrive}, true);
     
     // Box at index 2, at Position{2, 2} has a SpotType of SpotType::to_leave.
-    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_arrive});
-    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::arrive});
-    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_leave});
+    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_arrive}, true);
+    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::arrive}, true);
+    board.addNote(positionTypeToLeave, BoardNote{2, SpotType::to_leave}, true);
 
     // There is not Box at positionTypeLeft.
     

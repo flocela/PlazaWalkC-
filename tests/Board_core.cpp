@@ -61,16 +61,16 @@ TEST_CASE("Board_core::")
     
     SECTION("Insert BoardNotes with different types at posA. Verifty the getNoteAt() method returns the new BoardNote after each insertion.")
     {  
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
         REQUIRE(board.getNoteAt(posA) == BoardNote{boxId_0, SpotType::to_arrive});
 
-        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive}, true);
         REQUIRE(board.getNoteAt(posA) == BoardNote{boxId_0, SpotType::arrive});
 
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_leave});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_leave}, true);
         REQUIRE(board.getNoteAt(posA) == BoardNote{boxId_0, SpotType::to_leave});
 
-        board.addNote(posA, BoardNote{boxId_0, SpotType::left});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::left}, true);
         REQUIRE(board.getNoteAt(posA) == BoardNote{-1, SpotType::left});
 
     }
@@ -79,8 +79,8 @@ TEST_CASE("Board_core::")
     SECTION("Verify changes to Board's Spots are sent to the BoardListener when board.sendStateAndChanges() is called.")
     {
 
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
-        board.addNote(posB, BoardNote{boxId_1, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
+        board.addNote(posB, BoardNote{boxId_1, SpotType::to_arrive}, true);
 
         board.sendStateAndChanges();
         
@@ -97,8 +97,8 @@ TEST_CASE("Board_core::")
 
         // Again,
         // add BoardNotes to Board, request Board send changes. Verify BoardListener received changes.
-        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive});
-        board.addNote(posC, BoardNote{boxId_2, SpotType::to_arrive}); 
+        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive}, true);
+        board.addNote(posC, BoardNote{boxId_2, SpotType::to_arrive}, true); 
 
         board.sendStateAndChanges();
         
@@ -114,19 +114,19 @@ TEST_CASE("Board_core::")
         REQUIRE(boxId_2 == drop2.getBoxId());
     }
 
-    SECTION("When addNotes() is unsuccessful verify 1) addNotes() returns false and 2) both Boxes' levels go up. ")
+    SECTION("When addNotes() is unsuccessful verify 1) addNotes() returns false and 2) both Boxes' levels go up because upLevel argument is true. ")
     {
         // Add Box0 to posA.
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
 
         // Try to add Box1 to posA.
-        bool isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive});
+        bool isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive}, true);
 
         // Verify isSuccessful. Note both boxes' levels go up by 1.
         REQUIRE(false == isSuccessful);
         
         // Again, try to add Box1 to posA.
-        isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive}); 
+        isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive}, true); 
 
         // Verify isSuccessful is false again. Both Boxes' levels go up by one again.
         REQUIRE(false == isSuccessful);
@@ -139,19 +139,43 @@ TEST_CASE("Board_core::")
         REQUIRE(2 == listener._boxes.at(1).getLevel());
     }
 
+    SECTION("When addNotes() is unsuccessful verify 1) addNotes() returns false and 2) both Boxes' levels do not go up because upLevel argument is false. ")
+    {
+        // Add Box0 to posA.
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
+
+        // Try to add Box1 to posA.
+        bool isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive}, false);
+
+        // Verify isSuccessful. Note both boxes' levels stay the same.
+        REQUIRE(false == isSuccessful);
+        
+        // Again, try to add Box1 to posA.
+        isSuccessful = board.addNote(posA, BoardNote{boxId_1, SpotType::to_arrive}, false); 
+
+        // Verify isSuccessful is false again. Both Boxes' levels stay the same again.
+        REQUIRE(false == isSuccessful);
+
+        // Call Board's sendStateAndChanges method().
+        board.sendStateAndChanges();
+
+        // Verify Boxes' levels are 2.
+        REQUIRE(0 == listener._boxes.at(0).getLevel());
+        REQUIRE(0 == listener._boxes.at(1).getLevel());
+    }
 
     SECTION("Verifty adding a BoardNote with an unknown BoxId results in an exception.")
     {
         // Board does not have a Box id of 100.
-        REQUIRE_THROWS(board.addNote(posA, BoardNote{100, SpotType::to_arrive}));
+        REQUIRE_THROWS(board.addNote(posA, BoardNote{100, SpotType::to_arrive}, true));
     }
     
     SECTION("Verifty getBoardProxy() returns a working BoardProxy.")
     {
         BoardProxy boardProxy = board.getBoardProxy();
 
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
-        board.addNote(posB, BoardNote{boxId_1, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
+        board.addNote(posB, BoardNote{boxId_1, SpotType::to_arrive}, true);
 
         // BoardProxy calls Board's sendStateAndChanges() method.
         boardProxy.sendChanges();
@@ -174,10 +198,10 @@ TEST_CASE("Board_core::")
         board.registerNoteSubscriber(posA, noteSubscriber);
        
         // box 0 is about to arrive. 
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
 
         // box 0 arrives.
-        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::arrive}, true);
 
         vector<std::pair<std::chrono::time_point<std::chrono::high_resolution_clock>, BoardNote>> callbackNotes = noteSubscriber.getNotes();
 

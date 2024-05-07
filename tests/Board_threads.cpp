@@ -12,7 +12,7 @@ void moveBoxToPosition(Board& board, int id, Position pos, int times)
 {
     for (int ii=0; ii<times; ++ii)
     {
-         board.addNote(pos, BoardNote{id, SpotType::to_arrive});
+         board.addNote(pos, BoardNote{id, SpotType::to_arrive}, true);
     }
 }
 
@@ -36,7 +36,7 @@ void moveBoxesToArrive(Board& board, int numOfBoxes)
 {
     for (int ii=0; ii<numOfBoxes; ++ii)
     {
-         board.addNote(Position{ii, 0}, BoardNote{ii, SpotType::to_arrive});
+         board.addNote(Position{ii, 0}, BoardNote{ii, SpotType::to_arrive}, true);
     }
 }
 
@@ -84,7 +84,7 @@ TEST_CASE("Board_threads::")
         TestListener listener{};
         board.registerListener(&listener);
       
-        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive});
+        board.addNote(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
 
         std::thread t1(moveBoxToPosition, std::ref(board), boxId_1, posA, 100);
         std::thread t2(requestChanges, std::ref(board), 100);

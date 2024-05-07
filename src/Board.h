@@ -50,9 +50,9 @@ class Board
 
     @boardNote contains the boxId and SpotType that the Spot at @position should be updated to.
 
-    If the movement is successful (See Spot's rules.) then the Spot at @position will contain the new BoardNote. If the movement is not successful (say because another Box is already at that position) then the Spot does not change and both Boxes' levels will go up by one. This symbolizes the incoming Box running into the Box standing at @position.
+    If the movement is successful (See Spot's rules.) then the Spot at @position will contain the new BoardNote. If the movement is not successful (say because another Box is already at that position) then the Spot does not change and both Boxes' levels will go up by one if upLevel is true. This symbolizes the incoming Box running into the Box standing at @position. If upLevel is false, then the levels are not increased.
     */
-    bool addNote(Position position, BoardNote boardNote);
+    bool addNote(Position position, BoardNote boardNote, bool upLevel);
 
 
     /*
