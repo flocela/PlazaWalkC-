@@ -1,7 +1,7 @@
 #include "catch.hpp"
 #include "../src/Box.h"
 
-#include <iostream>
+#include <unordered_set>
 
 using namespace std;
 

@@ -1,10 +1,6 @@
 #ifndef BOXINFO__H
 #define BOXINFO__H
 
-#include <bitset>
-#include <shared_mutex>
-#include <vector>
-#include <unordered_set>
 #include <utility>
 
 class BoxInfo{

@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "../src/BoxInfo.h"
+
 #include <thread>
+#include <unordered_set>
 
 using namespace std;
 
