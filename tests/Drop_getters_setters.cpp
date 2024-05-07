@@ -23,18 +23,21 @@ TEST_CASE("Drop_getters_setters::")
         REQUIRE(SpotType::to_arrive == dropAdvancedConstructor.getSpotType());
         REQUIRE_FALSE(dropAdvancedConstructor.hasChanged());
     }
+
     SECTION("set and get BoxId")
     {
         Drop drop{10, 20};
         drop.setBoxId(100);
         REQUIRE(100 == drop.getBoxId());
     }
+    
     SECTION("set and get SpotType")
     {
         Drop drop{10, 20};
         drop.setSpotType(SpotType::to_leave);
         REQUIRE(SpotType::to_leave == drop.getSpotType());
     }
+    
     SECTION("set and get hasChanged")
     {
         Drop drop{10, 20};

@@ -5,7 +5,6 @@
 
 #include "Box.h"
 #include "Color.h"
-#include "Position.h"
 #include "Rectangle.h"
 
 class MainSetup
@@ -39,7 +38,7 @@ class MainSetup
                 Rectangle discardR);
    
     /*
-    Predefined vector<vector<uint8_t>> which can be used to make Colors.
+    Predefined Colors.
     */ 
     static Color red();
     static Color cyan();
