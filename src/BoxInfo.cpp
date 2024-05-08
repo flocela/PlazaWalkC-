@@ -1,5 +1,4 @@
 #include "BoxInfo.h"
-#include <iostream>
 
 using namespace std;
 

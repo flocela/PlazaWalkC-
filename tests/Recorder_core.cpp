@@ -1,6 +1,5 @@
 #include "catch.hpp"
 #include "../src/Recorder.h"
-#include <iostream>
 
 using namespace std;
 

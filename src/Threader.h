@@ -44,7 +44,7 @@ class Threader
 
     A breaking reference @running is checked between Position moves. If it is false, the thread returns.
     */
-    void populateThreadsForOneGroup(
+    void populateOneBatchOfThreads(
         std::vector<std::unique_ptr<std::thread>>& threads,
         int firstBoxId,
         int count,
@@ -56,11 +56,11 @@ class Threader
         bool& running);
 
 
-    /* Creates groups of threads using funcMoveBox() and places those threads into @threads. Each thread represents a Box moving on @board.
+    /* Creates batches of threads using funcMoveBox() and places those threads into @threads. Each thread represents a Box moving on @board.
 
-    The number of threads per group is @numOfBoxesPerGroup; each thread has one boxId. There are @numOfGroups groups.
+    The number of threads per batch is @numOfBoxesPerBatch; each thread has one boxId.
 
-    Create the threads for each group.
+    Number of threads created is @numOfBoxesPerBatch x @numOfBatches.
 
     The PositionManagerType is randomly chosen between PositionManagerType::step and PositionManagerType::diagonal. The DeciderType is randomly chosen between DeciderType::risk1 and DeciderType::safe.
 
@@ -68,8 +68,8 @@ class Threader
     */
     void populateThreads(
         std::vector<std::unique_ptr<std::thread>>& threads,
-        int numOfBoxesPerGroup,
-        int numOfGroups,
+        int numOfBoxesPerBatch,
+        int numOfBatches,
         const std::vector<Rectangle>& startEndRectangles,
         Board& board,
         bool& running);

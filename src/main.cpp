@@ -1,11 +1,4 @@
-#include <iomanip>
-#include <chrono>
-#include <iostream>
-#include <stdio.h>
-#include <stdbool.h>
-#include <vector>
 #include <thread>
-#include <utility>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -14,11 +7,9 @@
 #include "BroadcastAgent.h"
 #include "Box.h"
 #include "MainSetup.h"
-#include "Mover_Reg.h"
 #include "Printer.h"
 #include "Recorder.h"
 #include "Threader.h"
-#include "Util.h"
 
 
 // Define screen dimensions
@@ -79,7 +70,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    /* SDL, TTF, window, and renderer work! */
+    /* At this point we know SDL, TTF, window, and renderer work! */
 
     // In-bound and out-bound rectangles are where the boxes start from and terminate at. A box can not start and end at the same rectangle in inOutBoundRectangles.
     auto inOutBoundRectangles = MainSetup::getInOutBoundRectangles(SCREEN_WIDTH, SCREEN_HEIGHT); 
@@ -123,11 +114,12 @@ int main(int argc, char* argv[])
     // Event loop exit flag
     bool running = true;
 
-    // Create threads vector and add a Thread for each box to it.
+    // Create vector of threads and add a Thread for each box to it.
     vector<unique_ptr<thread>> threads{};
 
     Threader threader{};
- 
+
+    // Number of Boxes is 200 * 7 same as the number of Boxes in _boxes. 
     threader.populateThreads(
         threads,
         200,

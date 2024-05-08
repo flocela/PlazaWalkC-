@@ -1,6 +1,5 @@
 #include "catch.hpp"
 #include "../src/NoteAccountant.h"
-#include <iostream>
 
 using namespace std;
 

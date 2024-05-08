@@ -86,7 +86,7 @@ void Threader::funcMoveBox(
     }
 }
 
-void Threader::populateThreadsForOneGroup(
+void Threader::populateOneBatchOfThreads(
     vector<unique_ptr<thread>>& threads,
     int firstBoxId,
     int count,
@@ -124,15 +124,15 @@ void Threader::populateThreadsForOneGroup(
 
 void Threader::populateThreads(
     vector<unique_ptr<thread>>& threads,
-    int numOfBoxesPerGroup,
-    int numOfGroups,
+    int numOfBoxesPerBatch,
+    int numOfBatches,
     const vector<Rectangle>& startEndRectangles,
     Board& board,
     bool& running)
 {
     // Each thread contains one boxId.
-    // Get number of required Boxes per group from numOfBoxesPerGroup. Then create that many threads per group.
-    for(int ii=0; ii<numOfGroups; ++ii)
+    // Create @numOfBatches and each of those batches has @numOfBoxesPerBatch.
+    for(int ii=0; ii<numOfBatches; ++ii)
     {
         // PositionManagerType is random.
         PositionManagerType pmType = 
@@ -141,10 +141,10 @@ void Threader::populateThreads(
         // DeciderType is random.
         DeciderType dType = (Util::getRandomBool()) ? (DeciderType::safe) : (DeciderType::risk1);
 
-        populateThreadsForOneGroup(
+        populateOneBatchOfThreads(
             threads,
-            ii*numOfBoxesPerGroup,
-            numOfBoxesPerGroup,
+            ii*numOfBoxesPerBatch,
+            numOfBoxesPerBatch,
             startEndRectangles[ii],
             MainSetup::deleteRect(startEndRectangles, startEndRectangles[ii]),
             board,
