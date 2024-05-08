@@ -24,8 +24,10 @@ class Position
     std::string toString() const;
 
     bool operator== (const Position& o) const;
-   
-    // TODO needs test. 
+  
+    /*
+    Prints the x and y coordinates of the Position. For example, Position {10, 20} would print out "{10, 20}".
+    */ 
     friend std::ostream& operator<< (std::ostream& o, const Position& p)
     {
         o << "{" << 
