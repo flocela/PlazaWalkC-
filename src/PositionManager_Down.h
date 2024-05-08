@@ -20,7 +20,7 @@ class PositionManager_Down : public PositionManager
 
 
     /*
-    Returns a vector of three Positions. Say @position's x-value is x and y-value is y. Then the Positions will be {{Position{x, y+1}, Position{x-1, y}, Position{x+1, y}}. The first Position moves the box closer to the end line. The second and third Positions move horizontally parallel to the end line. Positions that are not on the Board, are deleted from the returned vector. If @position's y value is larger than or equal to finalY, then returns an empty vector.
+    Returns a vector of three Positions. Say @position's x-value is x and y-value is y. Then the Positions will be {{Position{x, y+1}, Position{x-1, y}, Position{x+1, y}}. The first Position moves the Box closer to the end line. The second and third Positions move horizontally parallel to the end line. Positions that are not on the Board, are deleted from the returned vector. If @position's y value is larger than or equal to finalY, then returns an empty vector; It has reached its end target.
     */
     std::vector<Position> getFuturePositions(Position position) override;
 
@@ -32,13 +32,13 @@ class PositionManager_Down : public PositionManager
 
 
     /*
-    Returns a Rectangle the with a y-value of finalY and the width of the Board. Rectangle's top left corner would be {boardMinX, finalY}, and bottom right corner would be {boardMaxX, finalY}. Notice the Rectangle has a height of zero.
+    Returns a Rectangle the with a y-value of finalY and width of the Board. Rectangle's top left corner would be {boardMinX, finalY}, and bottom right corner would be {boardMaxX, finalY}. Notice the Rectangle has a height of zero.
     */
     Rectangle getEndRect() const override;
 
 
     /*
-    Returns a Rectangle the with a y-value of finalY and the width of the Board. Rectangle's top left corner would be {boardMinX, finalY}, and bottom right corner would be {boardMaxX, finalY}. Notice the Rectangle has a height of zero.
+    Returns a Rectangle the with a y-value of finalY and width of the Board. Rectangle's top left corner would be {boardMinX, finalY}, and bottom right corner would be {boardMaxX, finalY}. Notice the Rectangle has a height of zero.
     */
     Rectangle getTargetRect() const override;
 
@@ -54,7 +54,7 @@ class PositionManager_Down : public PositionManager
     int _boardMaxY = 0;
 
     /*
-    Returns true if p is on the Board.
+    Returns true if @p is on the Board.
     */
     bool isValid(Position& p) const;
 

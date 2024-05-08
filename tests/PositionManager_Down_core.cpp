@@ -96,14 +96,14 @@ TEST_CASE("PositionManger_Down_core::")
         REQUIRE(vector<Position>{} == downPositionManager.getFuturePositions(Position{1, 10}));
     }
 
-    SECTION("getEndRect() returns a horizontal Rectangle at final Y with a width of the Board and a height of zero.")
+    SECTION("getEndRect() returns a horizontal Rectangle at final Y with a width of the Board's width and a height of zero.")
     {
         // final y is at y = 10. Board is a 20x20 board.
         PositionManager_Down downPositionManager(10, 0, 19, 0, 19);
         REQUIRE(Rectangle{Position{0, 10}, Position{19, 10}} == downPositionManager.getEndRect());
     }
 
-    SECTION("getTargetRect() returns a horizontal Rectangle at final Y with a width of the Board and a height of zero.")
+    SECTION("getTargetRect() returns a horizontal Rectangle at final Y with a width of the Board's width and a height of zero.")
     {
         // final y is at y = 10. Board is a 20x20 board.
         PositionManager_Down downPositionManager(10, 0, 19, 0, 19);
