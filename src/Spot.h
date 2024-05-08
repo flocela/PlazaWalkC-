@@ -58,7 +58,7 @@ class Spot
     SpotType _type = SpotType::left;
     mutable std::shared_mutex _mm;
     
-    std::string _stateString = "-1, 4";
+    std::string _stateString = "-1, SpotType::left";
 
     std::string errorString(BoardNote incomingNote);
     

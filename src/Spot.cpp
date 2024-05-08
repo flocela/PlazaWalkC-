@@ -44,7 +44,7 @@ pair<int, bool> Spot::changeNote(BoardNote incomingNote)
         else
         {
             _boxId = incomingBoxId;
-            // this_thread::sleep_for(10ms); // Here for thread testing.
+            //this_thread::sleep_for(10ms); // Here for thread testing.
             _type = incomingType;
         }
     }
@@ -112,10 +112,12 @@ BoardNote Spot::getBoardNote() const
 
 void Spot::updateStateString()
 {
-        _stateString= "B";
-        _stateString.append(to_string(_boxId));
-        _stateString.append(", T");
-        _stateString.append(to_string((int)(_type)));
+    stringstream ss;
+    ss << "B" <<
+          to_string(_boxId) <<
+          ", " <<
+          _type;
+    _stateString = ss.str();
 }
 
 void Spot::registerListener(SpotListener* listener)

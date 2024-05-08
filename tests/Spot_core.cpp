@@ -371,8 +371,8 @@ TEST_CASE("Spot_core::")
         spot.changeNote(BoardNote{10, SpotType::arrive});
 
         vector<string> successfulNotes =spotListener.getCombinedStrings();
-        REQUIRE("B10, T1" == successfulNotes[0]);
-        REQUIRE("B10, T2" == successfulNotes[1]);
+        REQUIRE("B10, SpotType::to_arrive" == successfulNotes[0]);
+        REQUIRE("B10, SpotType::arrive" == successfulNotes[1]);
     }
          
 }
