@@ -7,7 +7,7 @@ using namespace std;
 TEST_CASE("NoteAccountant_core.cpp")
 {
 
-    SECTION("Saves the received BoardNotes from callback() method.")
+    SECTION("Saves the received BoardNotes from the callback() method.")
     {
         Position pos0{0, 0};
         NoteAccountant noteAccountant{};

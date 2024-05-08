@@ -5,7 +5,7 @@
 #include "Position.h"
 
 /*
-Receives BoardNotes through the callback() method. Each received BoardNote is stamped wht the current time.
+Receives BoardNotes through the callback() method. Each received BoardNote is stamped with the current time.
 Returns received BoardNotes with their time stamps through the getNotes() method.
 */
 class NoteSubscriber
