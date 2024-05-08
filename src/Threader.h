@@ -16,7 +16,7 @@ class Threader
     public:
 
     /*
-    Moves Box from @position to final position given in @posManager.
+    Moves Box from @position to the final position given in @posManager.
     Assumes Box is not originally on the Board.
     First repeatedly tries to add Box to @board at @position.
     Once the Box is on the Board, then continually moves box closer to target position in @posManager.
@@ -32,15 +32,15 @@ class Threader
 
 
     /*
-    Creates threads using funcMoveBox() and places them in @threads. Each thread represents a Box moving on @board.  There will be @count Boxes and their boxIds start at firstBoxId.
+    Creates threads using the funcMoveBox() method and places them into @threads. Each thread represents a Box moving on @board. There will be @count Boxes and their boxIds start at @firstBoxId.
     
     All Boxes start at a random point inside of @startRect.
 
-    A PositionManager is created for each thread based on @pmt.
+    A PositionManager is created for each thread based on @pmt. A PositionManager suggests Positions for the Box to move to given the Box's final destination. 
 
     A random endpoint is given to the PositionManager. The endpoint is made by randomly selecting a rectangle in the @endRects vector and then randomly choosing a point in that Rectangle.
 
-    The thread is given @dt so it can make decisions on whether it should move and which Position to choose from the positions given by the PositionManager.
+    A Decider is created based on @dt. The Decider gives suggestions as to which Position the Box should choose to move to, and whether to move to that Position at all.
 
     A breaking reference @running is checked between Position moves. If it is false, the thread returns.
     */
@@ -56,7 +56,7 @@ class Threader
         bool& running);
 
 
-    /* Creates groups of threads using funcMoveBox() and places those threads in @threads. Each thread represents a Box moving on @board.
+    /* Creates groups of threads using funcMoveBox() and places those threads into @threads. Each thread represents a Box moving on @board.
 
     The number of threads per group is @numOfBoxesPerGroup; each thread has one boxId. There are @numOfGroups groups.
 
@@ -78,7 +78,7 @@ class Threader
     /*
     Creates a PositionManager based on @pmt.
 
-    The final target is chosen from @endRectangle. If a PositionManager_Diagonal or PositionManager_Step is chosen, then it's final target Position is randomly chosen from inside @endRectangle. If a PositionManager_Up or PositionManager_Down is chosen, then the finalY is taken at the cente rof @endRectangle.
+    The final target is chosen from @endRectangle. The PositionManager is chosen based on @pmt. If a PositionManager_Diagonal or PositionManager_Step is chosen, then it's final target Position is randomly chosen from inside @endRectangle. If a PositionManager_Up or PositionManager_Down is chosen, then the finalY is taken at the center of @endRectangle.
     */
     std::unique_ptr<PositionManager> createPositionManager(
         PositionManagerType pmt,
