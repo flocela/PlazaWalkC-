@@ -17,7 +17,7 @@ TEST_CASE("Position_core::")
         REQUIRE(p.getY() == 12);
     }
 
-    SECTION("operator== returns false when x is different")
+    SECTION("operator== returns false when x-value in Position is different")
     {
         Position p{10, 12};
         Position op{1000, 12};
@@ -25,7 +25,7 @@ TEST_CASE("Position_core::")
         REQUIRE_FALSE(p == op);
     }
 
-    SECTION("operator== returns false when y is different")
+    SECTION("operator== returns false when y-value in Position is different")
     {
         Position p{10, 12};
         Position op{10, 1200};
