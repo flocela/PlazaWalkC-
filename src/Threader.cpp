@@ -29,7 +29,7 @@ void Threader::funcMoveBox(
     int n = 1;
     while(breaker)
     {
-        // See if @decider suggests moving to Position. If not then wait.
+        // See if @decider suggests adding Box to Position on Board. If not then wait.
         if(decider->suggestMoveTo(position, board))
         {
             if(mover->addBox(curPosition))
@@ -38,8 +38,11 @@ void Threader::funcMoveBox(
                 break;
             }
         }
-        this_thread::sleep_for(n * 10ms);
-        ++n;
+        else
+        {
+            this_thread::sleep_for(n * 10ms);
+            ++n;
+        }
     }
 
 
@@ -51,8 +54,8 @@ void Threader::funcMoveBox(
         // Get vector of Positions from @posManager.
         // @decider chooses which Position to move to.
         pair<Position,int> nextPosition = 
-            decider->getNext(posManager->getFuturePositions(curPosition),
-                                     board);
+            decider->getNext(posManager->getFuturePositions(curPosition), board);
+
         // If suggested sleep time from @decider is positive, then sleep for suggested sleep time.
         if(nextPosition.second > 0)
         {

@@ -1,7 +1,6 @@
 #ifndef THREADER__H
 #define THREADER__H
 
-#include <memory>
 #include <thread>
 #include "Board.h"
 #include "Decider.h"
