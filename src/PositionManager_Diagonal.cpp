@@ -1,9 +1,6 @@
 #include "PositionManager_Diagonal.h"
-#include <algorithm>
-#include <iterator>
-#include <random>
-#include <sstream>
 
+#include <sstream>
 #include "Util.h"
 
 using namespace std;
@@ -32,15 +29,16 @@ PositionManager_Diagonal::PositionManager_Diagonal(
 
 vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
 {
+    vector<Position> returnedPositions{};
     if (position == _targetPosition)
     {
-        return vector<Position>{};
+        return returnedPositions;
     }
 
     int curX = position.getX();
     int curY = position.getY();
 
-    // Collect all possible new Positions, in all 8 directions.
+    // Collect all possible new Positions, that's 8 directions.
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
     Position n  = Position{curX, curY+1};
     Position nw = Position{curX + 1, curY + 1};
@@ -82,19 +80,18 @@ vector<Position> PositionManager_Diagonal::getFuturePositions(Position position)
     random_device rd;
     mt19937 g(rd());
 
-    vector<Position> newPositions{};
     for(const auto& p : netPositionPairs)
     {
-        newPositions.push_back(p.second);
+        returnedPositions.push_back(p.second);
     }
 
     // Shuffle positions after the 3rd position.
-    if (newPositions.size() > 3)
+    if (returnedPositions.size() > 3)
     {
-        shuffle(newPositions.begin()+3, newPositions.end(), g);
+        shuffle(returnedPositions.begin()+3, returnedPositions.end(), g);
     }
 
-    return newPositions;
+    return returnedPositions;
     
 }
 
@@ -127,9 +124,4 @@ bool PositionManager_Diagonal::isValid(Position& p) const
              p.getX() <= _boardMaxX &&
              p.getY() >= _boardMinY &&
              p.getY() <= _boardMaxY);
-}
-
-string PositionManager_Diagonal::invalidPositionErrorString(Position p) const
-{
-    return  p.toString() + " is an invalid Position.";
 }

@@ -1,12 +1,10 @@
 #ifndef POSITIONMANAGER_DIAGONAL__H
 #define POSITIONMANAGER_DIAGONAL__H
 
-#include "Position.h"
 #include "PositionManager.h"
-#include "Rectangle.h"
 
 /*
-Evaluates all Positions adjacent to the Box's current Position and suggests the closest Position to the target Posiiton. This results in the Box moving diagonally until it is parallel to the target Position. Then it moves horizontally or vertically to reach the target Position.
+Evaluates all Positions adjacent to the Box's current Position and suggests the closest Position to the target Positon. This results in the Box moving diagonally until it is parallel to the target Position. Then it moves horizontally or vertically to reach the target Position.
 */
 class PositionManager_Diagonal : public PositionManager
 {
@@ -49,7 +47,7 @@ class PositionManager_Diagonal : public PositionManager
 
 
     /*
-    Returns the target position as a Rectangle. The returned Rectangle's top left and bottomr right corners are both the target Position. Note, the returned Rectangle has a height and width of zero.
+    Returns the target position as a Rectangle. Both of the target Rectangle's top left and bottom right corners are the target Position. This results in the the returned Rectangle having a height and width of zero.
     */
     Rectangle getTargetRect() const override;
 
@@ -68,7 +66,6 @@ class PositionManager_Diagonal : public PositionManager
     std::vector<std::pair<int, int>> pastPositions{};
     double getDistSquared(Position a, Position b);
     bool isValid(Position& p) const;
-    std::string invalidPositionErrorString(Position p) const;
 }; 
 
 #endif

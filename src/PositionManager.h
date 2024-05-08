@@ -26,7 +26,7 @@ class PositionManager
     virtual ~PositionManager() noexcept = default;
 
     /*
-    Returns a vector of Positions that are recomended for the Box at Position @position. The Positions are in order of most recommended to least recommended. If no Position is recommended, then returns an empty vector.
+    Returns a vector of Positions that are recomended for a Box at Position @position. The Positions are in order of most recommended to least recommended. If no Position is recommended, then returns an empty vector.
     */
     virtual std::vector<Position> getFuturePositions(Position position) = 0;
     
