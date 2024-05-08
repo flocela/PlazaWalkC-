@@ -16,35 +16,34 @@ PositionManager_Step::PositionManager_Step(
     _boardMaxY{boardMaxY}
 {}
 
-vector<Position> PositionManager_Step::getFuturePositions(Position curPosition)
+vector<Position> PositionManager_Step::getFuturePositions(Position position)
 {
-    if (!isValid(curPosition))
+    if (!isValid(position))
     {
-       throw invalid_argument(invalidPositionErrorString(curPosition));
+       throw invalid_argument(invalidPositionErrorString(position));
     }    
 
-    // TODO test returns empty vector
-    if (atEnd(curPosition))
+    if (atEnd(position))
     {
         return vector<Position>{};
     }
 
-    setCurrentTarget(curPosition);
+    setCurrentTarget(position);
     
-    int curX = curPosition.getX();
-    int curY = curPosition.getY();
+    int pX = position.getX();
+    int pY = position.getY();
 
-    // Populate pairsOfPositionsAndDistSq with positions that are adjacent to curPosition.
-    // The distance is the distance from _curTarget to curPosition.
+    // Populate pairsOfPositionsAndDistSq with Positions that are adjacent to @position.
+    // The distance is the distance from _curTarget to @position.
     vector<pair<double, Position>> pairsOfPositionsAndDistSq{};
-    Position n  = Position{curX, curY-1};
-    Position nw = Position{curX + 1, curY - 1};
-    Position w  = Position{curX + 1, curY};
-    Position sw = Position{curX + 1, curY + 1};
-    Position s  = Position{curX, curY + 1};
-    Position se = Position{curX - 1, curY + 1};
-    Position e  = Position{curX - 1, curY};
-    Position ne = Position{curX - 1, curY - 1};
+    Position n  = Position{pX, pY-1};
+    Position nw = Position{pX + 1, pY - 1};
+    Position w  = Position{pX + 1, pY};
+    Position sw = Position{pX + 1, pY + 1};
+    Position s  = Position{pX, pY + 1};
+    Position se = Position{pX - 1, pY + 1};
+    Position e  = Position{pX - 1, pY};
+    Position ne = Position{pX - 1, pY - 1};
     Position target = _curTarget;
     pairsOfPositionsAndDistSq.push_back({getDistSquared(n, target), n}); 
     pairsOfPositionsAndDistSq.push_back({getDistSquared(nw, target), nw}); 

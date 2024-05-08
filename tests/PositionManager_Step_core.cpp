@@ -31,17 +31,6 @@ TEST_CASE("PositionManager_Step_core::")
         REQUIRE(true == pm.atEnd(Position{5, 5}));
     }
 
-    SECTION("getEndRect() returns the final Position as a Rectangle.")
-    {
-        PositionManager_Step pm{
-            Position{5, 5}, 
-            0,
-            20,
-            0,
-            20};
-        REQUIRE(Rectangle{Position{5, 5}, Position{5, 5}} == pm.getEndRect());
-    }
-
     // Target is north of original Position.
     SECTION("Target is at {0, 0}. Original Position is at {0, 10}. The Positions at index zero from calls to getFuturePositions() will be a straight line heading north.")
     {

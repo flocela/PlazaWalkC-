@@ -1,12 +1,10 @@
 #ifndef POSITIONMANAGER_STEP__H 
 #define POSITIONMANAGER_STEP__H
 
-#include <vector>
-#include "Position.h"
 #include "PositionManager.h"
 
 /*
-Suggested movement looks like steps along a line from the start position to finalTarget.
+Suggested movement looks like steps along a line from the start position to the finalTarget.
 */
 class PositionManager_Step : public PositionManager
 {
@@ -30,10 +28,9 @@ class PositionManager_Step : public PositionManager
     /*
     Note that past calls to getFuturePositions() affect the current call to getFuturePositions().
 
-    When getFuturePosition() is called, the current target is set if there is no current target or if @position is at the current target. To set the current target, a line is drawn from @position to the finalTarget. Travel either one unit in the x or y direction along the line from @position to the final target. Choose to travel one unit in the direction that is closest to the final target. So if the @position is {0, 0} and the final target is at {2, 6}, then choose Position{1, 3} as the current target Position. If the current target is set and @position is not at the current target, then the current target is used.
-m
+    When getFuturePosition() is called, the current target is set if there is no current target or if @position is at the current target. To set the current target, a line is drawn from @position to the finalTarget. Travel either one unit in the x or y direction along the line from @position to the final target. Choose to travel one unit in the direction that is closest to the final target. So if @position is {0, 0} and the final target is at {2, 6}, then choose Position{1, 3} as the current target Position. If the current target is set and @position is not at the current target, then the current target is used.
 
-    A vector of adjacent Positions from @position is made and sorted by closest to the current target. The Positions at index 3 and above (if index 3 exists) are shuffled. It may be that the vector only has 3 Positions because there are only 3 valid adjacent Positions to @position (@position could be at a corner).
+    A vector of adjacent Positions from @position is made and sorted by closest to the current target. The Positions at index 3 and above (if index 3 exists) are shuffled. (It may be that the vector only has 3 Positions because there are only 3 valid adjacent Positions to @position (@position could be at a corner)).
 
     If @position is at finalTarget, then returns an empty vector.
     */
