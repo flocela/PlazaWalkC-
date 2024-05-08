@@ -10,7 +10,7 @@
 
 
 /*
-Uses SDL_Renderer to render Boxes and in-and-out bound rectangles on screen.
+Uses SDL_Renderer to render Boxes and in-and-out bound rectangles on screen. In-and-out bound rectangles are the rectangles where the Boxes start and end at.
 */
 class Printer : public RecorderListener {
 
@@ -31,12 +31,12 @@ class Printer : public RecorderListener {
     void addInOutBoundRectangles(std::vector<Rectangle> rectangles);
 
     /*
-    Set the Color for each group of Boxes.
+    Set the Color for each group of Boxes, per the Boxes' group number.
     */  
     void setGroupColors(std::unordered_map<int, Color> colorPerGroupNumber);
 
     /*
-    Prints these Boxes and in-and-out bound rectangles on the Board.
+    Prints Boxes and the in-and-out bound rectangles on the Board.
     */
     void receiveAllDropsAllBoxes(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes) override;
 
@@ -47,7 +47,7 @@ class Printer : public RecorderListener {
     std::unordered_map<int, int> _numOfShadesPerGroupNumber{}; 
     std::vector<Rectangle> _endRectangles{};
 
-    void print(std::unordered_set<Drop> drops, std::unordered_map<int, BoxInfo> boxes);
+    void print(std::unordered_set<Drop>& drops, std::unordered_map<int, BoxInfo>& boxes);
     
 };
 

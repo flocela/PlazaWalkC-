@@ -1,5 +1,5 @@
 #include "Printer.h"
-#include <iostream>
+
 #include <map>
 
 using namespace std;
@@ -12,7 +12,7 @@ void Printer::receiveAllDropsAllBoxes(unordered_set<Drop> drops, unordered_map<i
     print(drops, boxes);
 }
 
-void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes)
+void Printer::print(unordered_set<Drop>& drops, unordered_map<int, BoxInfo>& boxes)
 {  
 
     SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -62,9 +62,10 @@ void Printer::print(unordered_set<Drop> drops, unordered_map<int, BoxInfo> boxes
         int numOfShades = _colorPerGroupNumber.at(groupId).getNumberOfShades();
         int shade = (level >= numOfShades) ? (numOfShades-1) : (level);
 
-        dropsPerGroupNumberAndShade[{groupId, shade}].insert(drop);
+        dropsPerGroupNumberAndShade[{groupId, shade}].insert(std::move(drop));
     }
 
+    // Print Drops per their Color and shade.
     for(auto it=dropsPerGroupNumberAndShade.begin(); it!=dropsPerGroupNumberAndShade.end(); it++)
     {
         pair<int, int> groupIdAndShade = it->first;
