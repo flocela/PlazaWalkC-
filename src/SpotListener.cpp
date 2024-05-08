@@ -2,12 +2,12 @@
 
 using namespace std;
 
-void SpotListener::receiveCombinedString(string combinedString)
+void SpotListener::receiveStateString(string combinedString)
 {
-    _combinedStrings.push_back(combinedString);
+    _stateStrings.push_back(combinedString);
 }
 
-vector<string> SpotListener::getCombinedStrings() const
+vector<string> SpotListener::getStateStrings() const
 {
-    return _combinedStrings;
+    return _stateStrings;
 }

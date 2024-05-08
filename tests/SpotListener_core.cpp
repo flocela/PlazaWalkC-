@@ -8,11 +8,11 @@ TEST_CASE("SpotListener_core::")
     SECTION("Verify that SpotListeners save all BoardNotes they receive.")
     {
         SpotListener spotListener{};
-        spotListener.receiveCombinedString("B10, T1");
-        spotListener.receiveCombinedString("B10, T2");
+        spotListener.receiveStateString("B10, SpotType::left");
+        spotListener.receiveStateString("B10, SpotType::to_arrive");
 
-        vector<string> successfulNotes =spotListener.getCombinedStrings();
-        REQUIRE("B10, T1" == successfulNotes[0]);
-        REQUIRE("B10, T2" == successfulNotes[1]);
+        vector<string> successfulNotes =spotListener.getStateStrings();
+        REQUIRE("B10, SpotType::left" == successfulNotes[0]);
+        REQUIRE("B10, SpotType::to_arrive" == successfulNotes[1]);
     }
 }

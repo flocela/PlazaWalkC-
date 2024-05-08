@@ -130,7 +130,7 @@ void Spot::notifyListeners()
     for(SpotListener* listener: _listeners)
     {
         updateStateString();
-        listener->receiveCombinedString(_stateString);
+        listener->receiveStateString(_stateString);
     }
 }
 

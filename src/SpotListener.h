@@ -4,18 +4,21 @@
 #include <string>
 #include <vector>
 
+/*
+Receives and saves state strings. The state string is the Spot's id and SpotType combined into a string.
+*/
 class SpotListener
 {
 
 public:
 
-    void receiveCombinedString(std::string combinedString);
+    void receiveStateString(std::string combinedString);
 
-    std::vector<std::string> getCombinedStrings() const;
+    std::vector<std::string> getStateStrings() const;
 
 private:
 
-    std::vector<std::string> _combinedStrings{};
+    std::vector<std::string> _stateStrings{};
 
 };
 
