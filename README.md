@@ -1,5 +1,6 @@
-# SDL2_ttf sample
+# Across The Plaza 
 
+https://github.com/flocela/PlazaWalkCCode/assets/4298622/c6445efa-8f78-4b5d-98b1-78eb97eb2487
 
 This project is a basic sample written in C that demonstrates the usage of the
 [SDL2][SDL] and [SDL2_ttf][] libraries. It uses [CMake][] as a build system.
