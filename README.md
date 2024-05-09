@@ -1,85 +1,62 @@
 # SDL2_ttf sample
 
 
-https://github.com/flocela/PlazaWalkCCode/assets/4298622/c6445efa-8f78-4b5d-98b1-78eb97eb2487
-
-
 This project is a basic sample written in C that demonstrates the usage of the
 [SDL2][SDL] and [SDL2_ttf][] libraries. It uses [CMake][] as a build system.
 
+##License
+Across The Plaza was completed in 2024 by Aurea F. Maldonado.
 
-It could be used as a base for any SDL2 project. Just fork it, clone it and
-execute the `rename_project.sh` script. You will be prompted to enter the new
-project name, the new executable name and the new git repository, but you can
-keep the autodetected values. Finally, just commit and push the result to your
-repository.
+The code that allows rendering of text and blocks on a window is by Amine Ben Hassouna and can be found at https://github.com/aminosbh/sdl2-ttf-sample/blob/master/src/main.c.
 
-## Dependencies
+I am using the same copyright as Amine Ben Hassouna.
+
+This project is distributed under the terms of the MIT license
+[&lt;LICENSE&gt;](LICENSE).
+
+## Build instructions
+
+### Dependencies
 
 - [Git][]
 - C Compiler (gcc, ...)
 - [CMake][]
 - [SDL2][SDL] library
 - [SDL2_ttf][] library
-
-**On Debian/Ubuntu based distributions, use the following command:**
-
 ```sh
-sudo apt install git build-essential pkg-config cmake cmake-data libsdl2-dev libsdl2-ttf-dev
+### Clone this repo
+
+In a folder, clone the repository. This will create the PlazaWalkCCode folder.
+
+https://github.com/flocela/PlazaWalkCCode.git
+
+### Install libraries
+
+In order to install the SDL_2 library, in the command line, while in the PlazaWalkCode folder type the following:
+
 ```
-
-**Optional packages:**
-
-- [SDL2_image][] library
-- [SDL2_net][] library
-- [SDL2_mixer][] library
-- [SDL2_gfx][] library
-
+sudo apt-get install libsdl2-ttf-dev
 ```sh
-sudo apt install libsdl2-image-dev libsdl2-net-dev libsdl2-mixer-dev libsdl2-gfx-dev
+
+The installer will ask if you have additional space and if you would like to continue.
+
+### Make the code
+
+To make the code, create a build folder inside of the PlazaWalkCCode folder. In the PlazaWalkCCode/build folder type:
 ```
-
-## Build instructions
-
+cmake .. && make
 ```sh
-# Clone this repo
-git clone https://gitlab.com/aminosbh/sdl2-ttf-sample.git
-cd sdl2-ttf-sample
 
-# Create a build folder
-mkdir build
-cd build
+### Run the project
 
-# Build
-cmake ..
-make
+In the build folder type
 
-# Run
-./sdl2-ttf-sample
 ```
+.sdl2-ttf-sample
+```sh
 
-***Note:*** To use SDL2_image, SDL2_net, SDL2_mixer or SDL2_gfx, you should
-uncomment some instructions in the CMakeLists.txt file and re-execute the
-`make` command.
+## Run the tests
+```
+./RunTests
+```sh
 
-### Open the project with an IDE under Linux
-
-See [IDE_USAGE.md](IDE_USAGE.md) for details.
-
-## License
-
-Author: Amine B. Hassouna [@aminosbh](https://gitlab.com/aminosbh)
-
-This project is distributed under the terms of the MIT license
-[&lt;LICENSE&gt;](LICENSE).
-
-
-
-[SDL]: https://www.libsdl.org
-[CMake]: https://cmake.org
-[Git]: https://git-scm.com
-[SDL2_image]: https://www.libsdl.org/projects/SDL_image
-[SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
-[SDL2_net]: https://www.libsdl.org/projects/SDL_net
-[SDL2_mixer]: https://www.libsdl.org/projects/SDL_mixer
-[SDL2_gfx]: http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx
