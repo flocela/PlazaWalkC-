@@ -103,6 +103,7 @@ src/Decider_Safe.cpp
 src/Decider_Risk1.cpp
 src/Drop.cpp
 src/MainSetup.cpp
+src/Mover.cpp
 src/Mover_Reg.cpp
 src/Position.cpp
 src/PositionManager_Diagonal.cpp

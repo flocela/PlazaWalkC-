@@ -1,8 +1,6 @@
 #ifndef MOVER_REG__H
 #define MOVER_REG__H
 
-#include "Board.h"
-#include "Box.h"
 #include "Mover.h"
 
 /*
@@ -37,17 +35,10 @@ public:
     */
     bool addBox(Position position) override;
 
-    /*
-     Calls the Board's addNote() method. Each call uses the contained boxId. The first call uses @newPosition and SpotType::to_arrive. If this is not successful the method returns false. (It will not be successful if @newPosition has a SpotType other than SpotType::left.) If it is successful, addNote() is called with the oldPosition and SpotType::to_leave. Then the current thread sleeps for 14ms if the move is diagonal and 10ms if the move is horizontal or vertical. Then addNote() is called with the @newPosition and SpotType::arrive. Lastly boardNote() is called with the @oldPosition and SpotType::left. If all the addNote() calls are successful, returns true.
-    */
-    bool moveBox(Position oldPosition, Position newPosition) override;
+    void sleepForDiagonalMove() override;
 
-    int getBoxId() const override;
+    void sleepForLateralMove() override;
 
-private:
-    
-    int _boxId;
-    Board* _board;
 
 };
 
