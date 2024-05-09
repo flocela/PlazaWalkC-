@@ -9,10 +9,10 @@ int Mover::getBoxId() const
 
 bool Mover::moveBox(Position oldPosition, Position newPosition)
 {
-    bool success = _board->addNote(newPosition, BoardNote{_boxId, SpotType::to_arrive}, true);
+    bool success = _board->changeSpot(newPosition, BoardNote{_boxId, SpotType::to_arrive}, true);
     if (success)
     {
-        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::to_leave}, true);
+        _board->changeSpot(oldPosition, BoardNote{_boxId, SpotType::to_leave}, true);
 
         int deltaX = oldPosition.getX() - newPosition.getX();
         int deltaY = oldPosition.getY() - newPosition.getY(); 
@@ -25,8 +25,8 @@ bool Mover::moveBox(Position oldPosition, Position newPosition)
            sleepForLateralMove();
         }
 
-        _board->addNote(newPosition, BoardNote{_boxId, SpotType::arrive}, true);
-        _board->addNote(oldPosition, BoardNote{_boxId, SpotType::left}, true);
+        _board->changeSpot(newPosition, BoardNote{_boxId, SpotType::arrive}, true);
+        _board->changeSpot(oldPosition, BoardNote{_boxId, SpotType::left}, true);
     
     }
    

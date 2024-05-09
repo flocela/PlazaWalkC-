@@ -20,7 +20,7 @@ Conceptually a plane where Boxes are placed and can move in the x and y directio
 
 The Board class contains a matrix of Spots, and each Spot contains a Position that matches the Spot's x,y position on the Board. In the matrix, the x-direction runs from left to right. The y-direction runs from top to bottom. The origin is in the top left corner of the Board. A Spot at Position {2, 4} is over two to the right and down four from the origin.
 
-When a Box is placed on the Board, removed from the Board, or moves along the Board, the Board keeps track of these movements by updating its matrix of Spots. Requests to Box movements on the Board are done through the addNote() method.
+When a Box is placed on the Board, removed from the Board, or moves along the Board, the Board keeps track of these movements by updating its matrix of Spots. Requests to Box movements on the Board are done through the changeSpot() method.
 
 The Board also keeps track of the Boxes and their state.
 */
@@ -52,11 +52,11 @@ class Board
 
     If the movement is successful (See Spot's rules.) then the Spot at @position will contain the new BoardNote. If the movement is not successful (say because another Box is already at that position) then the Spot does not change and both Boxes' levels will go up by one if upLevel is true. This symbolizes the incoming Box running into the Box standing at @position. If upLevel is false, then the levels are not increased.
     */
-    bool addNote(Position position, BoardNote boardNote, bool upLevel);
+    bool changeSpot(Position position, BoardNote boardNote, bool upLevel);
 
 
     /*
-    Registers a NoteSubscriber for Position @pos. When the addNote() method is successful at @pos, the registered NoteSubscriber is notified through its callback() method. 
+    Registers a NoteSubscriber for Position @pos. When the changeSpot() method is successful at @pos, the registered NoteSubscriber is notified through its callback() method. 
     */
     void registerNoteSubscriber(Position pos, NoteSubscriber& callBack);
 

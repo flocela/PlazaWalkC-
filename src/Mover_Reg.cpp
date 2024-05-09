@@ -9,12 +9,12 @@ Mover(boxId, board)
 
 bool Mover_Reg::addBox(Position position)
 {
-    bool success = _board->addNote(position, BoardNote{_boxId, SpotType::to_arrive}, false);
+    bool success = _board->changeSpot(position, BoardNote{_boxId, SpotType::to_arrive}, false);
 
     if (success)
     {
         this_thread::sleep_for(5ms);
-        _board->addNote(position, BoardNote{_boxId, SpotType::arrive}, true);
+        _board->changeSpot(position, BoardNote{_boxId, SpotType::arrive}, true);
     }
    
     return success;
@@ -24,8 +24,8 @@ bool Mover_Reg::removeBox(Position position)
 {
     bool success = false;
 
-    success = _board->addNote(position, BoardNote{_boxId, SpotType::to_leave}, true);
-    success = _board->addNote(position, BoardNote{_boxId, SpotType::left}, true);
+    success = _board->changeSpot(position, BoardNote{_boxId, SpotType::to_leave}, true);
+    success = _board->changeSpot(position, BoardNote{_boxId, SpotType::left}, true);
 
     return success;
 }
