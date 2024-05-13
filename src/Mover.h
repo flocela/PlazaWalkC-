@@ -9,6 +9,14 @@
 Adds Boxes to a Board.
 Removes Boxes from a Board.
 Moves Boxes on the Board.
+
+Requirements for a Box to take up a new Position on the Board: 1)The Board must receive a BoardNote with the boxId, the new Position, and a SpotType::to_arrive. 2)Then the Board must receive a BoardNote with the boxId, the new Position, and a SpotType::arrive.
+
+For a Box to leave a Position. 1)The Board must receive a BoardNote with the boxId, the old Position, and the SpotType::to_leave. 1)Then the Board must receve a BoardNote with the boxId, the old Position, and the SpotType::left.
+
+Mover assures that these steps are taken in a particular order. First the Board receives the BoardNote with SpotType::to_arrive, then with SpotType::to_leave, then SpotType::arrive, and finally SpotType::left. Notice that the Box will be occupying two Positions from SpotType::to_arrive to until SpotType::left.
+
+Mover_Reg holds one boxId, so it can only ever move one Box.
 */
 
 class Mover
@@ -30,11 +38,18 @@ public:
     virtual ~Mover () noexcept = default;
 
     /*
-    Adds a Box to the Board at @position. If this addition is unsuccessful, neither Boxes' levels go up.
-    */
-    virtual bool addBox(Position position) = 0;
+    Adds a Box to the Board at @position.
 
-    virtual bool removeBox(Position position) = 0;
+    Calls the Board's addNote() twice, both times using @position and the contained boxId. First call uses the SpotType::to_leave, the second time uses SpotType::left. If both calls are successful, then returns true, otherwise returns false. Should always return true, because a Box can always move away from a Position.
+    */
+    bool addBox(Position position);
+
+    /*
+    Removes the Box to the Board at @position.
+
+    Calls the Board's addNote() method twice, both times using @position and the contained boxId. The first call uses SpotType::to_arrive. If that is successful, the thread sleeps for 5ms and the second addNote() is called with SpotType::arrive. The first call may be unsuccessful if a Box is already at @position.
+    */
+    bool removeBox(Position position);
 
     /*
     Moves a Box on the Board from @oldPosition to @newPosition. If the move is unsuccessful, both Boxes' levels to up by one.

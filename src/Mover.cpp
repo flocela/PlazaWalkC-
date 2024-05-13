@@ -1,4 +1,7 @@
 #include "Mover.h"
+#include <thread> 
+
+using namespace std;
 
 Mover::Mover(int boxId, Board* board): _boxId{boxId}, _board{board} {}
 
@@ -33,4 +36,26 @@ bool Mover::moveBox(Position oldPosition, Position newPosition)
     return success;
 }
 
+bool Mover::addBox(Position position)
+{
+    bool success = _board->changeSpot(position, BoardNote{_boxId, SpotType::to_arrive}, false);
+
+    if (success)
+    {
+        this_thread::sleep_for(5ms);
+        _board->changeSpot(position, BoardNote{_boxId, SpotType::arrive}, true);
+    }
+   
+    return success;
+}
+
+bool Mover::removeBox(Position position)
+{
+    bool success = false;
+
+    success = _board->changeSpot(position, BoardNote{_boxId, SpotType::to_leave}, true);
+    success = _board->changeSpot(position, BoardNote{_boxId, SpotType::left}, true);
+
+    return success;
+}
 
