@@ -52,13 +52,15 @@ This project is distributed under the terms of the MIT license
 
 ### Dependencies
 
+```sh
 - [Git][]
 - C Compiler (gcc, ...)
 - [CMake][]
 - [SDL2][SDL] library
 - [SDL2_ttf][] library
-```sh
-### Clone this repo
+```
+
+### Clone This Repo
 
 In a folder, clone the repository. This will create the PlazaWalkCCode folder.
 
@@ -68,29 +70,30 @@ https://github.com/flocela/PlazaWalkCCode.git
 
 In order to install the SDL_2 library, in the command line, while in the PlazaWalkCode folder type the following:
 
-```
-sudo apt-get install libsdl2-ttf-dev
 ```sh
+sudo apt-get install libsdl2-ttf-dev
+```
 
 The installer will ask if you have additional space and if you would like to continue.
 
 ### Make the code
 
 To make the code, create a build folder inside of the PlazaWalkCCode folder. In the PlazaWalkCCode/build folder type:
-```
-cmake .. && make
 ```sh
+cmake .. && make
+```
 
-### Run the project
+### Run The Project
 
 In the build folder type
 
-```
+```sh
 .sdl2-ttf-sample
-```sh
-
-## Run the tests
 ```
-./RunTests
+
+## Run The Tests
+
 ```sh
+./RunTests
+```
 
