@@ -24,7 +24,7 @@ class Decider_Risk1 : public Decider
     Returns the first Position that contiains a SpotType::to_leave or SpotType::left. If the Position contains SpotType::to_leave, then a time-to-arrival of 7 is returned. If the Position contains SpotType::left, then a time-to-arrival of 0 is returned.
     */
     std::pair<Position, int> getNext(
-        const std::vector<Position>& possiblePositions,
+        const std::vector<Position> possiblePositions,
         const Board& board) override;
 };
 

@@ -19,7 +19,7 @@ class Decider_Safe : public Decider
     Will return the first Position in @possiblePositions that has a SpotType of SpotType::left. Along with the Position will return a time to wait of zero. If no Position has a SpotType of SpotType::left, then returns a Position of {-1, -1} and a time of -1.
     */
     std::pair<Position, int> getNext(
-        const std::vector<Position>& possiblePositions,
+        const std::vector<Position> possiblePositions,
         const Board& board) override;
 };
 

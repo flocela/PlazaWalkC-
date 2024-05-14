@@ -13,7 +13,7 @@ bool Decider_Risk1::suggestMoveTo(Position position, const Board& board)
 }
 
 pair<Position, int> Decider_Risk1::getNext(
-    const vector<Position>& possiblePositions,
+    const vector<Position> possiblePositions,
     const Board& board
     )
 {

@@ -51,7 +51,7 @@ TEST_CASE("Spot_threads::")
 {
 
     /*
-    Remove changeNotes() unique_lock to make this test fail.
+    Remove changeNote()'s unique_lock to make this test fail.
     */
     SECTION("Two threads repeatedly try to change Spot's Note, but because of Spot's unique_lock on changeNote(), one thread always waits for the other thread to finish.")
     {
@@ -76,9 +76,9 @@ TEST_CASE("Spot_threads::")
 
     Thread t1 calls funcReadSpot().
     Thread t2 calls funcChangeSpot().
-
+    
     In changeNote() add this_thread::sleep_for(10ms) for the case when _type is SpotType::left and a "to arrive" BoardNote is received. This will make it evident that a thread is in getBoard() while another thread is in changeNote(). changeNote() will change the _boxId, then wait 10ms before changing the _type. During this wait time the Spot's state is invalid. getBoardNote() will read the state and return an invalid state.
-   */ 
+    */ 
    SECTION("One thread repeatedly calls getBoardNote(), the other repeatedly calls changeNote(). Because changeNote() has a unique_lock and getBoardNote() has a shared_lock, getBoardNote() will never return a BoardNote that is half way done.")
     {
         // If one thread is in changeNote() and the other thread is in getBoardNote(), then at some point getBoardNote() will return an invalid BoardNote (say BoxId = 100 and SpotType::left). This means the BoardNote was in the middle of being updated, when it was returned by getBoardNote()."
@@ -92,4 +92,5 @@ TEST_CASE("Spot_threads::")
         t1.join();
 
     }
+
 }

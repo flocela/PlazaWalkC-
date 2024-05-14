@@ -11,7 +11,7 @@ bool Decider_Safe::suggestMoveTo(Position position, const Board& board)
 }
 
 pair<Position, int> Decider_Safe::getNext(
-    const vector<Position>& possiblePositions,
+    const vector<Position> possiblePositions,
     const Board& board)
 {
     for (const Position& position : possiblePositions)
