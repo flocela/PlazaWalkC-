@@ -14,13 +14,27 @@ void funcChangeSpot(Spot* spot, int boxId)
     {
         bool successful = false;
 
-        REQUIRE_NOTHROW(successful =  spot->changeNote(BoardNote{boxId, SpotType::to_arrive}).second);
+        try
+        {
+            REQUIRE_NOTHROW(successful =  spot->changeNote(BoardNote{boxId, SpotType::to_arrive}).second);
+        }
+        catch(const exception & e)
+        {
+            cout << e.what();
+        }
         
         if (successful)
         {
-            REQUIRE_NOTHROW(spot->changeNote(BoardNote{boxId, SpotType::arrive}));
-            REQUIRE_NOTHROW(spot->changeNote(BoardNote{boxId, SpotType::to_leave}));
-            REQUIRE_NOTHROW(spot->changeNote(BoardNote{boxId, SpotType::left}));
+            try
+            {
+                REQUIRE_NOTHROW(spot->changeNote(BoardNote{boxId, SpotType::arrive}));
+                REQUIRE_NOTHROW(spot->changeNote(BoardNote{boxId, SpotType::to_leave}));
+                REQUIRE_NOTHROW(spot->changeNote(BoardNote{boxId, SpotType::left}));
+            }
+            catch(const exception & e)
+            {
+                cout << e.what();
+            }
         }
     }
 }
@@ -45,7 +59,7 @@ void funcReadSpot(Spot& spot)
 }
 
 /*
-When making these two SECTIONS fail, run them separately. When they fail they cause exceptions, which will stop the other thread mid run.
+When making these two SECTIONS fail, run them separately. When they fail they cause exceptions, which will stop the next SECTION from running.
 */
 TEST_CASE("Spot_threads::")
 {
