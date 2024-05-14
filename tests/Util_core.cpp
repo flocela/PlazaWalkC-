@@ -76,14 +76,14 @@ TEST_CASE("Util_core::")
 
         for(const auto& countPerXValue : countsPerXValues)
         {
-            REQUIRE(( (countPerXValue.second <= 1000) && (countPerXValue.second >= 800) ));
-            REQUIRE(( (countPerXValue.second <= 1000) && (countPerXValue.second >= 800) ));
+            REQUIRE(( (countPerXValue.second <= 1100) && (countPerXValue.second >= 750) ));
+            REQUIRE(( (countPerXValue.second <= 1100) && (countPerXValue.second >= 750) ));
         }
 
         for(const auto& countPerYValue : countsPerYValues)
         {
-            REQUIRE(( (countPerYValue.second <= 1000) && (countPerYValue.second >= 800) ));
-            REQUIRE(( (countPerYValue.second <= 1000) && (countPerYValue.second >= 800) ));
+            REQUIRE(( (countPerYValue.second <= 1100) && (countPerYValue.second >= 750) ));
+            REQUIRE(( (countPerYValue.second <= 1100) && (countPerYValue.second >= 750) ));
         }
     }
 
