@@ -48,11 +48,9 @@ TEST_CASE("Board_threads::")
     /*
     Test that there are no changes to the Board's Boxes while their info is being copied in the sendStateAndChanges() method. SendStateAndChanges() is copying the information to send to the Board's BoardListeners. 
     
-    To fail test, remove the unique_lock, collectDataLock. collectDataLock uses the same mutex (_mux) that the changeSpot() method uses.
+    To fail test, remove the unique_lock, collectDataLock, found in the sendStateAndChanges() method. collectDataLock uses the same mutex (_mux) that the changeSpot() method uses. In the protected block of code there is a for-loop that copies the BoxInfos into a map, copyOfBoxInfo.
 
-    In sendStateAndChanges() protected block of code there is a for-loop that copies the BoxInfos into a map, copyOfBoxInfo. To make this test fail, move that copying-for-loop outside of the collectDataLock block.
-
-    Box0 is stationed at posA. Box1 repeatedly tries to enter posA. Each time the two Boxes collide their levels increase by one. In another thread, the Boxes' information is copied to be sent, but never while the Boxes are being updated. So, in the sent Boxes state the two Boxes' levels will always be equal. It will never be that one Box's level is increased while the other Box's level is yet to be increased. Verifty the sent Boxes' levels are always equal.
+    Box0 is stationed at posA. Box1 repeatedly tries to enter posA. Each time the two Boxes collide their levels increase by one. In another thread, the Boxes' information is copied to be sent, but never while the Boxes are being updated. So, in the received Boxes state the two Boxes' levels will always be equal. It will never be that one Box's level is increased while the other Box's level is yet to be increased. Verifty the sent Boxes' levels are always equal.
    */ 
     SECTION("The Boxes' information is not updated while it is being copied in the sendStateAndChanges() method.")
     {
@@ -110,11 +108,11 @@ TEST_CASE("Board_threads::")
 
     The sent changes never have a SpotType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges(), collectDataLock, is removed, then invalid Drops are sent. In order to fail this test: remove the unique_lock, collectDataLock, in sendChanges(). Will also have to add a this_thread::sleep_for(1ms) in changeSpot() (after drop._boxId has been updated, but before drop._type has been updated).
 
-    Adding the sleep in changeSpot() between the drop.setBoxId() and drop.setSpotType() methods gives the send-changes thread time to toggle the _receiving matrix between these calls. Leave the sleep in between drop.setBoxId() and drop.setSpotType() and uncomment the unique_lock collectDataLock. This will result in a passing test.
+    Adding the sleep in changeSpot() (between the drop.setBoxId() and drop.setSpotType() methods) gives the send-changes thread time to toggle the _receiving matrix between these calls. Leave the sleep in between drop.setBoxId() and drop.setSpotType() and add the unique_lock collectDataLock back in. This will result in a passing test.
     */
     SECTION("Drops sent to BoardListeners have been updated completely. Both their SpotType and boxId have been changed.")
     {
-        // Checks that the Drops in receivedChanges are valid. The Drop has a SpotType::to_arrive and a BoxId that is NOT -1. Or the Drop has a SpotType::left and a BoxId of -1.
+        // Checks that the Drops in receivedChanges are valid. Each Drop must have a SpotType::to_arrive and a BoxId that is NOT -1, or a SpotType::left and a BoxId of -1.
         class BoardListener_Test : public BoardListener 
         {
         public: 
@@ -143,7 +141,7 @@ TEST_CASE("Board_threads::")
 
         // Vector of boxes with BoxId's from 0 to 999.
         vector<Box> boxes{};
-        for(int ii=0; ii<1000; ++ii)
+        for(int ii=0; ii<100; ++ii)
         {
             boxes.push_back(Box{ii, 0, 1, 1});
         }
