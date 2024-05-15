@@ -25,7 +25,7 @@ class Recorder : public BoardListener
     */
     void receiveChanges(
         std::unordered_set<Drop> changedDrops,
-        std::unordered_map<int, BoxInfo> boxes);
+        std::unordered_map<int, BoxInfo> boxes) override;
 
     void registerListener(RecorderListener* listener);
 
