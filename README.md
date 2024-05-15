@@ -2,6 +2,8 @@
 
 https://github.com/flocela/PlazaWalkCCode/assets/4298622/c6445efa-8f78-4b5d-98b1-78eb97eb2487
 
+## Introduction
+
 A simulation of people walking across a plaza, where each person is represented by a colored box. The boxes move concurrently. Each Box has its own final destination and its own risk acceptance level. (A risky box may try to move into a position that is occupied speculating that the current occupant will be leaving soon. Another, safer box would think this move is too risky to attempt.) If one box tries to enter the position of another box, then both boxes turn a darker shade. This represents two people bumping into each other.
 
 ## Code Explanation
@@ -10,11 +12,11 @@ A simulation of people walking across a plaza, where each person is represented 
 
 See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
 
-The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position, but also occupies two positions while transitioning to its new position on its way to its final destination.
+The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position. It may also be in the process of moving to a new position. In that case it could be in two positions at the same time. It may be about to leave one position. At the same time, it may be about to arrive in another position.
 
-Each of the Board's positions has a Spot which records which Box is at that position (or no box) and what transitioning step the Box is currently in. (The Box may be about to arrive, arrived, about to leave, or have left.) Spots are stationary (they are assigned an x-y coordinate on the Board).
+Each of the Board's positions has a Spot which records which Box is at that position (or no box) and what MoveType the Box is in at that Spot. (The Box may be about to arrive, arrived, about to leave, or have left.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
-main creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same function, which continually asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
+main creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same function, which iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
 
 Once the threads are created and running, main's primary thread iteratively requests for the Board to broadcast its state (the state of the Boxes and their positions). The information from each broadcast is ultimately received by a Printer and the Printer renders the Board with its Boxes.
 
@@ -22,7 +24,7 @@ Internally the Board pauses all Board changes (Box movements) while it prepares 
 
 ### Moving A Box Updates Spot's MoveType
 
-The transitioning step a box is currently in is named MoveType. The MoveType is saved in the Spot (or Spots) the box currently occupies. The Spot contains the Box id and MoveType of the Box that currently occupies its position. It may also be the case that a position is empty. In that case the Spot will have a MoveType::left and a box id of -1. Note a Spot will only change its MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left.
+A Box's current transitioning step is called a MoveType. The MoveType is saved in the Spot (or Spots) the box currently occupies. The Spot contains the Box id and MoveType of the Box that currently occupies its position. It may also be the case that a position is empty. In that case the Spot will have a MoveType::left and a box id of -1. Note a Spot will only change its MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left.
 
 Every thread contains one Mover. Every Mover contains one unique box id, and all Movers update Spots according to the correct specified order.
 
