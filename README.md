@@ -2,11 +2,13 @@
 
 https://github.com/flocela/PlazaWalkCCode/assets/4298622/c6445efa-8f78-4b5d-98b1-78eb97eb2487
 
-A simulation of people walking across a plaza. Each person is represented by a colored box. Each box is in its own thread. If one box tries to enter the position of another box, then both boxes turn a darker shade. This represents two people bumping into each other. Each box has its own final destination and its own risk assesment level. (A box may try to move into a position that is occupied speculating that the current occupant will be leaving soon, where as another box would not try this move.)
+A simulation of people walking across a plaza, where each person is represented by a colored box. Each box is in its own thread. Each Box has its own final destination and its own risk assesment. (A box may try to move into a position that is occupied speculating that the current occupant will be leaving soon, where as another box would think this move is too risky to attempt.) If one box tries to enter the position of another box, then both boxes turn a darker shade. This represents two people bumping into each other.
 
 ## Code Explanation
 
-### Overall 
+### Introduction To The Code 
+
+See UML diagrams at AcrossThePlaza/UMLDiagrams.pdf.
 
 The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position, but also occupies two positions while transitioning to its new position on its way to its final destination.
 
@@ -18,7 +20,7 @@ Once the threads are created, main's primary thread repeatedly (using a while lo
 
 Internally the Board pauses all Board changes (Box movements) while it prepares the data for the broadcast. Once the data is collected, it accepts changes while broadcasting out the data. So the received data (received by the Printer) is always a tiny bit stale.
 
-### Moving a Box Updates Spot's SpotType
+### Moving A Box Updates Spot's SpotType
 
 The transitioning step a box is currently in is named SpotType. The SpotType is saved in the Spot the box is currently at. The Spot contains the Box id and SpotType of the Box that currently occupies its position. It may also be the case that a position is empty. In that case the Spot will have a SpotType::left and a box id of -1. Note a Spot will only change its SpotType in this logical order: SpotType::left, SpotType::to_arrive, SpotType::arrive, SpotType::to_leave, SpotType::left.
 
