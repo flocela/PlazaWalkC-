@@ -3,11 +3,11 @@
 
 #include "Decider.h"
 
-/* Named as Risk1 Decider because it will suggest moving to Positions that have a SpotType of SpotType::left and SpotType::to_leave.
+/* Named as Risk1 Decider because it will suggest moving to Positions that have a MoveType of MoveType::left and MoveType::to_leave.
 
-Since the SpotType::to_leave means the Position is currently occupied (but will soon be free), Risk1Decider returns a suggested time to arrival of 7 milliseconds when the SpotType is SpotType::to_leave.
+Since the MoveType::to_leave means the Position is currently occupied (but will soon be free), Risk1Decider returns a suggested time to arrival of 7 milliseconds when the MoveType is MoveType::to_leave.
 
-If the SpotType is SpotType::left, then it will suggest moving into the Position in zero milliseconds.
+If the MoveType is MoveType::left, then it will suggest moving into the Position in zero milliseconds.
 */
 class Decider_Risk1 : public Decider
 {
@@ -15,13 +15,13 @@ class Decider_Risk1 : public Decider
     public:
 
     /*
-    Returns true if @position contains a SpotType of SpotType::to_leave or SpotType::left
+    Returns true if @position contains a MoveType of MoveType::to_leave or MoveType::left
     */
     bool suggestMoveTo(Position position, const Board& board) override;
 
    
     /*
-    Returns the first Position that contiains a SpotType::to_leave or SpotType::left. If the Position contains SpotType::to_leave, then a time-to-arrival of 7 is returned. If the Position contains SpotType::left, then a time-to-arrival of 0 is returned.
+    Returns the first Position that contiains a MoveType::to_leave or MoveType::left. If the Position contains MoveType::to_leave, then a time-to-arrival of 7 is returned. If the Position contains MoveType::left, then a time-to-arrival of 0 is returned.
     */
     std::pair<Position, int> getNext(
         const std::vector<Position> possiblePositions,

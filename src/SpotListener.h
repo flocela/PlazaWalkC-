@@ -5,7 +5,7 @@
 #include <vector>
 
 /*
-Receives and saves state strings. The state string is the Spot's id and SpotType combined into a string.
+Receives and saves state strings. The state string is the Spot's id and MoveType combined into a string.
 */
 class SpotListener
 {

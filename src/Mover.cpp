@@ -12,10 +12,10 @@ int Mover::getBoxId() const
 
 bool Mover::moveBox(Position oldPosition, Position newPosition)
 {
-    bool success = _board->changeSpot(newPosition, BoardNote{_boxId, SpotType::to_arrive}, true);
+    bool success = _board->changeSpot(newPosition, BoardNote{_boxId, MoveType::to_arrive}, true);
     if (success)
     {
-        _board->changeSpot(oldPosition, BoardNote{_boxId, SpotType::to_leave}, true);
+        _board->changeSpot(oldPosition, BoardNote{_boxId, MoveType::to_leave}, true);
 
         int deltaX = oldPosition.getX() - newPosition.getX();
         int deltaY = oldPosition.getY() - newPosition.getY(); 
@@ -28,8 +28,8 @@ bool Mover::moveBox(Position oldPosition, Position newPosition)
            sleepForLateralMove();
         }
 
-        _board->changeSpot(newPosition, BoardNote{_boxId, SpotType::arrive}, true);
-        _board->changeSpot(oldPosition, BoardNote{_boxId, SpotType::left}, true);
+        _board->changeSpot(newPosition, BoardNote{_boxId, MoveType::arrive}, true);
+        _board->changeSpot(oldPosition, BoardNote{_boxId, MoveType::left}, true);
     
     }
    
@@ -38,12 +38,12 @@ bool Mover::moveBox(Position oldPosition, Position newPosition)
 
 bool Mover::addBox(Position position)
 {
-    bool success = _board->changeSpot(position, BoardNote{_boxId, SpotType::to_arrive}, false);
+    bool success = _board->changeSpot(position, BoardNote{_boxId, MoveType::to_arrive}, false);
 
     if (success)
     {
         this_thread::sleep_for(5ms);
-        _board->changeSpot(position, BoardNote{_boxId, SpotType::arrive}, true);
+        _board->changeSpot(position, BoardNote{_boxId, MoveType::arrive}, true);
     }
    
     return success;
@@ -53,8 +53,8 @@ bool Mover::removeBox(Position position)
 {
     bool success = false;
 
-    success = _board->changeSpot(position, BoardNote{_boxId, SpotType::to_leave}, true);
-    success = _board->changeSpot(position, BoardNote{_boxId, SpotType::left}, true);
+    success = _board->changeSpot(position, BoardNote{_boxId, MoveType::to_leave}, true);
+    success = _board->changeSpot(position, BoardNote{_boxId, MoveType::left}, true);
 
     return success;
 }

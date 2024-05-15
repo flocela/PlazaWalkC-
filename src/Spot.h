@@ -6,10 +6,10 @@
 #include "BoardNote.h"
 #include "Position.h"
 #include "SpotListener.h"
-#include "SpotType.h"
+#include "MoveType.h"
 
 /*
-Spot represents an x,y Position on the Board. The Spot's attributes are 1) the Position of the Spot, 2) the id of the Box that is at the Position, or -1 if no Box is at that Position. 3) The SpotType of the possible Box (SpotType::left if there is no Box on the Position.) The Spot also keeps a list of listeners, which it updates when changeNote() is called and is successful.
+Spot represents an x,y Position on the Board. The Spot's attributes are 1) the Position of the Spot, 2) the id of the Box that is at the Position, or -1 if no Box is at that Position. 3) The MoveType of the possible Box (MoveType::left if there is no Box on the Position.) The Spot also keeps a list of listeners, which it updates when changeNote() is called and is successful.
 */
 class Spot
 {
@@ -26,23 +26,23 @@ class Spot
     Position getPosition() const;
 
     /*
-    Returns the current Box id and the SpotType at the Spot. If there is no Box, then returns SpotType::left and  -1 for the Box id. Note getBoardNote() is not thread safe. While this method is being called, the Spot may be changing, so the returned BoardNote may be incomplete or invalid.
+    Returns the current Box id and the MoveType at the Spot. If there is no Box, then returns MoveType::left and  -1 for the Box id. Note getBoardNote() is not thread safe. While this method is being called, the Spot may be changing, so the returned BoardNote may be incomplete or invalid.
     */
     BoardNote getBoardNote() const;
 
-    /* Updates the Spot with the @boardNotes's boxId and SpotType.
+    /* Updates the Spot with the @boardNotes's boxId and MoveType.
 
     changeNote() is thread safe, only one thread can access this method at one time.
 
-    The Spot only allows changes to the SpotType in the following order. Note when Spot is constructed it starts with a SpotType of SpotType::left reflecting no Box. The allowed order: SpotType::left, SpotType::to_arrive, SpotType::arrive, SpotType::to_leave, SpotType::left.
+    The Spot only allows changes to the MoveType in the following order. Note when Spot is constructed it starts with a MoveType of MoveType::left reflecting no Box. The allowed order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left.
     
-    If the Spot has a boxId of -1 and SpotType::left, then changeNote() will only be successful if @boardNote has SpotType::to_arrive. Any positive boxId is allowed. Any other SpotType will result in an exception.
+    If the Spot has a boxId of -1 and MoveType::left, then changeNote() will only be successful if @boardNote has MoveType::to_arrive. Any positive boxId is allowed. Any other MoveType will result in an exception.
 
-    If the Spot has a boxId and a SpotType::to_arrive then only a BoardNote with a SpotType::arrive and the same boxId will be successful. A BoardNote with a different boxId and SpotType::to_arrive will be unsuccessful and return false. All other BoardNotes will throw an exception.
+    If the Spot has a boxId and a MoveType::to_arrive then only a BoardNote with a MoveType::arrive and the same boxId will be successful. A BoardNote with a different boxId and MoveType::to_arrive will be unsuccessful and return false. All other BoardNotes will throw an exception.
 
-    If the Spot has a boxId and a SpotType::arrive then only a BoardNote with a SpotType::to_leave and the same boxId will be successful. A BoardNote with a different BoxId and SpotType::to_arrive will be unsuccessful and return false. All other BoardNotes will throw an exception.
+    If the Spot has a boxId and a MoveType::arrive then only a BoardNote with a MoveType::to_leave and the same boxId will be successful. A BoardNote with a different BoxId and MoveType::to_arrive will be unsuccessful and return false. All other BoardNotes will throw an exception.
 
-    If the Spot has a boxId and a SpotType::to_leave then only a BoardNote with a SpotType::left and the same boxId will be successful. A BoardNote with a different boxId and SpotType::to_arrive will be unsuccessful and return false. All other BoardNotes will throw an exception.
+    If the Spot has a boxId and a MoveType::to_leave then only a BoardNote with a MoveType::left and the same boxId will be successful. A BoardNote with a different boxId and MoveType::to_arrive will be unsuccessful and return false. All other BoardNotes will throw an exception.
 
     If an exception is not thrown, whether the call was successful or not, the original boxId will be returned. That is the boxId which is replaced if the call is successful or the boxId that was not replaced if the call is not successful.
     */
@@ -55,10 +55,10 @@ class Spot
 
     const Position _position;
     int _boxId = -1;
-    SpotType _type = SpotType::left;
+    MoveType _type = MoveType::left;
     mutable std::shared_mutex _mm;
     
-    std::string _stateString = "-1, SpotType::left";
+    std::string _stateString = "-1, MoveType::left";
 
     std::string errorString(BoardNote incomingNote);
     

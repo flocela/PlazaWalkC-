@@ -1,18 +1,18 @@
 #ifndef BOARDNOTE__H
 #define BOARDNOTE__H
 
-#include "SpotType.h"
+#include "MoveType.h"
 
 /*
-BoardNote contains a boxId and SpotType.
-Note boxId and SpotType do not have any setters and the assignment operators are deleted.
+BoardNote contains a boxId and MoveType.
+Note boxId and MoveType do not have any setters and the assignment operators are deleted.
 */
 class BoardNote
 {
 
     public:
     
-    BoardNote(int boxId, SpotType type);
+    BoardNote(int boxId, MoveType type);
     BoardNote() = delete;
     BoardNote(const BoardNote& o) = default;
     BoardNote(BoardNote&& o) noexcept = default;
@@ -20,7 +20,7 @@ class BoardNote
     BoardNote& operator=(BoardNote&& o) noexcept = delete;
     ~BoardNote() = default;
 
-    SpotType getType() const;
+    MoveType getType() const;
     int getBoxId() const;
 
     bool operator== (const BoardNote& o) const;
@@ -28,7 +28,7 @@ class BoardNote
 
     private:
 
-    SpotType _type;
+    MoveType _type;
     int _boxId;
 
 };

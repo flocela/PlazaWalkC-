@@ -10,17 +10,17 @@ TEST_CASE("Drop_getters_setters::")
         Drop dropSimpleConstructor{10, 20};
         REQUIRE(Position{10, 20} == dropSimpleConstructor.getPosition());
         REQUIRE(-1 == dropSimpleConstructor.getBoxId());
-        REQUIRE(SpotType::left == dropSimpleConstructor.getSpotType());
+        REQUIRE(MoveType::left == dropSimpleConstructor.getMoveType());
         REQUIRE(false == dropSimpleConstructor.hasChanged());
         
     }
 
     SECTION("Drop attributes set in advanced constructor.")
     {
-        Drop dropAdvancedConstructor{10, 20, 1, SpotType::to_arrive};
+        Drop dropAdvancedConstructor{10, 20, 1, MoveType::to_arrive};
         REQUIRE(Position{10, 20} == dropAdvancedConstructor.getPosition());
         REQUIRE(1 == dropAdvancedConstructor.getBoxId());
-        REQUIRE(SpotType::to_arrive == dropAdvancedConstructor.getSpotType());
+        REQUIRE(MoveType::to_arrive == dropAdvancedConstructor.getMoveType());
         REQUIRE_FALSE(dropAdvancedConstructor.hasChanged());
     }
 
@@ -31,11 +31,11 @@ TEST_CASE("Drop_getters_setters::")
         REQUIRE(100 == drop.getBoxId());
     }
     
-    SECTION("set and get SpotType")
+    SECTION("set and get MoveType")
     {
         Drop drop{10, 20};
-        drop.setSpotType(SpotType::to_leave);
-        REQUIRE(SpotType::to_leave == drop.getSpotType());
+        drop.setMoveType(MoveType::to_leave);
+        REQUIRE(MoveType::to_leave == drop.getMoveType());
     }
     
     SECTION("set and get hasChanged")

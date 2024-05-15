@@ -30,37 +30,37 @@ class SubRecorderListener : public RecorderListener
 };
 
 /*
-Returns the number of Drops per each SpotType.
+Returns the number of Drops per each MoveType.
 */
-unordered_map<SpotType, int> getCountPerSpotType(unordered_set<Drop> drops)
+unordered_map<MoveType, int> getCountPerMoveType(unordered_set<Drop> drops)
 {
 
-    unordered_map<SpotType, int> countPerSpotType{};
-    countPerSpotType.insert({SpotType::to_arrive, 0}); 
-    countPerSpotType.insert({SpotType::arrive, 0}); 
-    countPerSpotType.insert({SpotType::to_leave, 0}); 
-    countPerSpotType.insert({SpotType::left, 0}); 
+    unordered_map<MoveType, int> countPerMoveType{};
+    countPerMoveType.insert({MoveType::to_arrive, 0}); 
+    countPerMoveType.insert({MoveType::arrive, 0}); 
+    countPerMoveType.insert({MoveType::to_leave, 0}); 
+    countPerMoveType.insert({MoveType::left, 0}); 
 
     for(const Drop& drop : drops)
     {
-        if(drop.getSpotType() == SpotType::to_arrive)
+        if(drop.getMoveType() == MoveType::to_arrive)
         {
-            ++countPerSpotType[SpotType::to_arrive];
+            ++countPerMoveType[MoveType::to_arrive];
         }
-        else if (drop.getSpotType() == SpotType::arrive)
+        else if (drop.getMoveType() == MoveType::arrive)
         {
-            ++countPerSpotType[SpotType::arrive];
+            ++countPerMoveType[MoveType::arrive];
         }
-        else if (drop.getSpotType() == SpotType::to_leave)
+        else if (drop.getMoveType() == MoveType::to_leave)
         {
-            ++countPerSpotType[SpotType::to_leave];
+            ++countPerMoveType[MoveType::to_leave];
         }
         else
         {
-            ++countPerSpotType[SpotType::left];
+            ++countPerMoveType[MoveType::left];
         }
     }
-    return countPerSpotType;
+    return countPerMoveType;
 }
 
 
@@ -72,17 +72,17 @@ TEST_CASE("Recorder_core::")
         SubRecorderListener subRecorderListener;
         recorder.registerListener(&subRecorderListener);
 
-        // DropA at Position{0, 0}. SpotType::to_arrive.
+        // DropA at Position{0, 0}. MoveType::to_arrive.
         Drop dropA{0, 0};
         dropA.setBoxId(0);
-        dropA.setSpotType(SpotType::to_arrive);
+        dropA.setMoveType(MoveType::to_arrive);
 
-        // DropB at Position{2, 2}. SpotType::to_arrive.
+        // DropB at Position{2, 2}. MoveType::to_arrive.
         Drop dropB(2, 2);
         dropB.setBoxId(0);
-        dropB.setSpotType(SpotType::to_arrive);
+        dropB.setMoveType(MoveType::to_arrive);
 
-        // Recorder receives changedDrops containing two drops with different Positions and the same SpotType.
+        // Recorder receives changedDrops containing two drops with different Positions and the same MoveType.
         unordered_set<Drop> changedDrops{};
         changedDrops.insert(dropA);
         changedDrops.insert(dropB);
@@ -93,43 +93,43 @@ TEST_CASE("Recorder_core::")
         recorder.receiveChanges(changedDrops, boxesPerBoxIdDummy);
 
         // SubRecorderListener reflects that the Recorder sent the changed Drops.
-        // dropA and dropB are both SpotType::to_arrive
+        // dropA and dropB are both MoveType::to_arrive
         unordered_set<Drop> actual = subRecorderListener._drops;
-        unordered_map<SpotType, int> actualCountPerSpotType = getCountPerSpotType(actual);
+        unordered_map<MoveType, int> actualCountPerMoveType = getCountPerMoveType(actual);
         REQUIRE(2 == actual.size());
-        REQUIRE(2 == actualCountPerSpotType[SpotType::to_arrive]);
+        REQUIRE(2 == actualCountPerMoveType[MoveType::to_arrive]);
         REQUIRE(actual.find(dropA) != actual.end());
         REQUIRE(actual.find(dropB) != actual.end());
 
         
         // Recorder receives one drop that replaces the existing Drop, dropB.
-        // dropA is SpotType::to_arrive, no change.
-        // dropB is SpotType::arrive.
+        // dropA is MoveType::to_arrive, no change.
+        // dropB is MoveType::arrive.
         actual.clear();
         changedDrops.clear();
 
-        dropB.setSpotType(SpotType::arrive);
+        dropB.setMoveType(MoveType::arrive);
         changedDrops.insert(dropB);
 
         // recorder receives changedDrops.
         recorder.receiveChanges(changedDrops, boxesPerBoxIdDummy);
 
         actual.insert(subRecorderListener._drops.begin(), subRecorderListener._drops.end());
-        actualCountPerSpotType = getCountPerSpotType(actual);
+        actualCountPerMoveType = getCountPerMoveType(actual);
         REQUIRE(2 == actual.size());
-        REQUIRE(1 == actualCountPerSpotType[SpotType::to_arrive]);
-        REQUIRE(1 == actualCountPerSpotType[SpotType::arrive]);
+        REQUIRE(1 == actualCountPerMoveType[MoveType::to_arrive]);
+        REQUIRE(1 == actualCountPerMoveType[MoveType::arrive]);
         REQUIRE(actual.find(dropA) != actual.end());
         REQUIRE(actual.find(dropB) != actual.end());
 
 
-        // dropA is set to SpotType::arrive.
-        // dropB is set to SpotType::to_leave.
+        // dropA is set to MoveType::arrive.
+        // dropB is set to MoveType::to_leave.
         actual.clear();
         changedDrops.clear();
 
-        dropA.setSpotType(SpotType::arrive);
-        dropB.setSpotType(SpotType::to_leave);
+        dropA.setMoveType(MoveType::arrive);
+        dropB.setMoveType(MoveType::to_leave);
         changedDrops.insert(dropA);
         changedDrops.insert(dropB);
 
@@ -137,21 +137,21 @@ TEST_CASE("Recorder_core::")
         recorder.receiveChanges(changedDrops, boxesPerBoxIdDummy);
 
         actual.insert(subRecorderListener._drops.begin(), subRecorderListener._drops.end());
-        actualCountPerSpotType = getCountPerSpotType(actual);
+        actualCountPerMoveType = getCountPerMoveType(actual);
         REQUIRE(2 == actual.size());
-        REQUIRE(1 == actualCountPerSpotType[SpotType::arrive]);
-        REQUIRE(1 == actualCountPerSpotType[SpotType::to_leave]);
+        REQUIRE(1 == actualCountPerMoveType[MoveType::arrive]);
+        REQUIRE(1 == actualCountPerMoveType[MoveType::to_leave]);
         REQUIRE(actual.find(dropA) != actual.end());
         REQUIRE(actual.find(dropB) != actual.end());
 
 
-        // dropA is set to SpotType::to_leave.
-        // dropB is set to SpotType::left.
+        // dropA is set to MoveType::to_leave.
+        // dropB is set to MoveType::left.
         actual.clear();
         changedDrops.clear();
 
-        dropA.setSpotType(SpotType::to_leave);
-        dropB.setSpotType(SpotType::left);
+        dropA.setMoveType(MoveType::to_leave);
+        dropB.setMoveType(MoveType::left);
         changedDrops.insert(dropA);
         changedDrops.insert(dropB);
 
@@ -159,11 +159,11 @@ TEST_CASE("Recorder_core::")
         recorder.receiveChanges(changedDrops, boxesPerBoxIdDummy);
 
         actual.insert(subRecorderListener._drops.begin(), subRecorderListener._drops.end());
-        actualCountPerSpotType = getCountPerSpotType(actual);
+        actualCountPerMoveType = getCountPerMoveType(actual);
 
         // Recorder only sends out Drops that contain a Box, so only sends out dropA.
         REQUIRE(1 == actual.size());
-        REQUIRE(1 == actualCountPerSpotType[SpotType::to_leave]);
+        REQUIRE(1 == actualCountPerMoveType[MoveType::to_leave]);
         REQUIRE(actual.find(dropA) != actual.end());
     }
 

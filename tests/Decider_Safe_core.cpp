@@ -12,23 +12,23 @@ TEST_CASE("Decider_Safe_core::")
     // Decider_Safe
     Decider_Safe decider{};
 
-    // Each SECTION represents a Position with a different SpotType (arrive, to_arrive, _to_leave, and left)
+    // Each SECTION represents a Position with a different MoveType (arrive, to_arrive, _to_leave, and left)
 
-    SECTION("Box0 is at positionA with a SpotType::arrive.")
+    SECTION("Box0 is at positionA with a MoveType::arrive.")
     {
 
         // Box0 arrives at positionA.
-        board.changeSpot(positionA, BoardNote{0, SpotType::to_arrive}, true);
-        board.changeSpot(positionA, BoardNote{0, SpotType::arrive}, true);
+        board.changeSpot(positionA, BoardNote{0, MoveType::to_arrive}, true);
+        board.changeSpot(positionA, BoardNote{0, MoveType::arrive}, true);
 
-        SECTION("Box1 is trying to move to positionA. Verify suggetMoveTo(positionA, ...) returns false since positionA has a SpotType that is not SpotType::left")
+        SECTION("Box1 is trying to move to positionA. Verify suggetMoveTo(positionA, ...) returns false since positionA has a MoveType that is not MoveType::left")
         {
             REQUIRE_FALSE(decider.suggestMoveTo(positionA, board));
         }
 
-        SECTION("Verify getNext(possiblePositions) returns the first possiblePosition whose SpotType is SpotType::left and returns a time-to-arrival of 0.")
+        SECTION("Verify getNext(possiblePositions) returns the first possiblePosition whose MoveType is MoveType::left and returns a time-to-arrival of 0.")
         {
-            // The first possiblePosition is positionA, which has a SpotType of SpotType::to_arrive. It is not returned.
+            // The first possiblePosition is positionA, which has a MoveType of MoveType::to_arrive. It is not returned.
             vector<Position> possiblePositions = {positionA, Position{5, 4}, Position{6, 4}};
             pair<Position, int> next = decider.getNext(possiblePositions, board); 
 
@@ -47,11 +47,11 @@ TEST_CASE("Decider_Safe_core::")
         }
     }
 
-    SECTION("Box1 is deciding to move to postionA, but Box0 is at positionA with a SpotType::to_arrive. The possiblePositions vector has only one position, positionA. Verify Decider returns an invalid Position and time to departure of -1.")
+    SECTION("Box1 is deciding to move to postionA, but Box0 is at positionA with a MoveType::to_arrive. The possiblePositions vector has only one position, positionA. Verify Decider returns an invalid Position and time to departure of -1.")
     {
 
         // Box0 is to_arrive at positionA. 
-        board.changeSpot(positionA, BoardNote{0, SpotType::to_arrive}, true);
+        board.changeSpot(positionA, BoardNote{0, MoveType::to_arrive}, true);
 
         vector<Position> possiblePositions = {positionA};
 
@@ -62,12 +62,12 @@ TEST_CASE("Decider_Safe_core::")
         REQUIRE(-1 == next.second);
     }
 
-    SECTION("Box1 is deciding to move to postionA. Box0 is at positionA with a SpotType::to_leave. The possible Positions vector has only one position, positionA. Verify Decider returns an invalid Position and time-to-arrival.")
+    SECTION("Box1 is deciding to move to postionA. Box0 is at positionA with a MoveType::to_leave. The possible Positions vector has only one position, positionA. Verify Decider returns an invalid Position and time-to-arrival.")
     {
         // Box0 arrives, but is about to leave.
-        board.changeSpot(positionA, BoardNote{0, SpotType::to_arrive}, true);
-        board.changeSpot(positionA, BoardNote{0, SpotType::arrive}, true);
-        board.changeSpot(positionA, BoardNote{0, SpotType::to_leave}, true);
+        board.changeSpot(positionA, BoardNote{0, MoveType::to_arrive}, true);
+        board.changeSpot(positionA, BoardNote{0, MoveType::arrive}, true);
+        board.changeSpot(positionA, BoardNote{0, MoveType::to_leave}, true);
 
         vector<Position> possiblePositions = {positionA};
 

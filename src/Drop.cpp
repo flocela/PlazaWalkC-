@@ -6,7 +6,7 @@ Drop::Drop(
     int x,
     int y,
     int boxId,
-    SpotType type)
+    MoveType type)
 :   _position{x, y},
     _boxId{boxId},
     _type{type}
@@ -18,7 +18,7 @@ void Drop::setBoxId(int id)
     _boxId = id;
 }
 
-void Drop::setSpotType(SpotType type)
+void Drop::setMoveType(MoveType type)
 {
     _type = type;
 }
@@ -38,7 +38,7 @@ int Drop::getBoxId() const
     return _boxId;
 }
 
-SpotType Drop::getSpotType() const
+MoveType Drop::getMoveType() const
 {
     return _type;
 }

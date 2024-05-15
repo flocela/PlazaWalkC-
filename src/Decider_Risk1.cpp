@@ -1,6 +1,6 @@
 #include "Decider_Risk1.h"
 
-#include "SpotType.h"
+#include "MoveType.h"
 #include "Util.h"
 
 using namespace std;
@@ -8,8 +8,8 @@ using namespace std;
 bool Decider_Risk1::suggestMoveTo(Position position, const Board& board)
 {
     BoardNote note = board.getNoteAt(position);
-    return ((note.getType() == SpotType::left) ||
-           (note.getType() == SpotType::to_leave));
+    return ((note.getType() == MoveType::left) ||
+           (note.getType() == MoveType::to_leave));
 }
 
 pair<Position, int> Decider_Risk1::getNext(
@@ -23,11 +23,11 @@ pair<Position, int> Decider_Risk1::getNext(
         // BoardNote at position will tell us what box (if any) is currently at that Position. 
         BoardNote boardNote = board.getNoteAt(position);
 
-        if (boardNote.getType() == SpotType::left)
+        if (boardNote.getType() == MoveType::left)
         {
             return {position, 0};
         }
-        if (boardNote.getType() == SpotType::to_leave)
+        if (boardNote.getType() == MoveType::to_leave)
         {
             return {position, 7};
         }

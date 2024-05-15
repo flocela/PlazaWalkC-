@@ -61,30 +61,30 @@ TEST_CASE("Mover_Reg_core::")
 
         // Results:
 
-        // startPosition should get 4 BoardNotes: SpotType::to_arrive, SpotType::arrive, SpotType::to_leave, SpotType::left.
+        // startPosition should get 4 BoardNotes: MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left.
 
-        // endPosition should get 2 BoardNotes: SpotType::to_arrive and SpotType::arrive. 
+        // endPosition should get 2 BoardNotes: MoveType::to_arrive and MoveType::arrive. 
         REQUIRE(4 == startPosNotes.size());
 
         REQUIRE(2 == endPosNotes.size());
 
         // From startPosNotes: Box 0 is to_arrive.
-        REQUIRE(BoardNote{0,SpotType::to_arrive} == startPosNotes[0].second); 
+        REQUIRE(BoardNote{0,MoveType::to_arrive} == startPosNotes[0].second); 
 
         // From startPosNotes: Box 0 has arrived.
-        REQUIRE(BoardNote{0,SpotType::arrive} == startPosNotes[1].second); 
+        REQUIRE(BoardNote{0,MoveType::arrive} == startPosNotes[1].second); 
 
         // From endPosNotes: Box 0 is to_arrive.
-        REQUIRE(BoardNote{0, SpotType::to_arrive} == endPosNotes[0].second); 
+        REQUIRE(BoardNote{0, MoveType::to_arrive} == endPosNotes[0].second); 
 
         // From startPosNotes: Box 0 is to_leave.
-        REQUIRE(BoardNote{0, SpotType::to_leave} == startPosNotes[2].second); 
+        REQUIRE(BoardNote{0, MoveType::to_leave} == startPosNotes[2].second); 
 
         // From endPosNotes: Box 0 is arrive.
-        REQUIRE(BoardNote{0, SpotType::arrive} == endPosNotes[1].second); 
+        REQUIRE(BoardNote{0, MoveType::arrive} == endPosNotes[1].second); 
 
         // From startPosNotes: Box 0 has left.
-        REQUIRE(BoardNote{0, SpotType::left} == startPosNotes[3].second); 
+        REQUIRE(BoardNote{0, MoveType::left} == startPosNotes[3].second); 
         
         // The BoardNotes should be in order.
         
@@ -117,11 +117,11 @@ TEST_CASE("Mover_Reg_core::")
 
         // Add box to startPosition
         REQUIRE(true == mover.addBox(startPosition));
-        REQUIRE(BoardNote{0, SpotType::arrive} ==  board.getNoteAt(startPosition));
+        REQUIRE(BoardNote{0, MoveType::arrive} ==  board.getNoteAt(startPosition));
 
         // Remove box from startPosition
         REQUIRE(true == mover.removeBox(startPosition));
-        REQUIRE(BoardNote{-1, SpotType::left} ==  board.getNoteAt(startPosition));
+        REQUIRE(BoardNote{-1, MoveType::left} ==  board.getNoteAt(startPosition));
     } 
     
     SECTION("Adding Box to a Position that already has a Box returns false and will not increase the Boxes' levels.")

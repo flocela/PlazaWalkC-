@@ -18,8 +18,8 @@ void Recorder::receiveChanges(
             _drops.erase(drop);
         }
 
-        // If drop is not SpotType::left, then save it in _drops.
-        if(drop.getSpotType() != SpotType::left)
+        // If drop is not MoveType::left, then save it in _drops.
+        if(drop.getMoveType() != MoveType::left)
         {   
             _drops.insert(drop);
         }

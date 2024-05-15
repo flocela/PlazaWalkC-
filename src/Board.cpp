@@ -59,7 +59,7 @@ bool Board::changeSpot(Position position, BoardNote newNote, bool upLevel)
     }
 
     // Try to update Spot at @position.
-    // See Spot class' rules to determine if a Box with this boxId and SpotType at @position is allowed. Hint: Put basically, @position has to be empty in order for a Box to enter the Spot. And only a BoardNote with the Spot's current boxId can move the Box out of the Spot.
+    // See Spot class' rules to determine if a Box with this boxId and MoveType at @position is allowed. Hint: Put basically, @position has to be empty in order for a Box to enter the Spot. And only a BoardNote with the Spot's current boxId can move the Box out of the Spot.
     pair<int, bool> success = _spots[posY][posX].changeNote(newNote);
     
     if (success.second)
@@ -77,8 +77,8 @@ bool Board::changeSpot(Position position, BoardNote newNote, bool upLevel)
         // In order to fail a threading test, Add a sleep time here.
         // std::this_thread::sleep_for(1ms);
 
-        // Record changed SpotType.
-        drop.setSpotType(changedBoardNote.getType());
+        // Record changed MoveType.
+        drop.setMoveType(changedBoardNote.getType());
 
         // Move was successful. Notify all NoteSubscribers.
         if (_noteSubscribersPerPos.find(position) != _noteSubscribersPerPos.end())
@@ -136,7 +136,7 @@ void Board::sendStateAndChanges()
             {
                 changedDrops.insert(curDrop);
                 (*changedBoard)[row][col].setBoxId(-1);
-                (*changedBoard)[row][col].setSpotType(SpotType::left);
+                (*changedBoard)[row][col].setMoveType(MoveType::left);
                 (*changedBoard)[row][col].setHasChanged(false);
             }
         }

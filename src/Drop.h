@@ -2,16 +2,16 @@
 #define DROP__H
 
 #include "Position.h"
-#include "SpotType.h"
+#include "MoveType.h"
 
 /*
-Drop is a container for a Position, a boxId, and SpotType. It also contains a has changed bool, so the user can mark it as having had changed, or not.
+Drop is a container for a Position, a boxId, and MoveType. It also contains a has changed bool, so the user can mark it as having had changed, or not.
 */
 class Drop
 {
     public:
     Drop(int x, int y);
-    Drop(int x, int y, int boxId, SpotType type);
+    Drop(int x, int y, int boxId, MoveType type);
     Drop() = delete;
     Drop(const Drop& o) = default;
     Drop(Drop&& o) noexcept = default;
@@ -20,12 +20,12 @@ class Drop
     ~Drop() noexcept = default;
 
     void setBoxId(int id);
-    void setSpotType(SpotType type);
+    void setMoveType(MoveType type);
     void setHasChanged(bool hasChanged);
 
     Position getPosition() const;
     int getBoxId() const;
-    SpotType getSpotType() const;
+    MoveType getMoveType() const;
     bool hasChanged() const;
 
     /*
@@ -34,8 +34,8 @@ class Drop
     bool operator== (const Drop& o) const;
 
     /*
-    Prints out the Position, boxId, SpotType, and hasChanged.
-    For instance a Drop{1, 2, 4, SpotType::to_arrive} with a _hasChanged atttribute of false would print out as Drop: [{1, 2}, 4, SpotType::to_arrive, false].
+    Prints out the Position, boxId, MoveType, and hasChanged.
+    For instance a Drop{1, 2, 4, MoveType::to_arrive} with a _hasChanged atttribute of false would print out as Drop: [{1, 2}, 4, MoveType::to_arrive, false].
     */
     friend std::ostream& operator<< (std::ostream& o, const Drop& d)
     {
@@ -55,7 +55,7 @@ class Drop
 
     Position _position;
     int _boxId = -1;
-    SpotType _type = SpotType::left;
+    MoveType _type = MoveType::left;
     bool _changed = false;
 
 };

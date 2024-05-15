@@ -105,6 +105,7 @@ src/Drop.cpp
 src/MainSetup.cpp
 src/Mover.cpp
 src/Mover_Reg.cpp
+src/MoveType.cpp
 src/Position.cpp
 src/PositionManager_Diagonal.cpp
 src/PositionManager_Down.cpp
@@ -115,7 +116,6 @@ src/HelloWorld.cpp
 src/Recorder.cpp
 src/Rectangle.cpp
 src/Spot.cpp
-src/SpotType.cpp
 src/SpotListener.cpp
 src/Util.cpp
 )

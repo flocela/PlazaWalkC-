@@ -9,52 +9,52 @@ TEST_CASE("BoardNote_core::")
 {
     SECTION("BoardNote returns type")
     {
-        BoardNote note{22, SpotType::to_leave};
-        REQUIRE(SpotType::to_leave == note.getType());
+        BoardNote note{22, MoveType::to_leave};
+        REQUIRE(MoveType::to_leave == note.getType());
     }
 
     SECTION("BoardNote returns boxId")
     {
-        BoardNote note{22, SpotType::arrive};
+        BoardNote note{22, MoveType::arrive};
         REQUIRE(22 == note.getBoxId());
     }
 
     SECTION("BoardNote == operator returns true")
     {
-        BoardNote note1{22, SpotType::left};
-        BoardNote note2{22, SpotType::left}; 
+        BoardNote note1{22, MoveType::left};
+        BoardNote note2{22, MoveType::left}; 
         REQUIRE(note1 == note2);
     }
 
     SECTION("BoardNote == operator returns false if boxId's are different")
     {
-        BoardNote note1{22, SpotType::left};
-        BoardNote note2{24, SpotType::left}; 
+        BoardNote note1{22, MoveType::left};
+        BoardNote note2{24, MoveType::left}; 
         REQUIRE_FALSE(note1 == note2);
     }
 
     SECTION("BoardNote == operator returns false if type's are different")
     {
-        BoardNote note1{22, SpotType::left};
-        BoardNote note2{22, SpotType::to_arrive}; 
+        BoardNote note1{22, MoveType::left};
+        BoardNote note2{22, MoveType::to_arrive}; 
         REQUIRE_FALSE(note1 == note2);
     }
     
     SECTION("Identical BoardNotes return the same hash")
     {
         hash<BoardNote> hasher;
-        BoardNote boardInfoA{0, SpotType::to_arrive};
-        BoardNote boardInfoB{0, SpotType::to_arrive};
+        BoardNote boardInfoA{0, MoveType::to_arrive};
+        BoardNote boardInfoB{0, MoveType::to_arrive};
 
         REQUIRE(hasher(boardInfoA) == hasher(boardInfoB));
         
-        BoardNote boardInfoC{1, SpotType::arrive};
-        BoardNote boardInfoD{1, SpotType::arrive};
+        BoardNote boardInfoC{1, MoveType::arrive};
+        BoardNote boardInfoD{1, MoveType::arrive};
 
         REQUIRE(hasher(boardInfoC) == hasher(boardInfoD));
         
-        BoardNote boardInfoE{10, SpotType::to_leave};
-        BoardNote boardInfoF{10, SpotType::to_leave};
+        BoardNote boardInfoE{10, MoveType::to_leave};
+        BoardNote boardInfoF{10, MoveType::to_leave};
 
         REQUIRE(hasher(boardInfoE) == hasher(boardInfoF));
     }
@@ -68,7 +68,7 @@ TEST_CASE("BoardNote_core::")
         {
             for(int jj=1; jj<=1; ++jj)
             {
-                unsigned int hashNumber = hasher(BoardNote{ii, static_cast<SpotType>(jj)});
+                unsigned int hashNumber = hasher(BoardNote{ii, static_cast<MoveType>(jj)});
                 REQUIRE(hashNumbers.find(hashNumber) == hashNumbers.end());
                 hashNumbers.insert(hashNumber);
             }

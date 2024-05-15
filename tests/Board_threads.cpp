@@ -8,13 +8,13 @@ using namespace std;
 
 /*
 Function used in threading.
-For a @times number of times moves Box with boxId @id to Position @pos using a SpotType::to_arrive.
+For a @times number of times moves Box with boxId @id to Position @pos using a MoveType::to_arrive.
 */
 void moveBoxToPosition(Board& board, int id, Position pos, int times)
 {
     for (int ii=0; ii<times; ++ii)
     {
-         board.changeSpot(pos, BoardNote{id, SpotType::to_arrive}, true);
+         board.changeSpot(pos, BoardNote{id, MoveType::to_arrive}, true);
     }
 }
 
@@ -38,7 +38,7 @@ void moveBoxesToArrive(Board& board, int numOfBoxes)
 {
     for (int ii=0; ii<numOfBoxes; ++ii)
     {
-         board.changeSpot(Position{ii, 0}, BoardNote{ii, SpotType::to_arrive}, true);
+         board.changeSpot(Position{ii, 0}, BoardNote{ii, MoveType::to_arrive}, true);
     }
 }
 
@@ -85,7 +85,7 @@ TEST_CASE("Board_threads::")
         TestListener listener{};
         board.registerListener(&listener);
       
-        board.changeSpot(posA, BoardNote{boxId_0, SpotType::to_arrive}, true);
+        board.changeSpot(posA, BoardNote{boxId_0, MoveType::to_arrive}, true);
 
         std::thread t1(moveBoxToPosition, std::ref(board), boxId_1, posA, 100);
         std::thread t2(requestChanges, std::ref(board), 100);
@@ -98,21 +98,21 @@ TEST_CASE("Board_threads::")
     }
             
     /*
-    A complete Drop change has two-parts: a change to the boxId and a change to the SpotType. If the Drop is updated while the _receivingMatrix is being toggled then the first part of the change would be in one matrix, and the second part of the change would be in the other matrix. The _receivingMatrix is only toggled in the sendChanges() method, so adding a lock around this toggling and the changeSpot() method means that the _receivingMatrix will never be toggled during a change.
+    A complete Drop change has two-parts: a change to the boxId and a change to the MoveType. If the Drop is updated while the _receivingMatrix is being toggled then the first part of the change would be in one matrix, and the second part of the change would be in the other matrix. The _receivingMatrix is only toggled in the sendChanges() method, so adding a lock around this toggling and the changeSpot() method means that the _receivingMatrix will never be toggled during a change.
 
-    If the first part of the change (say the BoxId) could be recorded in one drop matrix and the second part of the change (say the SpotType) were recorded in the second drop matrix, then the sent Drops map would contain partially changed Drops. This would be noticeable because some Drops would have a SpotType::left with a BoxId of NOT -1; this is invalid.
+    If the first part of the change (say the BoxId) could be recorded in one drop matrix and the second part of the change (say the MoveType) were recorded in the second drop matrix, then the sent Drops map would contain partially changed Drops. This would be noticeable because some Drops would have a MoveType::left with a BoxId of NOT -1; this is invalid.
 
-    Thread t1 repeatedly changes Drops from a SpotType::left and BoxId=-1 to a SpotType::to_arrive and a BoxId of NOT -1.
+    Thread t1 repeatedly changes Drops from a MoveType::left and BoxId=-1 to a MoveType::to_arrive and a BoxId of NOT -1.
 
     Thread t2 repeatedly asks for changes to be sent. 
 
-    The sent changes never have a SpotType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges(), collectDataLock, is removed, then invalid Drops are sent. In order to fail this test: remove the unique_lock, collectDataLock, in sendChanges(). Will also have to add a this_thread::sleep_for(1ms) in changeSpot() (after drop._boxId has been updated, but before drop._type has been updated).
+    The sent changes never have a MoveType::left with a BoxId that is not -1. The Drops are always valid. If the unique_lock in sendChanges(), collectDataLock, is removed, then invalid Drops are sent. In order to fail this test: remove the unique_lock, collectDataLock, in sendChanges(). Will also have to add a this_thread::sleep_for(1ms) in changeSpot() (after drop._boxId has been updated, but before drop._type has been updated).
 
-    Adding the sleep in changeSpot() (between the drop.setBoxId() and drop.setSpotType() methods) gives the send-changes thread time to toggle the _receiving matrix between these calls. Leave the sleep in between drop.setBoxId() and drop.setSpotType() and add the unique_lock collectDataLock back in. This will result in a passing test.
+    Adding the sleep in changeSpot() (between the drop.setBoxId() and drop.setMoveType() methods) gives the send-changes thread time to toggle the _receiving matrix between these calls. Leave the sleep in between drop.setBoxId() and drop.setMoveType() and add the unique_lock collectDataLock back in. This will result in a passing test.
     */
-    SECTION("Drops sent to BoardListeners have been updated completely. Both their SpotType and boxId have been changed.")
+    SECTION("Drops sent to BoardListeners have been updated completely. Both their MoveType and boxId have been changed.")
     {
-        // Checks that the Drops in receivedChanges are valid. Each Drop must have a SpotType::to_arrive and a BoxId that is NOT -1, or a SpotType::left and a BoxId of -1.
+        // Checks that the Drops in receivedChanges are valid. Each Drop must have a MoveType::to_arrive and a BoxId that is NOT -1, or a MoveType::left and a BoxId of -1.
         class BoardListener_Test : public BoardListener 
         {
         public: 
@@ -124,12 +124,12 @@ TEST_CASE("Board_threads::")
                 lock_guard<mutex> gl(_mutex);                
                 for (auto& drop : drops)
                 {
-                    if (drop.getSpotType() == SpotType::left &&
+                    if (drop.getMoveType() == MoveType::left &&
                         drop.getBoxId() != -1)
                     {
                            changeIsComplete = false; 
                     } 
-                    if (drop.getSpotType() != SpotType::left &&
+                    if (drop.getMoveType() != MoveType::left &&
                         drop.getBoxId() == -1)
                     {
                            changeIsComplete = false; 
@@ -150,7 +150,7 @@ TEST_CASE("Board_threads::")
         BoardListener_Test listener{};
         board.registerListener(&listener);
 
-        // t1 moves 1000 boxes into 1000 Positions. Each Position is originally SpotType::Left and BoxId=-1. But after the move, the SpotType is SpotType::to_arrive and the BoxId is equal to that particular Box's box id. 
+        // t1 moves 1000 boxes into 1000 Positions. Each Position is originally MoveType::Left and BoxId=-1. But after the move, the MoveType is MoveType::to_arrive and the BoxId is equal to that particular Box's box id. 
         std::thread t1(moveBoxesToArrive, std::ref(board), 100);
         std::thread t2(requestChanges, std::ref(board), 100);
 

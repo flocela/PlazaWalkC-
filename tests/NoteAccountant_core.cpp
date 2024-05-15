@@ -11,8 +11,8 @@ TEST_CASE("NoteAccountant_core.cpp")
         Position pos0{0, 0};
         NoteAccountant noteAccountant{};
 
-        BoardNote noteToArrive{0, SpotType::to_arrive}; // box 0 is about to arrive
-        BoardNote noteArrive{0, SpotType::arrive}; // box 0 arrives
+        BoardNote noteToArrive{0, MoveType::to_arrive}; // box 0 is about to arrive
+        BoardNote noteArrive{0, MoveType::arrive}; // box 0 arrives
 
         noteAccountant.callback(noteToArrive); 
         noteAccountant.callback(noteArrive);

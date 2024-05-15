@@ -31,13 +31,13 @@ pair<int, bool> Spot::changeNote(BoardNote incomingNote)
     unique_lock<shared_mutex> lock(_mm);
 
     int incomingBoxId = incomingNote.getBoxId();
-    SpotType incomingType  = incomingNote.getType();
+    MoveType incomingType  = incomingNote.getType();
     
     int origBoxId = _boxId;
     
-    if (_type == SpotType::left)
+    if (_type == MoveType::left)
     { 
-        if (incomingType != SpotType::to_arrive)
+        if (incomingType != MoveType::to_arrive)
         {   
             throw invalid_argument(errorString(incomingNote));
         }
@@ -47,17 +47,17 @@ pair<int, bool> Spot::changeNote(BoardNote incomingNote)
             _type = incomingType;
         }
     }
-    else if (_type == SpotType::to_leave)
+    else if (_type == MoveType::to_leave)
     {  
-        if (incomingType == SpotType::to_arrive && incomingBoxId != _boxId)
+        if (incomingType == MoveType::to_arrive && incomingBoxId != _boxId)
         {
             return {_boxId, false};
         }
         else
         {
-            if (_boxId == incomingBoxId && incomingType == SpotType::left)
+            if (_boxId == incomingBoxId && incomingType == MoveType::left)
             {
-                _type = SpotType::left;
+                _type = MoveType::left;
                 _boxId = -1;
             }
             else
@@ -66,13 +66,13 @@ pair<int, bool> Spot::changeNote(BoardNote incomingNote)
             }
         } 
     }
-    else if (_type == SpotType::to_arrive)
+    else if (_type == MoveType::to_arrive)
     {  
-        if (incomingType == SpotType::to_arrive && incomingBoxId != _boxId)
+        if (incomingType == MoveType::to_arrive && incomingBoxId != _boxId)
         {  
             return {_boxId, false};
         }
-        else if (_boxId == incomingBoxId && incomingType == SpotType::arrive)
+        else if (_boxId == incomingBoxId && incomingType == MoveType::arrive)
         {   
             _boxId = incomingBoxId;
             _type = incomingType;
@@ -82,13 +82,13 @@ pair<int, bool> Spot::changeNote(BoardNote incomingNote)
             throw invalid_argument(errorString(incomingNote));
         } 
     }
-    else if (_type == SpotType::arrive)
+    else if (_type == MoveType::arrive)
     {   
-        if (incomingType == SpotType::to_arrive && incomingBoxId != _boxId)
+        if (incomingType == MoveType::to_arrive && incomingBoxId != _boxId)
         {
             return {_boxId, false};
         }
-        else if (_boxId == incomingBoxId && incomingType == SpotType::to_leave)
+        else if (_boxId == incomingBoxId && incomingType == MoveType::to_leave)
         {
             _boxId = incomingBoxId;
             _type = incomingType;

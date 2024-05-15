@@ -21,7 +21,7 @@ class Recorder : public BoardListener
     ~Recorder() noexcept = default; 
 
     /*
-    Keeps a running unordered_set of the Drops that currently contain Boxes. (In this sense it contains a tally of the Boxes that are on the Board.) When it receives the changedDrops it updates this set by removing Drops that no long contain a Box and updates the Drops that have changed. (Maybe their SpotType or level has changed.) There is no processing of the Boxes received. The running set of the Drops and the received Boxes are then broadcasted out to its RecorderListeners.
+    Keeps a running unordered_set of the Drops that currently contain Boxes. (In this sense it contains a tally of the Boxes that are on the Board.) When it receives the changedDrops it updates this set by removing Drops that no long contain a Box and updates the Drops that have changed. (Maybe their MoveType or level has changed.) There is no processing of the Boxes received. The running set of the Drops and the received Boxes are then broadcasted out to its RecorderListeners.
     */
     void receiveChanges(
         std::unordered_set<Drop> changedDrops,
@@ -32,7 +32,7 @@ class Recorder : public BoardListener
 
     private:
 
-    // _drops only saves Drops that do not have SpotType::left. _drops represents all the Drops on the Board that have a Box. When a Box leaves a Drop, Recorder receives a Drop with a SpotType::left and the Drop is removed from _drops.
+    // _drops only saves Drops that do not have MoveType::left. _drops represents all the Drops on the Board that have a Box. When a Box leaves a Drop, Recorder receives a Drop with a MoveType::left and the Drop is removed from _drops.
     std::unordered_set<Drop> _drops{}; 
     std::vector<RecorderListener*> _listeners;
 

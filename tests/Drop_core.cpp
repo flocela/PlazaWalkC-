@@ -10,7 +10,7 @@ TEST_CASE("Drop_core::")
 {
     SECTION("Copy Constructor")
     {
-        Drop dropA{10, 11, 5, SpotType::to_arrive};
+        Drop dropA{10, 11, 5, MoveType::to_arrive};
         dropA.setHasChanged(true); 
         Drop dropB{dropA};    
         
@@ -19,7 +19,7 @@ TEST_CASE("Drop_core::")
 
     SECTION("Assigment Constructor")
     {
-        Drop dropA{10, 11, 5, SpotType::to_arrive};
+        Drop dropA{10, 11, 5, MoveType::to_arrive};
         dropA.setHasChanged(true); 
         Drop dropB{std::move(dropA)};
         
@@ -28,25 +28,25 @@ TEST_CASE("Drop_core::")
 
     SECTION("Drops with different positions are not equal '=='.")
     {
-        Drop drop{10, 11, 5, SpotType::to_arrive};
+        Drop drop{10, 11, 5, MoveType::to_arrive};
         drop.setHasChanged(true); 
 
-        Drop dropDiffX{100, 11, 5, SpotType::to_arrive};
+        Drop dropDiffX{100, 11, 5, MoveType::to_arrive};
         dropDiffX.setHasChanged(true); 
 
-        Drop dropDiffY{10, 110, 5, SpotType::to_arrive};
+        Drop dropDiffY{10, 110, 5, MoveType::to_arrive};
         dropDiffY.setHasChanged(true); 
         
         REQUIRE_FALSE(drop == dropDiffX);
         REQUIRE_FALSE(drop == dropDiffY);
     }
 
-    SECTION("Drops with different SpotTypes are equal '=='.")
+    SECTION("Drops with different MoveTypes are equal '=='.")
     {
-        Drop drop{10, 11, 5, SpotType::to_arrive};
+        Drop drop{10, 11, 5, MoveType::to_arrive};
         drop.setHasChanged(true); 
 
-        Drop dropDiffType{10, 11, 5, SpotType::arrive};
+        Drop dropDiffType{10, 11, 5, MoveType::arrive};
         dropDiffType.setHasChanged(true);
 
         REQUIRE(drop == dropDiffType);
@@ -54,10 +54,10 @@ TEST_CASE("Drop_core::")
 
     SECTION("Drops with different hasChanged are equal '=='.")
     {
-        Drop drop{10, 11, 5, SpotType::to_arrive};
+        Drop drop{10, 11, 5, MoveType::to_arrive};
         drop.setHasChanged(true); 
 
-        Drop dropDiffHasChanged{10, 11, 5, SpotType::arrive};
+        Drop dropDiffHasChanged{10, 11, 5, MoveType::arrive};
         dropDiffHasChanged.setHasChanged(false);
 
         REQUIRE(drop == dropDiffHasChanged);
@@ -65,10 +65,10 @@ TEST_CASE("Drop_core::")
 
     SECTION("Drops that are the same are equal '=='.")
     {
-        Drop drop{10, 11, 5, SpotType::to_arrive};
+        Drop drop{10, 11, 5, MoveType::to_arrive};
         drop.setHasChanged(true); 
 
-        Drop dropSame{10, 11, 5, SpotType::arrive};
+        Drop dropSame{10, 11, 5, MoveType::arrive};
         dropSame.setHasChanged(true);
 
         REQUIRE(drop == dropSame);
@@ -77,13 +77,13 @@ TEST_CASE("Drop_core::")
     SECTION("Identical Drops return the same hash")
     {
         hash<Drop> hasher;
-        Drop dropA{0, 0, 0, SpotType::left};
-        Drop dropB{0, 0, 0, SpotType::left};
+        Drop dropA{0, 0, 0, MoveType::left};
+        Drop dropB{0, 0, 0, MoveType::left};
 
         REQUIRE(hasher(dropA) == hasher(dropB));
         
-        Drop dropC{1, 1, 2, SpotType::to_arrive};
-        Drop dropD{1, 1, 2, SpotType::to_arrive};
+        Drop dropC{1, 1, 2, MoveType::to_arrive};
+        Drop dropD{1, 1, 2, MoveType::to_arrive};
 
         REQUIRE(hasher(dropC) == hasher(dropD));
     }
@@ -97,10 +97,10 @@ TEST_CASE("Drop_core::")
         {
             for(int jj=0; jj<100; ++jj)
             {
-                unsigned int hashNumber = hasher(Drop{jj, ii, 1, SpotType::left});
+                unsigned int hashNumber = hasher(Drop{jj, ii, 1, MoveType::left});
                 if(hashNumbers.find(hashNumber) != hashNumbers.end())
                 {
-                    cout << Drop{jj, ii, 1, SpotType::left} << endl;
+                    cout << Drop{jj, ii, 1, MoveType::left} << endl;
                 }
                 REQUIRE(hashNumbers.find(hashNumber) == hashNumbers.end());
                 hashNumbers.insert(hashNumber);
@@ -110,9 +110,9 @@ TEST_CASE("Drop_core::")
     
     SECTION("test ostream operator")
     {
-        Drop drop{10, 11, 5, SpotType::to_arrive};
+        Drop drop{10, 11, 5, MoveType::to_arrive};
         stringstream out;
         out << drop;
-        REQUIRE("Drop: [{10, 11}, 5, SpotType::to_arrive, false]" == out.str());
+        REQUIRE("Drop: [{10, 11}, 5, MoveType::to_arrive, false]" == out.str());
     }
 }
