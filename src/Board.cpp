@@ -113,8 +113,7 @@ void Board::sendStateAndChanges()
     // Braces encapsulate the task of data collection. The data does not change during this task. While 1) toggling _receivedMatrix, 2) assigning changedBoard, and 3) copying _boxes' boxInfos, no new notes are being added due to changeSpot() sharing the _mux mutex that collectDataLock is using.
     {
         unique_lock<shared_mutex> collectDataLock(_mux);
-
-
+        
         changedBoard = _receivingMatrix;
         _receivingMatrix = (_receivingMatrix == &_dropMatrix1) ? (&_dropMatrix2) : (&_dropMatrix1);
         
