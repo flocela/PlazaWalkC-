@@ -40,7 +40,7 @@ Every thread contains one Mover. Every Mover contains one unique box id, and all
 
 Spot has a unique_lock on its update method, so only one thread can update a Spot at any one time.
 
-Once a thread (with a unique box id) changes a Spot from MoveType::left to MoveType::to_arrive, the Spot is essentially owned by that thread. The Spot contains the thread's unique box id. Other threads trying to enter the Spot with a MoveType of to_arrive will not be allowed to update the Spot. The Spot will return false because the received box id is different from the owning thread's box id.
+Once a thread (with a unique box id) changes a Spot from MoveType::left to MoveType::to_arrive, the Spot is essentially owned by that thread. The Spot contains the thread's unique box id. Other threads trying to enter the Spot with a MoveType::to_arrive will not be allowed to update the Spot. The Spot will return false because the received box id is different from the owning thread's box id.
 
 Other threads must wait for the owning thread to issue the MoveTypes MoveType::arrive through MoveType::left before their requests are successful. It is not until the owning thread issues a request with MoveType::left, that another thread will be able to update that Spot. 
 
@@ -52,7 +52,7 @@ The thread function receives a Board reference, a Position Manager, a Decider, a
 
 The function contains a loop that only ends when the user closes the window or when the Box reaches its final position.
 
-In the loop, the PositionManager returns its suggested Positions in a vector of type Positions, with the best Position first. The Decider chooses a position from the vector based on the Positions' MoveTypes. (The Decider gets the MoveTypes from the Board.) Then the Mover requests that the Board move the Box to that chosen position. This involves calling Board's changeSpot() method with the correct MoveTypes in the correct order. (All method calls contain the Mover's boxId, and the first method call contains the MoveType::to_arrive.) Once the Board moves the Box to the new position, the loop iterates again asking the PositionManager for a vector of possible new positions.
+In the loop, the PositionManager returns a vector of suggested Positions.  The Decider chooses a position from the vector based on the Positions' MoveTypes. (The Decider gets the MoveTypes from the Board.) Then the Mover requests that the Board move the Box to that chosen position. This involves calling Board's changeSpot() method with the Mover's box id and the correct MoveTypes in the correct order. Once the Board moves the Box to the new position, the loop iterates again asking the PositionManager for a vector of possible, new positions.
 
 It may be that the Mover's first call to changeSpot() with the parameter MoveType::to_arrive returns false. The Board is returning false to notify the caller that the Position is occupied. The Decider may have chosen the new position because a call to the Board at that time returned that the Spot was empty. Since the time the Board returned that the position was empty to the time the Mover tried to move the Box, the Spot may have become occupied. It may also have been that the Decider chose a Position it believed would become unoccupied by the time the Mover moved the Box there, but it in fact did not become vacant in time.
 
@@ -63,7 +63,7 @@ At every iteration the PositionManager is asked if the Box is at its end positio
 Using Catch2 for testsing. Tests can be found at PlazaWalk/tests/.
 
 ## License
-Plaza Walk was completed in 2024 by Aurea F. Maldonado.
+Plaza Walk was completed in 2024 by Aurea F. Maldonado (Flo).
 
 The code that allows rendering of text and blocks on a window is by Amine Ben Hassouna and can be found at https://github.com/aminosbh/sdl2-ttf-sample/blob/master/src/main.c.
 
