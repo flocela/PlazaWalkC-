@@ -89,17 +89,8 @@ This project is distributed under the terms of the MIT license
 In a folder, clone the repository. This will create the PlazaWalk folder.
 
 ```sh
-https://github.com/flocela/PlazaWalk.git
-
-### Install libraries
-
-In order to install the SDL_2 library, in the command line, under the PlazaWalk folder, type the following:
-
-```sh
-sudo apt-get install libsdl2-ttf-dev
+git clone https://github.com/flocela/PlazaWalk.git
 ```
-
-The installer will ask if you have additional space and if you would like to continue.
 
 ### Make the code
 
@@ -122,3 +113,10 @@ In the build folder type
 ./RunTests
 ```
 
+
+
+://www.libsdl.org
+[CMake]: https://cmake.org
+[Git]: https://git-scm.com
+[SDL2_image]: https://www.libsdl.org/projects/SDL_image
+[SDL2_ttf]: https://www.libsdl.org/projects/SDL_ttf
