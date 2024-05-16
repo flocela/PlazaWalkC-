@@ -63,7 +63,7 @@ At every iteration the PositionManager is asked if the Box is at its end positio
 Using Catch2 for testsing. Tests can be found at PlazaWalk/tests/.
 
 ## License
-Plaza Walk was completed in 2024 by Aurea F. Maldonado (Flo).
+Plaza Walk was completed in 2024 by Aurea F. Maldonado.
 
 The code that allows rendering of text and blocks on a window is by Amine Ben Hassouna and can be found at https://github.com/aminosbh/sdl2-ttf-sample/blob/master/src/main.c.
 
@@ -115,7 +115,7 @@ In the build folder type
 
 
 
-://www.libsdl.org
+[SDL]://www.libsdl.org
 [CMake]: https://cmake.org
 [Git]: https://git-scm.com
 [SDL2_image]: https://www.libsdl.org/projects/SDL_image
