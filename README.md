@@ -12,7 +12,7 @@ A simulation of people walking across a plaza, where each person is represented 
 
 See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
 
-The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position. It may also be in the process of moving to a new position. In that case it could be in two positions at the same time. It may be about to leave one position. At the same time, it may be about to arrive in another position.
+The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position. It may also be in the process of moving to a new position. In that case it could be in two positions at the same time. It may be about to leave one position. At the same time, it may be about to arrive in at a new position.
 
 Each of the Board's positions has a Spot which records which Box is at that position (or no box) and what MoveType the Box is in at that Spot. (The Box may be about to arrive, arrived, about to leave, or have left.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
@@ -24,7 +24,16 @@ Internally the Board pauses all Board changes (Box movements) while it prepares 
 
 ### Moving A Box Updates Spot's MoveType
 
-A Box's current transitioning step is called a MoveType. The MoveType is saved in the Spot (or Spots) the box currently occupies. The Spot contains the Box id and MoveType of the Box that currently occupies its position. It may also be the case that a position is empty. In that case the Spot will have a MoveType::left and a box id of -1. Note a Spot will only change its MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left.
+As a Box moves from one position to the next, the Spots's Box ids and MoveTypes are updated. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change its MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The process that Spots go through when a Box moves onto and off a Spot is the following:
+
+Old Spot                            New Spot 
+Box -1 with MoveType::left          Box -1 with MoveType::left
+Box  1 with MoveType::to_arrive     Box -1 with MoveType::left 
+Box  1 with MoveType::arrive        Box -1 with MoveType::left
+Box  1 with MoveType::arrive        Box  1 with MoveType::to_arrive
+Box  1 with MoveType::to_leave      Box  1 with MoveType::to_arrive
+Box  2 with MoveType::to_leave      Box  2 with MoveType::arrive
+Box -1 with MoveType::left          Box  1 with MoveType::arrive
 
 Every thread contains one Mover. Every Mover contains one unique box id, and all Movers update Spots according to the correct specified order.
 
