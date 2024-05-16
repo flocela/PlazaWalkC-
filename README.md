@@ -76,7 +76,6 @@ This project is distributed under the terms of the MIT license
 
 ### Dependencies
 
-```sh
 - [Git][]
 - C Compiler (gcc, ...)
 - [CMake][]
@@ -115,7 +114,7 @@ In the build folder type
 
 
 
-[SDL]://www.libsdl.org
+[SDL]: https://www.libsdl.org
 [CMake]: https://cmake.org
 [Git]: https://git-scm.com
 [SDL2_image]: https://www.libsdl.org/projects/SDL_image
