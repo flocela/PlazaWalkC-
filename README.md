@@ -81,7 +81,6 @@ This project is distributed under the terms of the MIT license
 - [CMake][]
 - [SDL2][SDL] library
 - [SDL2_ttf][] library
-```
 
 ### Clone This Repo
 
