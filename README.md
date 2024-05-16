@@ -25,7 +25,7 @@ Internally the Board pauses all Board changes (Box movements) while it prepares 
 ### Moving A Box Updates Spot's MoveType
 
 As a Box moves from one position to the next, the Spots's Box ids and MoveTypes are updated. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change its MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The process that Spots go through when a Box moves onto and off a Spot is the following:
-
+<pre>:
 Old Spot                            New Spot
 Box -1 with MoveType::left          Box -1 with MoveType::left
 Box  1 with MoveType::to_arrive     Box -1 with MoveType::left 
@@ -34,6 +34,7 @@ Box  1 with MoveType::arrive        Box  1 with MoveType::to_arrive
 Box  1 with MoveType::to_leave      Box  1 with MoveType::to_arrive
 Box  2 with MoveType::to_leave      Box  2 with MoveType::arrive
 Box -1 with MoveType::left          Box  1 with MoveType::arrive
+<code>:
 
 Every thread contains one Mover. Every Mover contains one unique box id, and all Movers update Spots according to the correct specified order.
 
