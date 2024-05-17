@@ -12,19 +12,19 @@ A simulation of people walking across a plaza, where each person is represented 
 
 See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
 
-The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position. It may also be in the process of moving to a new position. In that case it could be in two positions at the same time. It may be about to leave one position. At the same time, it may be about to arrive in at a new position.
+The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position or occupy two positions while it moves to a new position (in the process of leaving one position and entering another position).
 
-Each of the Board's positions has a Spot which records which Box is at that position (or no box) and what MoveType the Box is in at that Spot. (The Box may be about to arrive, arrived, about to leave, or have left.) Spots are stationary (they are assigned an x-y coordinate on the Board).
+Each of the Board's positions has a Spot which records which Box is at that position (or no Box) and the Box's MoveType. (MoveTypes for the Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
-main creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same function, which iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
+main creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same function that iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
 
 Once the threads are created and running, main's primary thread iteratively requests for the Board to broadcast its state (the state of the Boxes and their positions). The information from each broadcast is ultimately received by a Printer and the Printer renders the Board with its Boxes.
 
 Internally the Board pauses all Board changes (Box movements) while it prepares the data for the broadcast. Once the data is collected, it accepts changes while broadcasting out the data. So the received data (received by the Printer) is always a tiny bit stale.
 
-### Moving A Box Updates Spot's MoveType
+### Spot Records The Box's Move Type
 
-As a Box moves from one position to the next, the Spots's Box ids and MoveTypes are updated. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change its MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The process that Spots go through when a Box moves onto and off a Spot is the following:
+As a Box moves from one position to the next, the Spots updates its Box id and MoveType attributes. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change the MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The states that Spots go through when a Box moves onto and off a Spot is the following:
 <pre><code>
 Old Spot                            New Spot
 Box -1 with MoveType::left          Box -1 with MoveType::left
@@ -46,7 +46,7 @@ Other threads must wait for the owning thread to issue the MoveTypes MoveType::a
 
 If a Spot containing a particular box id receives a request to update with another box id and a MoveType other than MoveType::to_arrive, then Spot throws an exception, and the program terminates. (Something has gone wrong if a thread is issuing a request other than MoveType::to_arrive at an occupied position. This suggests the thread believes its particular Box is already at that position.) This doesn't happen because of the locking in Spot's methods and Mover's adherence to the correct MoveType order.
 
-### Box's New Positions
+### Choosing The Box's New Positions
 
 The thread function receives a Board reference, a Position Manager, a Decider, and a Mover.
 
@@ -84,15 +84,16 @@ This project is distributed under the terms of the MIT license
 
 ### Clone This Repo
 
-In a folder, clone the repository. This will create the PlazaWalk folder.
+In a folder, clone the repository. This will create the PlazaWalkCCode folder.
 
 ```sh
-git clone https://github.com/flocela/PlazaWalk.git
+
+git clone git@github.com:flocela/PlazaWalkCCode.git
 ```
 
 ### Make the code
 
-To make the code, create a build folder inside of the PlazaWalk folder. In the PlazaWalk/build folder type:
+Create a build folder inside of the PlazaWalkCCode folder. In the PlazaWalkCCode/build folder type:
 ```sh
 cmake .. && make
 ```
@@ -107,6 +108,7 @@ In the build folder type
 
 ## Run The Tests
 
+In the build folder type
 ```sh
 ./RunTests
 ```
