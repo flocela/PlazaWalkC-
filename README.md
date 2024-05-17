@@ -14,7 +14,7 @@ See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
 
 The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but it is also the class containing the state of the positions and Boxes on the Board.
 
-A Box may stand at any one position or occupy two positions while it is the process of moving from one position to the next. Each of the Board's positions has a Spot which records which Box is at that position (or no Box) and the Box's MoveType. (MoveTypes for the Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
+A Box may stand at any one position or occupy two positions while it is in the process of moving from one position to the next. Each of the Board's positions has a Spot that records which Box is at that position (or no Box) and the Box's MoveType. (MoveTypes for the Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
 main creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same function that iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
 
