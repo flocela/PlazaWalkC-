@@ -24,7 +24,7 @@ Internally the Board pauses all Board changes (Box movements) while it prepares 
 
 ### Spot Records The Box's Move Type
 
-As a Box moves from one position to the next, the Spots updates its Box id and MoveType attributes. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change the MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The states that Spots go through when a Box moves onto and off a Spot is the following:
+As a Box moves from one position to the next, the Spots update their Box ids and MoveType attributes. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change the MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The states that Spots go through when a Box moves onto and off a Spot are the following:
 <pre><code>
 Old Spot                            New Spot
 Box -1 with MoveType::left          Box -1 with MoveType::left
@@ -48,7 +48,7 @@ If a Spot containing a particular box id receives a request to update with anoth
 
 ### Choosing The Box's New Positions
 
-The thread function receives a Board reference, a Position Manager, a Decider, and a Mover.
+The thread function's parameters include a Board reference, a Position Manager, a Decider, and a Mover.
 
 The function contains a loop that only ends when the user closes the window or when the Box reaches its final position.
 
@@ -60,7 +60,7 @@ At every iteration the PositionManager is asked if the Box is at its end positio
 
 ### Tests
 
-Using Catch2 for testsing. Tests can be found at PlazaWalk/tests/.
+Using Catch2 for testsing. Tests can be found at PlazaWalkCCode/tests/.
 
 ## License
 Plaza Walk was completed in 2024 by Aurea F. Maldonado.
