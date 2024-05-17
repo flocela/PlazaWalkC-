@@ -67,6 +67,11 @@ Plaza Walk was completed in 2024 by Aurea F. Maldonado.
 
 The code that allows rendering of text and blocks on a window is by Amine Ben Hassouna and can be found at https://github.com/aminosbh/sdl2-ttf-sample/blob/master/src/main.c.
 
+Music for README video is from Kevin MacLeod. 
+"Wallpaper" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+
 I am using the same copyright as Amine Ben Hassouna.
 
 This project is distributed under the terms of the MIT license
