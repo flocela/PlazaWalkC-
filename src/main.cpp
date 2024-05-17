@@ -13,8 +13,8 @@
 
 
 // Define screen dimensions
-#define SCREEN_WIDTH    800
-#define SCREEN_HEIGHT   800
+#define SCREEN_WIDTH    600
+#define SCREEN_HEIGHT   600
 
 using namespace std;
 
@@ -110,6 +110,9 @@ int main(int argc, char* argv[])
 
     // Add the in-bound and out-bound rectangles to printer (where the boxes start and end).
     printer.addInOutBoundRectangles(inOutBoundRectangles);
+
+    // Prints empty Board.
+    broadcastAgent.requestBroadcast();
 
     // Event loop exit flag
     bool running = true;
