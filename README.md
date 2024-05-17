@@ -1,14 +1,10 @@
 # Plaza Walk
 
-
-
-https://github.com/flocela/PlazaWalkCCode/assets/4298622/18ce94ab-bcee-4669-beaf-55307c0af8f6
-
-
-
 ## Introduction
 
 A simulation of people walking across a plaza, where each person is represented by a colored box. The boxes move concurrently. Each Box has its own final destination and its own risk acceptance level. (A risky box may try to move into a position that is occupied speculating that the current occupant will be leaving soon. Another, safer box would think this move is too risky to attempt.) If one box tries to enter the position of another box, then both boxes turn a darker shade. This represents two people bumping into each other.
+
+https://github.com/flocela/PlazaWalkCCode/assets/4298622/18ce94ab-bcee-4669-beaf-55307c0af8f6
 
 ## Code Explanation
 
