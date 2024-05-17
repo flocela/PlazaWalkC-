@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A simulation of people walking across a plaza, where each person is represented by a colored box. The boxes move concurrently. Each Box has its own final destination and its own risk acceptance level. (A risky box may try to move into a position that is occupied speculating that the current occupant will be leaving soon. Another, safer box would think this move is too risky to attempt.) If one box tries to enter the position of another box, then both boxes turn a darker shade. This represents two people bumping into each other.
+A simulation of people walking across a plaza, where each person is represented by a colored box. The boxes move concurrently, and each box has its own destination and its own risk acceptance level. (A risky box may try to move into a position that is occupied, speculating that the current occupant will be leaving soon. Another, safer box would think this move is too risky to attempt.) If one box tries to enter the position of another box, then both boxes turn a darker shade. This represents two people bumping into each other.
 
 https://github.com/flocela/PlazaWalkCCode/assets/4298622/18ce94ab-bcee-4669-beaf-55307c0af8f6
 
@@ -12,9 +12,9 @@ https://github.com/flocela/PlazaWalkCCode/assets/4298622/18ce94ab-bcee-4669-beaf
 
 See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
 
-The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but also the class containing the state of the positions and Boxes on the Board. A Box may stand at any one position or occupy two positions while it moves to a new position (in the process of leaving one position and entering another position).
+The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but it is also the class containing the state of the positions and Boxes on the Board.
 
-Each of the Board's positions has a Spot which records which Box is at that position (or no Box) and the Box's MoveType. (MoveTypes for the Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
+A Box may stand at any one position or occupy two positions while it is the process of moving from one position to the next. Each of the Board's positions has a Spot which records which Box is at that position (or no Box) and the Box's MoveType. (MoveTypes for the Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
 main creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same function that iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
 
