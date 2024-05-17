@@ -8,7 +8,7 @@ https://github.com/flocela/PlazaWalkCCode/assets/4298622/18ce94ab-bcee-4669-beaf
 
 ## Code Explanation
 
-### Introduction To The Code 
+### Code Introduction
 
 See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
 
@@ -77,7 +77,7 @@ I am using the same copyright as Amine Ben Hassouna.
 This project is distributed under the terms of the MIT license
 [&lt;LICENSE&gt;](LICENSE).
 
-## Build instructions
+## Build Instructions
 
 ### Dependencies
 
@@ -103,7 +103,7 @@ Create a build folder inside of the PlazaWalkCCode folder. In the PlazaWalkCCode
 cmake .. && make
 ```
 
-### Run The Project
+## Run The Project
 
 In the build folder type
 
