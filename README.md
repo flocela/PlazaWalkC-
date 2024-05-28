@@ -58,7 +58,7 @@ At every iteration the PositionManager is asked if the Box is at its end positio
 
 ### Tests
 
-Using Catch2 for testsing. Tests can be found at [PlazaWalkCCode/tests/](../tests/).
+Using Catch2 for testsing. Tests can be found at [PlazaWalkCCode/tests/](tests/).
 
 ## License
 Plaza Walk was completed in 2024 by Aurea F. Maldonado.
