@@ -10,7 +10,7 @@ A simulation of people walking across a plaza, where each person is represented 
 
 See UML diagrams at [UML Diagrams](UMLDiagrams.pdf).
 
-The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but it also contains the state of the positions and Boxes on the Board.
+The plaza is represented by the [Board class](src/Board.h). It is conceptually a rectangle with positions in the x-y directions, but it also contains the state of the positions and Boxes on the Board.
 
 A Box may stand at any one position or may occupy two positions while it is in the process of moving from one position to the next. Each of the Board's positions has a Spot that records which Box is at that position (or no Box) and the Box's MoveType. (MoveTypes for a Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
