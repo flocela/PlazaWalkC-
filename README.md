@@ -72,8 +72,7 @@ http://creativecommons.org/licenses/by/4.0/
 
 I am using the same copyright as Amine Ben Hassouna.
 
-This project is distributed under the terms of the MIT license
-[&lt;LICENSE&gt;](LICENSE).
+This project is distributed under the terms of the [MIT license](LICENSE).
 
 ## Build Instructions
 
