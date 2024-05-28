@@ -2,10 +2,9 @@
 #define BOX__H
 
 #include <shared_mutex>
-
 #include "BoxInfo.h"
 
-
+/* Represents a person on the Board. A box has a unique id. The group id is the group the Box pertains to. */
 class Box{
 
     public:
