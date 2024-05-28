@@ -8,7 +8,7 @@ A simulation of people walking across a plaza, where each person is represented 
 
 ### Code Introduction
 
-See UML diagrams at PlazaWalk/UMLDiagrams.pdf.
+See UML diagrams at [UML Diagrams](PlazaWalk/UMLDiagrams.pdf).
 
 The plaza is represented by the Board class. It is conceptually a rectangle with positions in the x-y directions, but it also contains the state of the positions and Boxes on the Board.
 
