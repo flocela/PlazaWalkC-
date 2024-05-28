@@ -14,7 +14,7 @@ The plaza is represented by the [Board class](src/Board.h). It is conceptually a
 
 A [Box](src/Box.h) may stand at any one position or may occupy two positions while it is in the process of moving from one position to the next. Each of the Board's positions has a [Spot](src/Spot.h) that records which Box is at that position (or no Box) and the Box's [MoveType](src/MoveType.h). (MoveTypes for a Box are: about to arrive, arrived, about to leave, or left a position.) Spots are stationary (they are assigned an x-y coordinate on the Board).
 
-[main](src/main.cpp) creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same [function](src/Threader.cpp) that iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
+[main](src/main.cpp#L121) creates a vector of threads, each containing a Board reference and a unique Box id. Each thread is passed the same [function](src/Threader.cpp) that iteratively asks the Board to move its particular Box to a new position. The Board allows for multiple Spots to be updated at once. The Spot class does not allow two threads to update a Spot concurrently.
 
 Once the threads are created and running, main's primary thread iteratively requests for the Board to broadcast its state (the state of the Boxes and their positions). The information from each broadcast is ultimately received by a Printer and the Printer renders the Board with its Boxes.
 
