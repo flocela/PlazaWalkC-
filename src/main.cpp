@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
     // Event loop exit flag
     bool running = true;
 
-    // Create vector of threads and add a Thread for each box to it.
+    // Create vector of type thread and for each Box push a thread onto vector.
     vector<unique_ptr<thread>> threads{};
 
     Threader threader{};
