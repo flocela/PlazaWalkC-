@@ -4,7 +4,7 @@
 #include <shared_mutex>
 #include "BoxInfo.h"
 
-/* Represents a person on the Board. A box has a unique id. The group id is the group the Box pertains to. */
+/* Box represents a person on the Board. A box contains a unique id and the group it belongs to. It also contains the width and height of the box. */
 class Box{
 
     public:

@@ -13,6 +13,10 @@
 
 using namespace std;
 
+
+/*
+A function that moves a Box onto the Board and then iteratively inches the Box towards its final position.
+*/
 void Threader::funcMoveBox(
         Position position,
         Board& board,
@@ -25,7 +29,6 @@ void Threader::funcMoveBox(
     Position curPosition = position;
 
     /* Move Box on to @board. */
-
     int n = 1;
     while(breaker)
     {
@@ -45,14 +48,12 @@ void Threader::funcMoveBox(
         }
     }
 
-
-    /* Move Box to final Position */
-   
+    /* Iteratively move Box into final Position */
     // While the box is not at the end position, keep moving the box closer. 
     while (!posManager->atEnd(curPosition) && breaker)
     {
-        // Get vector of Positions from @posManager.
-        // @decider chooses which Position to move to.
+        // Get vector of recommended Positions from @posManager.
+        // @decider chooses which Position to move to and when.
         pair<Position,int> nextPosition = 
             decider->getNext(posManager->getFuturePositions(curPosition), board);
 
@@ -62,7 +63,8 @@ void Threader::funcMoveBox(
            this_thread::sleep_for(chrono::milliseconds(nextPosition.second));
         }
         
-        // If @decider returned an invalid Position, then sleep for now. Otherwise try to move to nextPosition.
+        // If @decider returned an invalid Position, then sleep for now.
+        // Otherwise mover tries to move to nextPosition.
         if((nextPosition.first != Position{-1, -1}) && 
            (mover->moveBox(curPosition, nextPosition.first)))
         {
