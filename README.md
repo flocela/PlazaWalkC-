@@ -1,5 +1,6 @@
 # Plaza Walk
-Check out the youtube video!
+Click the picture below to check out the youtube video!
+
 [![clG0zYToX9M](https://img.youtube.com/vi/clG0zYToX9M/0.jpg)](https://www.youtube.com/watch?v=clG0zYToX9M)
 ## Introduction
 
