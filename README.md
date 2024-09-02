@@ -24,7 +24,7 @@ Internally the Board pauses all Board changes (Box movements) while it prepares 
 
 ### Spot Records The Box's Move Type
 
-As a Box moves from one position to the next, the Spots update their Box ids and MoveType attributes. All Spots start with a Box of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change the MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The states that Spots go through when a Box moves onto and off a Spot are the following:
+As a Box moves from one position to the next, the Spots update their Box ids and MoveType attributes. All Spots start with a Box id of -1 and a MoveType::left (meaning the Spot is empty). When a Box steps onto a Spot, the Spot's Box id and MoveType are updated.  A Spot will only change the MoveType in this logical order: MoveType::left, MoveType::to_arrive, MoveType::arrive, MoveType::to_leave, MoveType::left. The following is an example of 2 Spots, where Box1 arrives at Old Spot and then moves to New Spot. Notice during the transition both Spots have the same Box id of 1 at the same time.
 <pre><code>
 Old Spot                            New Spot
 Box -1 with MoveType::left          Box -1 with MoveType::left
@@ -32,7 +32,7 @@ Box  1 with MoveType::to_arrive     Box -1 with MoveType::left
 Box  1 with MoveType::arrive        Box -1 with MoveType::left
 Box  1 with MoveType::arrive        Box  1 with MoveType::to_arrive
 Box  1 with MoveType::to_leave      Box  1 with MoveType::to_arrive
-Box  2 with MoveType::to_leave      Box  2 with MoveType::arrive
+Box  1 with MoveType::to_leave      Box  1 with MoveType::arrive
 Box -1 with MoveType::left          Box  1 with MoveType::arrive
 </code></pre>
 
